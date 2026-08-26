@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON STEPPER DE 5 FASES
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON ANIMACIÓN ORBITAL
    ========================================================================== */
 
 :root {
@@ -220,7 +220,7 @@ body {
     line-height: 1;
 }
 
-/* BOTONES HEADER */
+/* BOTONES HEADER CON ANIMACIÓN ORBITAL */
 .header-actions {
     display: flex;
     align-items: center;
@@ -234,11 +234,32 @@ body {
     box-shadow: 0 3px 10px rgba(13, 148, 136, 0.3);
     font-weight: 700;
     border-radius: 16px;
+    transition: var(--transition);
 }
 
-.btn-assistant:hover, .btn-assistant.active {
+.btn-assistant:hover {
     background: linear-gradient(135deg, #1d4ed8, #0f766e);
     box-shadow: 0 4px 14px rgba(13, 148, 136, 0.45);
+}
+
+.btn-assistant.active {
+    background: linear-gradient(135deg, #059669, #0d9488);
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.45);
+}
+
+.icon-orbit {
+    display: inline-block;
+    transition: transform 0.4s ease;
+}
+
+.icon-orbit.mode-orbiting {
+    animation: orbitSpin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes orbitSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.35); }
+    100% { transform: rotate(360deg) scale(1); }
 }
 
 .btn-tour {

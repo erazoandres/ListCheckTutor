@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON EFECTO CONFETI LOCALIZADO
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MODO MANUAL Y ORBITAL FLIP
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -321,6 +321,9 @@ const themeIcon = document.getElementById("themeIcon");
 
 // MODO ASISTENTE DOM
 const assistantToggleBtn = document.getElementById("assistantToggleBtn");
+const assistantIcon = document.getElementById("assistantIcon");
+const assistantBtnText = document.getElementById("assistantBtnText");
+
 const assistantWidget = document.getElementById("assistantWidget");
 const assistantTimerText = document.getElementById("assistantTimerText");
 const assistantPlayPauseBtn = document.getElementById("assistantPlayPauseBtn");
@@ -475,8 +478,8 @@ function launchGuidedTour() {
             {
                 element: '#assistantToggleBtn',
                 popover: {
-                    title: '🤖 Modo Asistente (90 Min)',
-                    description: 'Activa este copiloto en tiempo real durante tu lección. Medirá el tiempo y te recomendará una única acción pedagógica en cada etapa.',
+                    title: '🤖 Modo Asistente / 🎮 Modo Manual',
+                    description: 'Conmuta entre el Copiloto Inteligente de 90 min y el Modo Manual Libre con animación de giro orbital.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -550,9 +553,25 @@ function handleCategoryHeaderClick(catKey) {
     render();
 }
 
-// LÓGICA DE TIMER Y MODO ASISTENTE CON FOCO DINÁMICO
+// LÓGICA DE TIMER Y MODO ASISTENTE / MODO MANUAL CON ANIMACIÓN ORBITAL
 function toggleAssistantMode() {
     isAssistantActive = !isAssistantActive;
+
+    // Disparar animación de giro orbital 360° en el icono
+    if (assistantIcon) {
+        assistantIcon.classList.remove("mode-orbiting");
+        void assistantIcon.offsetWidth; // Forzar reflow para reiniciar la animación
+        assistantIcon.classList.add("mode-orbiting");
+
+        setTimeout(() => {
+            assistantIcon.textContent = isAssistantActive ? "🎮" : "🤖";
+        }, 250);
+    }
+
+    if (assistantBtnText) {
+        assistantBtnText.textContent = isAssistantActive ? "Modo Manual" : "Modo Asistente";
+    }
+
     assistantToggleBtn.classList.toggle("active", isAssistantActive);
     assistantWidget.classList.toggle("hidden", !isAssistantActive);
     document.body.classList.toggle("assistant-focus-active", isAssistantActive);
@@ -871,6 +890,10 @@ function setupEventListeners() {
             document.body.classList.remove("assistant-focus-active");
             assistantWidget.classList.add("hidden");
             assistantToggleBtn.classList.remove("active");
+            
+            if (assistantIcon) assistantIcon.textContent = "🤖";
+            if (assistantBtnText) assistantBtnText.textContent = "Modo Asistente";
+
             localStorage.removeItem(STORAGE_KEY_COMPLETED);
             localStorage.removeItem(STORAGE_KEY_NOTES);
             localStorage.removeItem(STORAGE_KEY_COLLAPSED);
