@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET REFINADO Y TEMA SUAVE
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET Y MODALES PREMIUM
    ========================================================================== */
 
 :root {
@@ -1005,92 +1005,164 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
-/* MODALES CON DISEÑO CUIDADO */
+/* ==========================================================================
+   MODALES CON DISEÑO MODERNO Y ELEGANTE (GLASSMORPISM Y TARJETAS EN CUADRÍCULA)
+   ========================================================================== */
+
 .modal-backdrop {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
     display: flex; align-items: center; justify-content: center;
-    z-index: 1000; padding: 16px;
+    z-index: 1000; padding: 20px;
+    animation: fadeInModal 0.25s ease;
 }
 
-.modal-backdrop.hidden { display: none; }
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-backdrop.hidden { display: none !important; }
 
 .modal-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    width: 100%; max-width: 560px;
-    box-shadow: var(--shadow-lg);
+    border-radius: 20px;
+    width: 100%; max-width: 580px;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.22);
     overflow: hidden;
+    animation: popUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes popUpModal {
+    from { transform: scale(0.94) translateY(12px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* MODAL DE BIENVENIDA HERO ENCABEZADO */
 .welcome-modal-card {
     max-width: 580px;
+    border: 1px solid var(--border-color);
 }
 
-.welcome-modal-body h4 {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 6px;
+.welcome-hero-header {
+    background: linear-gradient(135deg, #1e3a8a, #312e81);
+    color: #ffffff;
+    padding: 28px 24px 22px;
+    text-align: center;
+    position: relative;
 }
 
-.welcome-modal-body p {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    margin-bottom: 16px;
+.hero-icon-ring {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.welcome-hero-badge {
-    display: inline-block;
-    font-size: 10.5px;
+.welcome-hero-header h2 {
+    font-size: 22px;
     font-weight: 800;
+    letter-spacing: -0.4px;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.hero-subtitle-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
     letter-spacing: 0.8px;
-    color: var(--primary);
-    background: var(--primary-light);
-    padding: 4px 10px;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    text-transform: uppercase;
+    color: #a5b4fc;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 3px 12px;
+    border-radius: 14px;
 }
 
-.welcome-features-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 18px;
+.close-icon-btn {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition);
 }
 
-.welcome-feature-item {
-    display: flex;
-    align-items: flex-start;
+.close-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* CUERPO DEL MODAL REORGANIZADO */
+.welcome-modal-body {
+    padding: 22px 24px;
+}
+
+.welcome-intro-text {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.welcome-grid-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
+    margin-bottom: 20px;
+}
+
+.grid-card {
     background: var(--bg-main);
     border: 1px solid var(--border-color);
-    padding: 10px 14px;
     border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: var(--transition);
 }
 
-.welcome-feature-item span {
+.grid-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.grid-card-icon {
     font-size: 22px;
+    flex-shrink: 0;
 }
 
-.welcome-feature-item strong {
-    font-size: 13px;
+.grid-card-content strong {
+    font-size: 12.5px;
+    font-weight: 700;
     color: var(--text-primary);
     display: block;
+    margin-bottom: 2px;
 }
 
-.welcome-feature-item p {
-    font-size: 12px;
+.grid-card-content p {
+    font-size: 11.5px;
     color: var(--text-muted);
-    margin-bottom: 0;
     line-height: 1.35;
 }
 
-.welcome-author-card {
+/* BANNER DE AUTOR Y GITHUB */
+.welcome-author-banner {
     background: var(--bg-main);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
@@ -1101,44 +1173,112 @@ body.assistant-focus-active .assistant-widget {
     gap: 12px;
 }
 
-.author-label {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-}
-
-.author-info {
+.author-left {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.author-info strong {
-    font-size: 13.5px;
+.github-avatar-circle {
+    width: 32px; height: 32px;
+    background: var(--text-primary);
+    color: var(--bg-card);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+.author-label-small {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    display: block;
+}
+
+.author-name-text {
+    font-size: 13px;
     color: var(--text-primary);
 }
 
-.github-badge-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.btn-github-link {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--primary);
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 16px;
     text-decoration: none;
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
 }
 
-.github-badge-link:hover {
+.btn-github-link:hover {
     background: var(--primary);
     color: #ffffff;
     border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+/* FOOTER CTA */
+.welcome-modal-footer {
+    padding: 16px 24px 22px;
+    background: var(--bg-card);
+}
+
+.btn-cta-start {
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+    transition: var(--transition);
+}
+
+.btn-cta-start:hover {
+    background: linear-gradient(135deg, #1d4ed8, #4338ca);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    transform: translateY(-1px);
+}
+
+/* MODAL DE REPORTE RENOVADO */
+.export-modal-card {
+    max-width: 580px;
+}
+
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid var(--border-color);
+    background: var(--bg-card);
+}
+
+.modal-title-wrap {
+    display: flex; align-items: center; gap: 8px;
+}
+
+.modal-title-icon { font-size: 18px; }
+
+.modal-header h3 { font-size: 15.5px; font-weight: 700; color: var(--text-primary); }
+.close-btn { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; }
+.close-btn:hover { color: var(--text-primary); }
+
+.modal-body { padding: 18px 20px; }
+.modal-desc { font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px; }
+
+.report-textarea {
+    width: 100%; height: 220px; font-family: monospace; font-size: 12px;
+    padding: 12px; background: var(--bg-main); border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm); color: var(--text-primary); outline: none; resize: none;
+    line-height: 1.45;
+}
+
+.modal-footer {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 14px 20px; background: var(--bg-main); border-top: 1px solid var(--border-color);
 }
 
 /* FOOTER AUTORÍA */
@@ -1183,17 +1323,6 @@ body.assistant-focus-active .assistant-widget {
     text-decoration: underline;
 }
 
-.report-textarea {
-    width: 100%; height: 220px; font-family: monospace; font-size: 12px;
-    padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm); color: var(--text-primary); outline: none; resize: none;
-}
-
-.modal-footer {
-    display: flex; justify-content: flex-end; gap: 8px;
-    padding: 12px 18px; background: var(--bg-main); border-top: 1px solid var(--border-color);
-}
-
 .dot-divider { margin: 0 6px; }
 
 .empty-state {
@@ -1204,7 +1333,7 @@ body.assistant-focus-active .assistant-widget {
 
 .hidden { display: none !important; }
 
-/* RESPONSIVE */
+/* RESPONSIVE MODAL */
 @media (max-width: 640px) {
     .btn-text { display: none; }
     .toolbar { flex-direction: column; align-items: stretch; }
@@ -1212,5 +1341,8 @@ body.assistant-focus-active .assistant-widget {
     .filter-tab { flex: 1; text-align: center; }
     .assistant-suggestion-card { flex-direction: column; align-items: stretch; text-align: center; }
     .btn-success-action { width: 100%; }
-    .welcome-author-card { flex-direction: column; align-items: flex-start; }
+    .welcome-grid-cards { grid-template-columns: 1fr; }
+    .welcome-author-banner { flex-direction: column; align-items: stretch; text-align: center; }
+    .author-left { justify-content: center; }
+    .btn-github-link { width: 100%; text-align: center; }
 }

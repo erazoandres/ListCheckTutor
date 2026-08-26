@@ -155,80 +155,90 @@
                     <svg class="github-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
                         <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                     </svg>
-                    github.com/erazoandres/ListCheckTutor
+                    erazoandres/ListCheckTutor
                 </a>
             </div>
         </footer>
 
     </div>
 
-    <!-- MODAL DE BIENVENIDA Y PROPÓSITO DEL SITIO -->
+    <!-- MODAL DE BIENVENIDA Y PROPÓSITO REDISEÑADO CON ESTILO PREMIUM -->
     <div id="welcomeModal" class="modal-backdrop hidden">
         <div class="modal-card welcome-modal-card">
-            <div class="modal-header">
-                <h3>👋 Bienvenid@ a Tutor List Checker</h3>
-                <button id="closeWelcomeModalBtn" class="close-btn">&times;</button>
+            
+            <div class="welcome-hero-header">
+                <button id="closeWelcomeModalBtn" class="close-icon-btn" aria-label="Cerrar">&times;</button>
+                <div class="hero-icon-ring">✨</div>
+                <h2>Tutor List Checker</h2>
+                <span class="hero-subtitle-tag">Copiloto Pedagógico & Medidor de Clase</span>
             </div>
+
             <div class="modal-body welcome-modal-body">
-                <div class="welcome-hero-badge">🎯 HERRAMIENTA PEDAGÓGICA PARA TUTORES</div>
-                
-                <h4>Propósito del Sitio</h4>
-                <p>
-                    Esta aplicación fue diseñada para ayudar a los tutores a <strong>evaluar, medir y garantizar la calidad pedagógica de sus clases de 90 minutos</strong>. 
-                    Te permite verificar los 20 criterios pedagógicos oficiales, acumular hasta 79 puntos en vivo y generar reportes profesionales al instante.
+                <p class="welcome-intro-text">
+                    Evalúa, mide y garantiza la calidad pedagógica de tus <strong>clases de 90 minutos</strong>. 
+                    Supervisa los 20 criterios clave, acumula hasta <strong>79 puntos en vivo</strong> y genera reportes al instante.
                 </p>
 
-                <div class="welcome-features-list">
-                    <div class="welcome-feature-item">
-                        <span>🤖</span>
-                        <div>
-                            <strong>Modo Asistente (90 Min)</strong>
-                            <p>Cronograma inteligente que dosifica el tiempo de clase y te sugiere la acción más importante en cada momento.</p>
+                <div class="welcome-grid-cards">
+                    <div class="grid-card">
+                        <div class="grid-card-icon">🤖</div>
+                        <div class="grid-card-content">
+                            <strong>Asistente en Tiempo Real</strong>
+                            <p>Dosifica el tiempo de la lección recomendándote una acción clave a la vez.</p>
                         </div>
                     </div>
-                    <div class="welcome-feature-item">
-                        <span>🏆</span>
-                        <div>
-                            <strong>Puntaje Ponderado (79 pts)</strong>
-                            <p>Cálculo automático de puntos destacando con brillo dorado (⭐) los 6 criterios clave de 10 puntos.</p>
+
+                    <div class="grid-card">
+                        <div class="grid-card-icon">⭐</div>
+                        <div class="grid-card-content">
+                            <strong>Puntuación de Alto Valor</strong>
+                            <p>Destaca con brillo dorado los 6 criterios indispensables de 10 puntos.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="welcome-author-card">
-                    <span class="author-label">DESARROLLADO POR:</span>
-                    <div class="author-info">
-                        <strong>erazoandres</strong>
-                        <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="github-badge-link">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <div class="welcome-author-banner">
+                    <div class="author-left">
+                        <div class="github-avatar-circle">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                             </svg>
-                            erazoandres/ListCheckTutor
-                        </a>
+                        </div>
+                        <div>
+                            <span class="author-label-small">PROYECTO OPEN SOURCE POR</span>
+                            <strong class="author-name-text">@erazoandres</strong>
+                        </div>
                     </div>
+                    <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="btn-github-link">
+                        Ver Repositorio &rarr;
+                    </a>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button id="startLessonBtn" class="btn btn-primary btn-block">
-                    🚀 ¡Comenzar Lección!
+
+            <div class="welcome-modal-footer">
+                <button id="startLessonBtn" class="btn btn-cta-start">
+                    🚀 ¡Comenzar Evaluación de Lección!
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE EXPORTACIÓN CON OPCIÓN DE DESCARGA EN FORMATO .TXT -->
+    <!-- MODAL DE EXPORTACIÓN CON DISEÑO RENOVADO -->
     <div id="exportModal" class="modal-backdrop hidden">
-        <div class="modal-card">
+        <div class="modal-card export-modal-card">
             <div class="modal-header">
-                <h3>📋 Reporte de Observación de Clase</h3>
+                <div class="modal-title-wrap">
+                    <span class="modal-title-icon">📋</span>
+                    <h3>Reporte de Observación de Clase</h3>
+                </div>
                 <button id="closeModalBtn" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="modal-desc">Resumen formateado de la lección con puntaje total:</p>
+                <p class="modal-desc">Copia o descarga el informe oficial en formato plano listo para enviar:</p>
                 <textarea id="reportTextarea" class="report-textarea" readonly></textarea>
             </div>
             <div class="modal-footer">
-                <button id="downloadTxtBtn" class="btn btn-sm btn-success-action" title="Descargar informe como archivo de texto (.txt)">
+                <button id="downloadTxtBtn" class="btn btn-sm btn-success-action">
                     <span>📥</span> Descargar .txt
                 </button>
                 <button id="copyModalBtn" class="btn btn-sm btn-primary">
