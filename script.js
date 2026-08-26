@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON TOUR GUIADO DRIVER.JS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MODO ASISTENTE DE 5 FASES
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -327,6 +327,7 @@ const assistantPlayPauseBtn = document.getElementById("assistantPlayPauseBtn");
 const assistantResetTimerBtn = document.getElementById("assistantResetTimerBtn");
 const assistantPhaseBadge = document.getElementById("assistantPhaseBadge");
 const assistantTimelineProgress = document.getElementById("assistantTimelineProgress");
+const assistantPhaseCriteriaCount = document.getElementById("assistantPhaseCriteriaCount");
 
 const suggestionIcon = document.getElementById("suggestionIcon");
 const suggestionTag = document.getElementById("suggestionTag");
@@ -571,7 +572,28 @@ function resetTimer() {
     updateAssistantUI();
 }
 
-// CÁLCULO DE RECOMENDACIÓN CON RITMO
+// ACTUALIZAR EL STEPPER VISUAL DE 5 FASES
+function updatePhaseStepper(activePhaseNum) {
+    const nodes = document.querySelectorAll(".step-node");
+    nodes.forEach(node => {
+        const pNum = parseInt(node.getAttribute("data-phase"));
+        const circle = node.querySelector(".node-circle");
+
+        node.classList.remove("completed", "active");
+
+        if (pNum < activePhaseNum) {
+            node.classList.add("completed");
+            circle.textContent = "✓";
+        } else if (pNum === activePhaseNum) {
+            node.classList.add("active");
+            circle.textContent = pNum;
+        } else {
+            circle.textContent = pNum;
+        }
+    });
+}
+
+// CÁLCULO DE RECOMENDACIÓN CON RITMO Y MANEJO DE PROGRESO DE 5 FASES
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -587,12 +609,16 @@ function updateAssistantUI() {
     const allItems = getAllItems();
     const pendingItems = allItems.filter(item => !completedItems.includes(item.id));
 
+    let phaseNum = 1;
     let phaseName = "";
     let phaseTag = "";
     let suggestedItem = null;
     let suggestionReasonText = "";
+    let currentCategoryKey = "inicio";
 
     if (minutes < 15) {
+        phaseNum = 1;
+        currentCategoryKey = "inicio";
         phaseName = "🚀 Fase 1: Inicio (Min 0 - 15)";
         phaseTag = `MINUTO ${minutes} • ETAPA INICIAL`;
 
@@ -614,11 +640,14 @@ function updateAssistantUI() {
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
+                updatePhaseStepper(1);
                 return;
             }
         }
 
     } else if (minutes < 45) {
+        phaseNum = 2;
+        currentCategoryKey = "instruccion";
         phaseName = "💡 Fase 2: Explicación y Modelado (Min 15 - 45)";
         phaseTag = `MINUTO ${minutes} • DEMOSTRACIÓN Y GUÍAS`;
 
@@ -633,6 +662,8 @@ function updateAssistantUI() {
         }
 
     } else if (minutes < 75) {
+        phaseNum = 3;
+        currentCategoryKey = "participacion";
         phaseName = "✏️ Fase 3: Práctica e Interacción (Min 45 - 75)";
         phaseTag = `MINUTO ${minutes} • PRÁCTICA DEL ALUMNO`;
 
@@ -646,26 +677,40 @@ function updateAssistantUI() {
             suggestionReasonText = `Buen ritmo de práctica. Prepárate mentalmente para el cierre de lección al Min 75.`;
         }
 
-    } else {
-        const remainingMins = 90 - minutes;
-        phaseName = `🎯 Fase 4: Cierre y Tiempo Final (Min 75 - 90)`;
+    } else if (minutes < 85) {
+        phaseNum = 4;
+        currentCategoryKey = "cierre";
+        phaseName = `🎯 Fase 4: Cierre (Min 75 - 85)`;
 
         if (minutes < 80) {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 1 DE CIERRE (RESUMEN)`;
             suggestedItem = pendingItems.find(i => i.number === 9) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
             suggestionReasonText = `🎯 Minuto 75: Inicia el resumen o repaso final de lo aprendido en la sesión (+10 pts).`;
-        } else if (minutes < 85) {
+        } else {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 2 DE CIERRE (TAREA)`;
             suggestedItem = pendingItems.find(i => i.number === 10) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
             suggestionReasonText = `🏠 Minuto 80: Explica claramente la tarea asignada para realizar en casa (+10 pts).`;
-        } else {
-            phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 3 FINAL (CONTINUIDAD)`;
-            suggestedItem = pendingItems.find(i => i.number === 11) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
-            suggestionReasonText = `📅 Minuto 85: Anticipa qué aprenderán o construirán en la siguiente clase (+10 pts).`;
         }
+
+    } else {
+        phaseNum = 5;
+        currentCategoryKey = "cierre";
+        phaseName = `🏁 Fase 5: Final de Lección (Min 85 - 90)`;
+        phaseTag = `⏰ MINUTO ${minutes} • BLOQUE FINAL (CONTINUIDAD)`;
+        suggestedItem = pendingItems.find(i => i.number === 11) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
+        suggestionReasonText = `📅 Minuto 85: Anticipa qué aprenderán o construirán en la siguiente clase (+10 pts).`;
     }
 
     assistantPhaseBadge.textContent = phaseName;
+    updatePhaseStepper(phaseNum);
+
+    // Calcular criterios de la categoría activa
+    const catObject = CRITERIA_DATA.find(c => c.categoryKey === currentCategoryKey);
+    if (catObject) {
+        const totalCatItems = catObject.items.length;
+        const doneCatItems = catObject.items.filter(i => completedItems.includes(i.id)).length;
+        assistantPhaseCriteriaCount.textContent = `Etapa: ${doneCatItems}/${totalCatItems} cumplidos`;
+    }
 
     if (pendingItems.length === 0) {
         suggestionIcon.textContent = "🏆";

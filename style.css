@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET REFINADO Y MODAL COMPACTO
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON STEPPER DE 5 FASES
    ========================================================================== */
 
 :root {
@@ -255,7 +255,7 @@ body {
     border-color: var(--primary);
 }
 
-/* WIDGET MODO ASISTENTE (90 MIN) */
+/* WIDGET MODO ASISTENTE CON STEPPER DE 5 FASES */
 .assistant-widget {
     background: var(--assistant-bg);
     color: #ffffff;
@@ -273,6 +273,150 @@ body {
 @keyframes slideDown {
     from { transform: translateY(-14px) scale(0.98); opacity: 0; }
     to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* STEPPER VISUAL DE 5 FASES */
+.phase-stepper-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    overflow-x: auto;
+}
+
+.step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    position: relative;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.step-node.completed {
+    opacity: 1;
+}
+
+.step-node.active {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.node-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
+    transition: var(--transition);
+}
+
+.step-node.completed .node-circle {
+    background: #10b981;
+    border-color: #34d399;
+}
+
+.step-node.active .node-circle {
+    background: #fbbf24;
+    border-color: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+}
+
+.node-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 6px;
+    margin-bottom: 14px;
+    min-width: 12px;
+}
+
+/* SUGERENCIA DINÁMICA CON CONTEO DE CRITERIOS DE ETAPA */
+.assistant-suggestion-card {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.suggestion-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.phase-progress-pill {
+    font-size: 10px;
+    font-weight: 800;
+    color: #059669;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    padding: 1px 8px;
+    border-radius: 10px;
+}
+
+/* TIMELINE WRAPPER CON HITOS */
+.assistant-timeline-wrapper {
+    position: relative;
+    padding-bottom: 16px;
+}
+
+.assistant-timeline-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.timeline-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #38bdf8, #34d399, #fbbf24);
+    border-radius: 10px;
+    transition: width 1s linear;
+}
+
+.timeline-milestones {
+    position: relative;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.milestone-dot {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 9.5px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* MODO FOCO DINÁMICO */
@@ -366,24 +510,6 @@ body.assistant-focus-active .assistant-widget {
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-.assistant-suggestion-card {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border-radius: var(--radius-md);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.assistant-suggestion-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
 .suggestion-icon {
     font-size: 28px;
     min-width: 36px;
@@ -400,8 +526,6 @@ body.assistant-focus-active .assistant-widget {
     font-weight: 800;
     color: #0d9488;
     letter-spacing: 0.8px;
-    display: block;
-    margin-bottom: 2px;
 }
 
 .suggestion-body h4 {
@@ -436,22 +560,6 @@ body.assistant-focus-active .assistant-widget {
     background: linear-gradient(135deg, #059669, #047857);
     transform: scale(1.03);
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
-}
-
-.assistant-timeline-bar {
-    width: 100%;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.timeline-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #38bdf8, #34d399);
-    border-radius: 10px;
-    transition: width 1s linear;
 }
 
 /* BOTONES GENERALES */
@@ -1037,10 +1145,7 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
-/* ==========================================================================
-   MODALES REFINADOS Y COMPACTOS CON AJUSTE COMPACTO DE PANTALLA
-   ========================================================================== */
-
+/* MODALES Y FOOTER DE ELECCIÓN DE TUTORIAL */
 .modal-backdrop {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -1406,6 +1511,7 @@ body.assistant-focus-active .assistant-widget {
     .btn-success-action { width: 100%; }
     .welcome-grid-cards { grid-template-columns: 1fr; }
     .choice-buttons-grid { grid-template-columns: 1fr; }
+    .phase-stepper-container { flex-wrap: nowrap; overflow-x: auto; }
     .welcome-author-banner { flex-direction: column; align-items: stretch; text-align: center; }
     .author-left { justify-content: center; }
     .btn-github-link { width: 100%; text-align: center; }
