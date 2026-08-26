@@ -1,26 +1,26 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - PALETA FRESCA, MODERNA Y BALANCEADA
+   CHECKLIST DE OBSERVACIÓN DE CLASE - ESTILOS CON ELECCIÓN DE TUTORIAL
    ========================================================================== */
 
 :root {
-    /* Fresh Slate, Indigo & Mint Palette (Sin rosas estridentes) */
-    --bg-main: #f8fafc;         /* Gris slate claro, fresco y descansado */
-    --bg-card: #ffffff;         /* Tarjetas blancas nítidas */
-    --bg-hover: #f1f5f9;        /* Hover neutro suave */
-    --bg-secondary: #e2e8f0;    /* Badges secundarios */
-    --border-color: #cbd5e1;    /* Bordes limpios */
+    /* Fresh Slate, Indigo & Mint Palette */
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-hover: #f1f5f9;
+    --bg-secondary: #e2e8f0;
+    --border-color: #cbd5e1;
     --border-hover: #94a3b8;
     
-    --text-primary: #0f172a;    /* Slate 900 de alta legibilidad */
-    --text-secondary: #1e293b;  /* Slate 800 */
-    --text-muted: #64748b;      /* Slate 500 */
+    --text-primary: #0f172a;
+    --text-secondary: #1e293b;
+    --text-muted: #64748b;
     
-    --primary: #2563eb;         /* Azul regio moderno */
+    --primary: #2563eb;
     --primary-hover: #1d4ed8;
     --primary-light: #eff6ff;
     
-    --accent-teal: #0d9488;     /* Verde menta/teal fresco */
-    --success: #059669;         /* Verde esmeralda */
+    --accent-teal: #0d9488;
+    --success: #059669;
     --success-bg: #ecfdf5;
     
     /* Category Colors */
@@ -35,7 +35,7 @@
     --cat-cierre: #e11d48;
     --cat-cierre-bg: #fff1f2;
     
-    /* Assistant Copilot Gradient (Ocean Indigo & Teal) */
+    /* Assistant Copilot Gradient */
     --assistant-bg: linear-gradient(135deg, #1e3a8a, #0d9488, #059669);
     --assistant-card: #ffffff;
     --assistant-accent: #0d9488;
@@ -59,7 +59,6 @@
 }
 
 [data-theme="dark"] {
-    /* Premium Midnight Blue Theme */
     --bg-main: #0b132b;
     --bg-card: #1c2541;
     --bg-hover: #263459;
@@ -242,7 +241,21 @@ body {
     box-shadow: 0 4px 14px rgba(13, 148, 136, 0.45);
 }
 
-/* WIDGET MODO ASISTENTE FRESCO (90 MIN) */
+.btn-tour {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--primary);
+    font-weight: 700;
+    border-radius: 16px;
+    padding: 6px 14px;
+}
+
+.btn-tour:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+/* WIDGET MODO ASISTENTE (90 MIN) */
 .assistant-widget {
     background: var(--assistant-bg);
     color: #ffffff;
@@ -1024,7 +1037,7 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
-/* MODALES MODERNOS EQUILIBRADOS */
+/* MODALES Y FOOTER DE ELECCIÓN DE TUTORIAL */
 .modal-backdrop {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -1232,30 +1245,61 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
-.welcome-modal-footer {
-    padding: 16px 24px 22px;
-    background: var(--bg-card);
+/* PIE DEL MODAL DE BIENVENIDA CON OPCIÓN DE ELECCIÓN CLARA */
+.welcome-choice-footer {
+    padding: 20px 24px;
+    background: var(--bg-main);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
 }
 
-.btn-cta-start {
-    width: 100%;
-    background: linear-gradient(135deg, #2563eb, #0d9488);
-    color: #ffffff;
-    font-size: 14.5px;
+.choice-title {
+    font-size: 13px;
     font-weight: 700;
-    padding: 12px 20px;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.choice-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.btn-tour-choice {
+    background: var(--bg-card);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 11px 16px;
     border-radius: var(--radius-md);
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
     transition: var(--transition);
 }
 
-.btn-cta-start:hover {
-    background: linear-gradient(135deg, #1d4ed8, #0f766e);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
-    transform: translateY(-1px);
+.btn-tour-choice:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
 }
 
-/* MODAL DE REPORTE RENOVADO */
+.btn-start-choice {
+    background: linear-gradient(135deg, #2563eb, #0d9488);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 11px 16px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    transition: var(--transition);
+}
+
+.btn-start-choice:hover {
+    background: linear-gradient(135deg, #1d4ed8, #0f766e);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+/* MODAL DE REPORTE */
 .export-modal-card {
     max-width: 580px;
 }
@@ -1352,6 +1396,7 @@ body.assistant-focus-active .assistant-widget {
     .assistant-suggestion-card { flex-direction: column; align-items: stretch; text-align: center; }
     .btn-success-action { width: 100%; }
     .welcome-grid-cards { grid-template-columns: 1fr; }
+    .choice-buttons-grid { grid-template-columns: 1fr; }
     .welcome-author-banner { flex-direction: column; align-items: stretch; text-align: center; }
     .author-left { justify-content: center; }
     .btn-github-link { width: 100%; text-align: center; }

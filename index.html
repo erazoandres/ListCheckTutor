@@ -18,7 +18,7 @@
 
     <div class="app-container">
 
-        <!-- HEADER CON ACCIONES Y BOTÓN DE TUTORIAL -->
+        <!-- HEADER CON BOTÓN CLARO DE TUTORIAL -->
         <header class="app-header">
             <div class="header-brand">
                 <div class="logo-badge">🚀</div>
@@ -49,8 +49,8 @@
                 <button id="exportBtn" class="btn btn-sm btn-primary" title="Copiar o descargar informe de clase">
                     <span>📋</span> <span class="btn-text">Reporte</span>
                 </button>
-                <button id="startTourBtn" class="btn btn-sm btn-icon" title="Iniciar Tour Guiado de la Aplicación">
-                    <span>🎓</span>
+                <button id="startTourBtn" class="btn btn-sm btn-tour" title="Iniciar Tour Guiado de la Aplicación">
+                    <span>🎓</span> <span class="btn-text">Tutorial</span>
                 </button>
                 <button id="infoModalBtn" class="btn btn-sm btn-icon" title="Ver información y propósito del sitio">
                     <span>✨</span>
@@ -169,7 +169,7 @@
 
     </div>
 
-    <!-- MODAL DE BIENVENIDA CON OPCIÓN DE TOUR GUIADO -->
+    <!-- MODAL DE BIENVENIDA CON ELECCIÓN CLARA DE TUTORIAL -->
     <div id="welcomeModal" class="modal-backdrop hidden">
         <div class="modal-card welcome-modal-card">
             
@@ -222,13 +222,17 @@
                 </div>
             </div>
 
-            <div class="welcome-modal-footer">
-                <button id="welcomeTourBtn" class="btn btn-secondary" style="flex: 1;">
-                    🎓 Tour Guiado
-                </button>
-                <button id="startLessonBtn" class="btn btn-cta-start" style="flex: 2;">
-                    🚀 ¡Empezar Lección!
-                </button>
+            <!-- BOTONES DE ELECCIÓN CLARA -->
+            <div class="welcome-modal-footer welcome-choice-footer">
+                <p class="choice-title">¿Deseas ver un breve tour interactivo?</p>
+                <div class="choice-buttons-grid">
+                    <button id="welcomeTourBtn" class="btn btn-tour-choice">
+                        <span>🎓</span> Sí, ver Tour Guiado
+                    </button>
+                    <button id="startLessonBtn" class="btn btn-start-choice">
+                        <span>🚀</span> Ir directo a la clase
+                    </button>
+                </div>
             </div>
         </div>
     </div>
