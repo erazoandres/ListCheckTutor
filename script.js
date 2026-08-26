@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MODO ASISTENTE DE 5 FASES
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON BLOQUEO Y DOSIFICACIÓN DE FASES
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -593,7 +593,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN CON RITMO Y MANEJO DE PROGRESO DE 5 FASES
+// CÁLCULO DE RECOMENDACIÓN CON DOSIFICACIÓN Y BLOQUEO DE TIEMPO (PHASE LOCKING)
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -622,25 +622,31 @@ function updateAssistantUI() {
         phaseName = "🚀 Fase 1: Inicio (Min 0 - 15)";
         phaseTag = `MINUTO ${minutes} • ETAPA INICIAL`;
 
+        // SOLO SUGERIR ELEMENTOS DE LA FASE 1 (INICIO) O CRITERIOS TRANSVERSALES PERMITIDOS
         const pendingInicio = pendingItems.filter(i => i.categoryKey === "inicio");
         if (pendingInicio.length > 0) {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
             suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida y objetivo antes del Min 15 (+${suggestedItem.points} pts).`;
         } else {
-            const pendingTransversal = pendingItems.filter(i => i.isTransversal);
+            // Si ya completó los 4 items de inicio, buscar un criterio continuo permitido (#8)
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 8);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
-                suggestionReasonText = `🔁 Criterio continuo: Aplícalo a lo largo de toda la sesión (+${suggestedItem.points} pts).`;
+                suggestionReasonText = `🔁 Criterio continuo: Llama a los alumnos por su nombre durante la sesión (+${suggestedItem.points} pts).`;
             } else {
+                // BLOQUEO DE FASE 1 COMPLETADA: No permitir saltar a Cierre #9, #10, #11 antes de tiempo
                 suggestionIcon.textContent = "⏳";
-                suggestionTag.textContent = `RITMO IDEAL (MIN ${minutes})`;
-                suggestionTitle.textContent = "¡Inicio completado con éxito!";
-                suggestionReason.textContent = "Excelente ritmo. Tómate unos minutos para iniciar tu explicación antes de pasar a la siguiente fase.";
+                suggestionTag.textContent = `FASE 1 COMPLETADA (MIN ${minutes})`;
+                suggestionTitle.textContent = "¡Etapa Inicial Cumplida!";
+                suggestionReason.textContent = "Excelente ritmo. Tómate este tiempo para dar tu explicación. El asistente desbloqueará los siguientes criterios al avanzar el reloj.";
                 suggestionPtsText.textContent = "0";
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
                 updatePhaseStepper(1);
+                
+                const catObject = CRITERIA_DATA.find(c => c.categoryKey === "inicio");
+                assistantPhaseCriteriaCount.textContent = `Etapa: 4/4 cumplidos ✓`;
                 return;
             }
         }
@@ -651,14 +657,33 @@ function updateAssistantUI() {
         phaseName = "💡 Fase 2: Explicación y Modelado (Min 15 - 45)";
         phaseTag = `MINUTO ${minutes} • DEMOSTRACIÓN Y GUÍAS`;
 
+        // SOLO SUGERIR ELEMENTOS DE INSTRUCCIÓN O TRANSVERSALES DE EXPLICACIÓN
         const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion" && i.number <= 6);
         if (pendingInstruccion.length > 0) {
             suggestedItem = pendingInstruccion[0];
             suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y modela en pantalla sin prisa antes del Min 45.`;
         } else {
-            const pendingTransversal = pendingItems.filter(i => i.isTransversal);
-            suggestedItem = pendingTransversal[0] || pendingItems[0];
-            suggestionReasonText = `🔁 Recordatorio continuo (Toda la clase): Mantén la interacción llamando a cada alumno por su nombre.`;
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 14);
+            if (pendingTransversal.length > 0) {
+                suggestedItem = pendingTransversal[0];
+                suggestionReasonText = `🔁 Recordatorio continuo (Toda la clase): Da retroalimentación útil cuando los alumnos muestren pantalla.`;
+            } else {
+                // BLOQUEO DE FASE 2 COMPLETADA
+                suggestionIcon.textContent = "⏳";
+                suggestionTag.textContent = `FASE 2 COMPLETADA (MIN ${minutes})`;
+                suggestionTitle.textContent = "¡Etapa de Explicación Cumplida!";
+                suggestionReason.textContent = "Has modelado la clase exitosamente. Deja que los alumnos trabajen en sus proyectos antes de la fase de práctica.";
+                suggestionPtsText.textContent = "0";
+                suggestionCompleteBtn.classList.add("hidden");
+                currentSuggestedItem = null;
+                assistantPhaseBadge.textContent = phaseName;
+                updatePhaseStepper(2);
+
+                const catObject = CRITERIA_DATA.find(c => c.categoryKey === "instruccion");
+                const doneCatItems = catObject.items.filter(i => completedItems.includes(i.id)).length;
+                assistantPhaseCriteriaCount.textContent = `Etapa: ${doneCatItems}/${catObject.items.length} cumplidos`;
+                return;
+            }
         }
 
     } else if (minutes < 75) {
@@ -667,29 +692,44 @@ function updateAssistantUI() {
         phaseName = "✏️ Fase 3: Práctica e Interacción (Min 45 - 75)";
         phaseTag = `MINUTO ${minutes} • PRÁCTICA DEL ALUMNO`;
 
-        const pendingPractica = pendingItems.filter(i => i.categoryKey === "instruccion" || i.categoryKey === "participacion" || i.categoryKey === "pedagogia");
+        // SOLO SUGERIR ELEMENTOS DE PRÁCTICA, PARTICIPACIÓN O PEDAGOGÍA (NO CIERRE)
+        const pendingPractica = pendingItems.filter(i => (i.categoryKey === "instruccion" || i.categoryKey === "participacion" || i.categoryKey === "pedagogia") && i.categoryKey !== "cierre");
         if (pendingPractica.length > 0) {
             suggestedItem = pendingPractica.find(i => i.targetMin <= minutes + 5) || pendingPractica[0];
             const tagText = suggestedItem.isTransversal ? "🔁 Criterio continuo" : "Fase de práctica";
             suggestionReasonText = `${tagText}: Permite trabajo autónomo y formula preguntas de razonamiento ('¿por qué funciona?').`;
         } else {
-            suggestedItem = pendingItems[0];
-            suggestionReasonText = `Buen ritmo de práctica. Prepárate mentalmente para el cierre de lección al Min 75.`;
+            // BLOQUEO DE FASE 3: Esperar al minuto 75 para el Cierre
+            suggestionIcon.textContent = "⏳";
+            suggestionTag.textContent = `FASE 3 COMPLETADA (MIN ${minutes})`;
+            suggestionTitle.textContent = "¡Práctica e Interacción en Curso!";
+            suggestionReason.textContent = "Los alumnos están practicando muy bien. El asistente desbloqueará los 3 criterios de Cierre (Resumen, Tarea y Continuidad) a partir del Minuto 75.";
+            suggestionPtsText.textContent = "0";
+            suggestionCompleteBtn.classList.add("hidden");
+            currentSuggestedItem = null;
+            assistantPhaseBadge.textContent = phaseName;
+            updatePhaseStepper(3);
+
+            assistantPhaseCriteriaCount.textContent = `Etapa: Práctica al 100% ✓`;
+            return;
         }
 
     } else if (minutes < 85) {
         phaseNum = 4;
         currentCategoryKey = "cierre";
-        phaseName = `🎯 Fase 4: Cierre (Min 75 - 85)`;
+        phaseName = `🎯 Fase 4: Cierre de Clase (Min 75 - 85)`;
+
+        // DESBLOQUEO DE FASE DE CIERRE AL LLEGAR AL MIN 75
+        const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
 
         if (minutes < 80) {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 1 DE CIERRE (RESUMEN)`;
-            suggestedItem = pendingItems.find(i => i.number === 9) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
-            suggestionReasonText = `🎯 Minuto 75: Inicia el resumen o repaso final de lo aprendido en la sesión (+10 pts).`;
+            suggestedItem = pendingCierre.find(i => i.number === 9) || pendingCierre[0] || pendingItems[0];
+            suggestionReasonText = `🎯 Minuto 75 alcanzado: Inicia el resumen o repaso final de lo aprendido en la sesión (+10 pts).`;
         } else {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 2 DE CIERRE (TAREA)`;
-            suggestedItem = pendingItems.find(i => i.number === 10) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
-            suggestionReasonText = `🏠 Minuto 80: Explica claramente la tarea asignada para realizar en casa (+10 pts).`;
+            suggestedItem = pendingCierre.find(i => i.number === 10) || pendingCierre[0] || pendingItems[0];
+            suggestionReasonText = `🏠 Minuto 80 alcanzado: Explica claramente la tarea asignada para realizar en casa (+10 pts).`;
         }
 
     } else {
@@ -697,8 +737,9 @@ function updateAssistantUI() {
         currentCategoryKey = "cierre";
         phaseName = `🏁 Fase 5: Final de Lección (Min 85 - 90)`;
         phaseTag = `⏰ MINUTO ${minutes} • BLOQUE FINAL (CONTINUIDAD)`;
-        suggestedItem = pendingItems.find(i => i.number === 11) || pendingItems.find(i => i.categoryKey === "cierre") || pendingItems[0];
-        suggestionReasonText = `📅 Minuto 85: Anticipa qué aprenderán o construirán en la siguiente clase (+10 pts).`;
+        const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
+        suggestedItem = pendingCierre.find(i => i.number === 11) || pendingCierre[0] || pendingItems[0];
+        suggestionReasonText = `📅 Minuto 85 alcanzado: Anticipa qué aprenderán o construirán en la siguiente clase (+10 pts).`;
     }
 
     assistantPhaseBadge.textContent = phaseName;
