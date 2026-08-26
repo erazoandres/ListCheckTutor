@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MODO MANUAL Y ORBITAL FLIP
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON ACCORDION TRANSITION
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -545,9 +545,9 @@ function expandCategory(catKey) {
 // TOGGLE COLAPSO EN CATEGORÍA
 function handleCategoryHeaderClick(catKey) {
     if (collapsedCategories.includes(catKey)) {
-        collapsedCategories = collapsedCategories.filter(k => k !== catKey);
-    } else {
         collapsedCategories.push(catKey);
+    } else {
+        collapsedCategories = collapsedCategories.filter(k => k !== catKey);
     }
     localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
     render();
@@ -1034,7 +1034,7 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZAR CHECKLIST
+// RENDERIZAR CHECKLIST CON TRANSICIÓN EN ACCORDION
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
@@ -1136,18 +1136,20 @@ function renderChecklistCategories() {
                     </div>
                 </div>
 
-                <div class="item-details-accordion ${isExpandedAll ? "" : "hidden"}">
-                    <div class="detail-box">
-                        <span class="detail-label">❓ Pregunta Evaluada</span>
-                        <div class="detail-text">${item.item_question}</div>
-                    </div>
-                    <div class="detail-box evidence">
-                        <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
-                        <div class="detail-text">${item.comment}</div>
-                    </div>
-                    <div class="notes-input-box">
-                        <span class="detail-label">✏️ Nota de la Lección</span>
-                        <textarea placeholder="Apuntar notas de la clase..." data-id="${item.id}">${userNote}</textarea>
+                <div class="item-details-accordion ${isExpandedAll ? "is-open" : ""}">
+                    <div class="accordion-inner">
+                        <div class="detail-box">
+                            <span class="detail-label">❓ Pregunta Evaluada</span>
+                            <div class="detail-text">${item.item_question}</div>
+                        </div>
+                        <div class="detail-box evidence">
+                            <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
+                            <div class="detail-text">${item.comment}</div>
+                        </div>
+                        <div class="notes-input-box">
+                            <span class="detail-label">✏️ Nota de la Lección</span>
+                            <textarea placeholder="Apuntar notas de la clase..." data-id="${item.id}">${userNote}</textarea>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1160,8 +1162,8 @@ function renderChecklistCategories() {
             mainArea.addEventListener("click", (e) => {
                 if (e.target.closest(".toggle-details-btn")) {
                     e.stopPropagation();
-                    detailsAccordion.classList.toggle("hidden");
-                    toggleBtn.textContent = detailsAccordion.classList.contains("hidden") ? "ℹ️" : "🔼";
+                    const isOpen = detailsAccordion.classList.toggle("is-open");
+                    toggleBtn.textContent = isOpen ? "🔼" : "ℹ️";
                     return;
                 }
                 toggleItem(item.id, e);

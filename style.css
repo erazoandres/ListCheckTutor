@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON ANIMACIÓN ORBITAL
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON TRANSICIÓN DE DETALLES
    ========================================================================== */
 
 :root {
@@ -1113,13 +1113,35 @@ body.assistant-focus-active .assistant-widget {
     background: var(--bg-main);
 }
 
+/* ACCORDION ANIMADO CON GRID TEMPLATE ROWS */
 .item-details-accordion {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed var(--border-color);
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 1px dashed transparent;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease,
+                margin-top 0.3s ease,
+                padding-top 0.3s ease,
+                border-color 0.3s ease;
+    overflow: hidden;
+}
+
+.item-details-accordion > .accordion-inner {
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.item-details-accordion.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top-color: var(--border-color);
 }
 
 .detail-box {
