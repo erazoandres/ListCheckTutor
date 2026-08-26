@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON BLOQUEO Y DOSIFICACIÓN DE FASES
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT SIN MENCIÓN DE PUNTOS EN ASISTENTE
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -333,7 +333,6 @@ const suggestionIcon = document.getElementById("suggestionIcon");
 const suggestionTag = document.getElementById("suggestionTag");
 const suggestionTitle = document.getElementById("suggestionTitle");
 const suggestionReason = document.getElementById("suggestionReason");
-const suggestionPtsText = document.getElementById("suggestionPtsText");
 const suggestionCompleteBtn = document.getElementById("suggestionCompleteBtn");
 
 // MODAL DE BIENVENIDA & TOUR DOM
@@ -593,7 +592,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN CON DOSIFICACIÓN Y BLOQUEO DE TIEMPO (PHASE LOCKING)
+// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA (FOCO EN LA ACCIÓN - SIN MENCIÓN DE PUNTOS)
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -622,24 +621,20 @@ function updateAssistantUI() {
         phaseName = "🚀 Fase 1: Inicio (Min 0 - 15)";
         phaseTag = `MINUTO ${minutes} • ETAPA INICIAL`;
 
-        // SOLO SUGERIR ELEMENTOS DE LA FASE 1 (INICIO) O CRITERIOS TRANSVERSALES PERMITIDOS
         const pendingInicio = pendingItems.filter(i => i.categoryKey === "inicio");
         if (pendingInicio.length > 0) {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
-            suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida y objetivo antes del Min 15 (+${suggestedItem.points} pts).`;
+            suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida, conexión y objetivo explícito antes del Min 15.`;
         } else {
-            // Si ya completó los 4 items de inicio, buscar un criterio continuo permitido (#8)
             const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 8);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
-                suggestionReasonText = `🔁 Criterio continuo: Llama a los alumnos por su nombre durante la sesión (+${suggestedItem.points} pts).`;
+                suggestionReasonText = `🔁 Criterio continuo: Llama a cada alumno directamente por su nombre durante las interacciones.`;
             } else {
-                // BLOQUEO DE FASE 1 COMPLETADA: No permitir saltar a Cierre #9, #10, #11 antes de tiempo
                 suggestionIcon.textContent = "⏳";
                 suggestionTag.textContent = `FASE 1 COMPLETADA (MIN ${minutes})`;
                 suggestionTitle.textContent = "¡Etapa Inicial Cumplida!";
                 suggestionReason.textContent = "Excelente ritmo. Tómate este tiempo para dar tu explicación. El asistente desbloqueará los siguientes criterios al avanzar el reloj.";
-                suggestionPtsText.textContent = "0";
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
@@ -657,23 +652,20 @@ function updateAssistantUI() {
         phaseName = "💡 Fase 2: Explicación y Modelado (Min 15 - 45)";
         phaseTag = `MINUTO ${minutes} • DEMOSTRACIÓN Y GUÍAS`;
 
-        // SOLO SUGERIR ELEMENTOS DE INSTRUCCIÓN O TRANSVERSALES DE EXPLICACIÓN
         const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion" && i.number <= 6);
         if (pendingInstruccion.length > 0) {
             suggestedItem = pendingInstruccion[0];
-            suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y modela en pantalla sin prisa antes del Min 45.`;
+            suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y demuestra el proceso en pantalla sin prisa.`;
         } else {
             const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 14);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
-                suggestionReasonText = `🔁 Recordatorio continuo (Toda la clase): Da retroalimentación útil cuando los alumnos muestren pantalla.`;
+                suggestionReasonText = `🔁 Recordatorio continuo: Proporciona retroalimentación útil y explicaciones claras cuando revises trabajos.`;
             } else {
-                // BLOQUEO DE FASE 2 COMPLETADA
                 suggestionIcon.textContent = "⏳";
                 suggestionTag.textContent = `FASE 2 COMPLETADA (MIN ${minutes})`;
                 suggestionTitle.textContent = "¡Etapa de Explicación Cumplida!";
                 suggestionReason.textContent = "Has modelado la clase exitosamente. Deja que los alumnos trabajen en sus proyectos antes de la fase de práctica.";
-                suggestionPtsText.textContent = "0";
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
@@ -692,19 +684,16 @@ function updateAssistantUI() {
         phaseName = "✏️ Fase 3: Práctica e Interacción (Min 45 - 75)";
         phaseTag = `MINUTO ${minutes} • PRÁCTICA DEL ALUMNO`;
 
-        // SOLO SUGERIR ELEMENTOS DE PRÁCTICA, PARTICIPACIÓN O PEDAGOGÍA (NO CIERRE)
         const pendingPractica = pendingItems.filter(i => (i.categoryKey === "instruccion" || i.categoryKey === "participacion" || i.categoryKey === "pedagogia") && i.categoryKey !== "cierre");
         if (pendingPractica.length > 0) {
             suggestedItem = pendingPractica.find(i => i.targetMin <= minutes + 5) || pendingPractica[0];
             const tagText = suggestedItem.isTransversal ? "🔁 Criterio continuo" : "Fase de práctica";
-            suggestionReasonText = `${tagText}: Permite trabajo autónomo y formula preguntas de razonamiento ('¿por qué funciona?').`;
+            suggestionReasonText = `${tagText}: Promueve la participación activa y haz preguntas de razonamiento ('¿por qué ocurre esto?').`;
         } else {
-            // BLOQUEO DE FASE 3: Esperar al minuto 75 para el Cierre
             suggestionIcon.textContent = "⏳";
             suggestionTag.textContent = `FASE 3 COMPLETADA (MIN ${minutes})`;
             suggestionTitle.textContent = "¡Práctica e Interacción en Curso!";
-            suggestionReason.textContent = "Los alumnos están practicando muy bien. El asistente desbloqueará los 3 criterios de Cierre (Resumen, Tarea y Continuidad) a partir del Minuto 75.";
-            suggestionPtsText.textContent = "0";
+            suggestionReason.textContent = "Los alumnos están practicando de forma autónoma. El asistente desbloqueará los 3 criterios de Cierre (Resumen, Tarea y Continuidad) al alcanzar el Minuto 75.";
             suggestionCompleteBtn.classList.add("hidden");
             currentSuggestedItem = null;
             assistantPhaseBadge.textContent = phaseName;
@@ -719,17 +708,16 @@ function updateAssistantUI() {
         currentCategoryKey = "cierre";
         phaseName = `🎯 Fase 4: Cierre de Clase (Min 75 - 85)`;
 
-        // DESBLOQUEO DE FASE DE CIERRE AL LLEGAR AL MIN 75
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
 
         if (minutes < 80) {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 1 DE CIERRE (RESUMEN)`;
             suggestedItem = pendingCierre.find(i => i.number === 9) || pendingCierre[0] || pendingItems[0];
-            suggestionReasonText = `🎯 Minuto 75 alcanzado: Inicia el resumen o repaso final de lo aprendido en la sesión (+10 pts).`;
+            suggestionReasonText = `🎯 Minuto 75 alcanzado: Dedica este tiempo a realizar una recapitulación y repaso final de lo aprendido.`;
         } else {
             phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 2 DE CIERRE (TAREA)`;
             suggestedItem = pendingCierre.find(i => i.number === 10) || pendingCierre[0] || pendingItems[0];
-            suggestionReasonText = `🏠 Minuto 80 alcanzado: Explica claramente la tarea asignada para realizar en casa (+10 pts).`;
+            suggestionReasonText = `🏠 Minuto 80 alcanzado: Explica detalladamente la tarea asignada para realizar en casa.`;
         }
 
     } else {
@@ -739,7 +727,7 @@ function updateAssistantUI() {
         phaseTag = `⏰ MINUTO ${minutes} • BLOQUE FINAL (CONTINUIDAD)`;
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
         suggestedItem = pendingCierre.find(i => i.number === 11) || pendingCierre[0] || pendingItems[0];
-        suggestionReasonText = `📅 Minuto 85 alcanzado: Anticipa qué aprenderán o construirán en la siguiente clase (+10 pts).`;
+        suggestionReasonText = `📅 Minuto 85 alcanzado: Anticipa a los alumnos qué aprenderán o construirán en la próxima lección.`;
     }
 
     assistantPhaseBadge.textContent = phaseName;
@@ -758,7 +746,6 @@ function updateAssistantUI() {
         suggestionTag.textContent = "¡CLASE PERFECTA!";
         suggestionTitle.textContent = "¡100% Excelente!";
         suggestionReason.textContent = "Has cumplido todos los 20 criterios pedagógicos respetando el tiempo de los 90 minutos.";
-        suggestionPtsText.textContent = "0";
         suggestionCompleteBtn.classList.add("hidden");
         currentSuggestedItem = null;
     } else if (suggestedItem) {
@@ -767,7 +754,6 @@ function updateAssistantUI() {
         suggestionTag.textContent = phaseTag;
         suggestionTitle.textContent = `#${suggestedItem.number} ${suggestedItem.title}`;
         suggestionReason.textContent = suggestionReasonText;
-        suggestionPtsText.textContent = suggestedItem.points;
         suggestionCompleteBtn.classList.remove("hidden");
     }
 }
