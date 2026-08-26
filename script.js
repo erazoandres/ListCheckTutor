@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT SIN MENCIÓN DE PUNTOS EN ASISTENTE
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT SIN MENCIÓN DE TIEMPOS NI PUNTOS
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -592,7 +592,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA (FOCO EN LA ACCIÓN - SIN MENCIÓN DE PUNTOS)
+// CÁLCULO DE RECOMENDACIÓN TR ANQUILA Y PEDAGÓGICA (SIN TIEMPOS NI PUNTOS PRESIONANTES)
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -619,12 +619,12 @@ function updateAssistantUI() {
         phaseNum = 1;
         currentCategoryKey = "inicio";
         phaseName = "🚀 Fase 1: Inicio (Min 0 - 15)";
-        phaseTag = `MINUTO ${minutes} • ETAPA INICIAL`;
+        phaseTag = `ETAPA DE INICIO`;
 
         const pendingInicio = pendingItems.filter(i => i.categoryKey === "inicio");
         if (pendingInicio.length > 0) {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
-            suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida, conexión y objetivo explícito antes del Min 15.`;
+            suggestionReasonText = `Enfócate en la bienvenida amable, conexión con la clase anterior y declaración del objetivo.`;
         } else {
             const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 8);
             if (pendingTransversal.length > 0) {
@@ -632,9 +632,9 @@ function updateAssistantUI() {
                 suggestionReasonText = `🔁 Criterio continuo: Llama a cada alumno directamente por su nombre durante las interacciones.`;
             } else {
                 suggestionIcon.textContent = "⏳";
-                suggestionTag.textContent = `FASE 1 COMPLETADA (MIN ${minutes})`;
+                suggestionTag.textContent = `FASE 1 COMPLETADA`;
                 suggestionTitle.textContent = "¡Etapa Inicial Cumplida!";
-                suggestionReason.textContent = "Excelente ritmo. Tómate este tiempo para dar tu explicación. El asistente desbloqueará los siguientes criterios al avanzar el reloj.";
+                suggestionReason.textContent = "Excelente avance. Tómate este tiempo tranquilo para dar tu explicación. El asistente te acompañará en la siguiente fase.";
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
@@ -650,12 +650,12 @@ function updateAssistantUI() {
         phaseNum = 2;
         currentCategoryKey = "instruccion";
         phaseName = "💡 Fase 2: Explicación y Modelado (Min 15 - 45)";
-        phaseTag = `MINUTO ${minutes} • DEMOSTRACIÓN Y GUÍAS`;
+        phaseTag = `DEMOSTRACIÓN Y MODELADO`;
 
         const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion" && i.number <= 6);
         if (pendingInstruccion.length > 0) {
             suggestedItem = pendingInstruccion[0];
-            suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y demuestra el proceso en pantalla sin prisa.`;
+            suggestionReasonText = `Explica las instrucciones en pasos pequeños y demuestra el procedimiento en pantalla.`;
         } else {
             const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 14);
             if (pendingTransversal.length > 0) {
@@ -663,9 +663,9 @@ function updateAssistantUI() {
                 suggestionReasonText = `🔁 Recordatorio continuo: Proporciona retroalimentación útil y explicaciones claras cuando revises trabajos.`;
             } else {
                 suggestionIcon.textContent = "⏳";
-                suggestionTag.textContent = `FASE 2 COMPLETADA (MIN ${minutes})`;
+                suggestionTag.textContent = `FASE 2 COMPLETADA`;
                 suggestionTitle.textContent = "¡Etapa de Explicación Cumplida!";
-                suggestionReason.textContent = "Has modelado la clase exitosamente. Deja que los alumnos trabajen en sus proyectos antes de la fase de práctica.";
+                suggestionReason.textContent = "Has modelado la clase exitosamente. Acompaña el trabajo independiente de los alumnos.";
                 suggestionCompleteBtn.classList.add("hidden");
                 currentSuggestedItem = null;
                 assistantPhaseBadge.textContent = phaseName;
@@ -682,18 +682,18 @@ function updateAssistantUI() {
         phaseNum = 3;
         currentCategoryKey = "participacion";
         phaseName = "✏️ Fase 3: Práctica e Interacción (Min 45 - 75)";
-        phaseTag = `MINUTO ${minutes} • PRÁCTICA DEL ALUMNO`;
+        phaseTag = `PRÁCTICA DEL ALUMNO`;
 
         const pendingPractica = pendingItems.filter(i => (i.categoryKey === "instruccion" || i.categoryKey === "participacion" || i.categoryKey === "pedagogia") && i.categoryKey !== "cierre");
         if (pendingPractica.length > 0) {
             suggestedItem = pendingPractica.find(i => i.targetMin <= minutes + 5) || pendingPractica[0];
             const tagText = suggestedItem.isTransversal ? "🔁 Criterio continuo" : "Fase de práctica";
-            suggestionReasonText = `${tagText}: Promueve la participación activa y haz preguntas de razonamiento ('¿por qué ocurre esto?').`;
+            suggestionReasonText = `${tagText}: Promueve la participación activa y realiza preguntas de razonamiento para guiar a los alumnos.`;
         } else {
             suggestionIcon.textContent = "⏳";
-            suggestionTag.textContent = `FASE 3 COMPLETADA (MIN ${minutes})`;
+            suggestionTag.textContent = `FASE 3 COMPLETADA`;
             suggestionTitle.textContent = "¡Práctica e Interacción en Curso!";
-            suggestionReason.textContent = "Los alumnos están practicando de forma autónoma. El asistente desbloqueará los 3 criterios de Cierre (Resumen, Tarea y Continuidad) al alcanzar el Minuto 75.";
+            suggestionReason.textContent = "Los alumnos están practicando de forma autónoma. El asistente te acompañará con el resumen y cierre al aproximarse el final de la lección.";
             suggestionCompleteBtn.classList.add("hidden");
             currentSuggestedItem = null;
             assistantPhaseBadge.textContent = phaseName;
@@ -711,23 +711,23 @@ function updateAssistantUI() {
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
 
         if (minutes < 80) {
-            phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 1 DE CIERRE (RESUMEN)`;
+            phaseTag = `REPASO Y RESUMEN`;
             suggestedItem = pendingCierre.find(i => i.number === 9) || pendingCierre[0] || pendingItems[0];
-            suggestionReasonText = `🎯 Minuto 75 alcanzado: Dedica este tiempo a realizar una recapitulación y repaso final de lo aprendido.`;
+            suggestionReasonText = `Dedica este momento a realizar un resumen y repaso final de los conocimientos aprendidos.`;
         } else {
-            phaseTag = `⏰ MINUTO ${minutes} • BLOQUE 2 DE CIERRE (TAREA)`;
+            phaseTag = `TAREA PARA EL HOGAR`;
             suggestedItem = pendingCierre.find(i => i.number === 10) || pendingCierre[0] || pendingItems[0];
-            suggestionReasonText = `🏠 Minuto 80 alcanzado: Explica detalladamente la tarea asignada para realizar en casa.`;
+            suggestionReasonText = `Explica con claridad la tarea asignada para realizar en el hogar.`;
         }
 
     } else {
         phaseNum = 5;
         currentCategoryKey = "cierre";
         phaseName = `🏁 Fase 5: Final de Lección (Min 85 - 90)`;
-        phaseTag = `⏰ MINUTO ${minutes} • BLOQUE FINAL (CONTINUIDAD)`;
+        phaseTag = `CONTINUIDAD Y DESPEDIDA`;
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
         suggestedItem = pendingCierre.find(i => i.number === 11) || pendingCierre[0] || pendingItems[0];
-        suggestionReasonText = `📅 Minuto 85 alcanzado: Anticipa a los alumnos qué aprenderán o construirán en la próxima lección.`;
+        suggestionReasonText = `Anticipa a los alumnos qué aprenderán o construirán en la siguiente clase.`;
     }
 
     assistantPhaseBadge.textContent = phaseName;
@@ -745,7 +745,7 @@ function updateAssistantUI() {
         suggestionIcon.textContent = "🏆";
         suggestionTag.textContent = "¡CLASE PERFECTA!";
         suggestionTitle.textContent = "¡100% Excelente!";
-        suggestionReason.textContent = "Has cumplido todos los 20 criterios pedagógicos respetando el tiempo de los 90 minutos.";
+        suggestionReason.textContent = "Has cumplido todos los 20 criterios pedagógicos respetando la experiencia de aprendizaje.";
         suggestionCompleteBtn.classList.add("hidden");
         currentSuggestedItem = null;
     } else if (suggestedItem) {
