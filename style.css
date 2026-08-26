@@ -1,25 +1,25 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET Y MODALES PREMIUM
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON BADGE TRANSVERSAL
    ========================================================================== */
 
 :root {
-    /* Refined Light Theme Palette - Soft, Comfortable & High Contrast */
-    --bg-main: #f1f5f9;         /* Fondo suave slate/gris para eliminar el blanco deslumbrante */
-    --bg-card: #ffffff;         /* Tarjetas blancas puras elevadas sobre el fondo suave */
-    --bg-hover: #f8fafc;        /* Hover suave */
-    --bg-secondary: #e2e8f0;    /* Fondo de bloques secundarios y badges */
-    --border-color: #cbd5e1;    /* Bordes bien definidos */
+    /* Refined Light Theme Palette */
+    --bg-main: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    --bg-secondary: #e2e8f0;
+    --border-color: #cbd5e1;
     --border-hover: #94a3b8;
     
-    --text-primary: #0f172a;    /* Texto principal de alto contraste (Slate 900) */
-    --text-secondary: #334155;  /* Texto secundario */
-    --text-muted: #64748b;      /* Texto de apoyo */
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
     
-    --primary: #2563eb;         /* Azul regio moderno */
+    --primary: #2563eb;
     --primary-hover: #1d4ed8;
     --primary-light: #eff6ff;
     
-    --success: #059669;         /* Verde éxito esmeralda */
+    --success: #059669;
     --success-bg: #ecfdf5;
     
     /* Category Colors */
@@ -828,6 +828,23 @@ body.assistant-focus-active .assistant-widget {
     50% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.9)); }
 }
 
+/* BADGE DE CRITERIO TRANSVERSAL / CONTINUO */
+.transversal-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 12px;
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+[data-theme="dark"] .transversal-badge {
+    background: rgba(22, 101, 52, 0.2);
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
 .item-main {
     display: flex;
     align-items: center;
@@ -1005,10 +1022,7 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
-/* ==========================================================================
-   MODALES CON DISEÑO MODERNO Y ELEGANTE (GLASSMORPISM Y TARJETAS EN CUADRÍCULA)
-   ========================================================================== */
-
+/* MODALES PREMIUM CON GLASSMORPISM Y TARJETAS EN CUADRÍCULA */
 .modal-backdrop {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -1041,7 +1055,6 @@ body.assistant-focus-active .assistant-widget {
     to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-/* MODAL DE BIENVENIDA HERO ENCABEZADO */
 .welcome-modal-card {
     max-width: 580px;
     border: 1px solid var(--border-color);
@@ -1105,7 +1118,6 @@ body.assistant-focus-active .assistant-widget {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* CUERPO DEL MODAL REORGANIZADO */
 .welcome-modal-body {
     padding: 22px 24px;
 }
@@ -1161,7 +1173,6 @@ body.assistant-focus-active .assistant-widget {
     line-height: 1.35;
 }
 
-/* BANNER DE AUTOR Y GITHUB */
 .welcome-author-banner {
     background: var(--bg-main);
     border: 1px solid var(--border-color);
@@ -1221,7 +1232,6 @@ body.assistant-focus-active .assistant-widget {
     transform: translateY(-1px);
 }
 
-/* FOOTER CTA */
 .welcome-modal-footer {
     padding: 16px 24px 22px;
     background: var(--bg-card);

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - DESCARGA DE REPORTE EN FORMATO .TXT
+   CHECKLIST DE OBSERVACIÓN DE CLASE - CRITERIOS TRANSVERSALES Y CONTINUOS
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -18,7 +18,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor saludó a los estudiantes y hizo al menos una pregunta amable de conversación o de interés personal?",
                 comment: "El tutor saluda a los estudiantes y les pregunta cómo se encuentran antes de iniciar.",
                 points: 10,
-                targetMin: 2
+                targetMin: 2,
+                isTransversal: false
             },
             {
                 id: "item_2",
@@ -28,7 +29,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor expresó qué aprenderán, practicarán, construirán, crearán, discutirán o serán capaces de hacer en esta lección?",
                 comment: "El tutor declara el objetivo explícito de aprendizaje de la sesión.",
                 points: 1,
-                targetMin: 5
+                targetMin: 5,
+                isTransversal: false
             },
             {
                 id: "item_3",
@@ -38,7 +40,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor conectó la lección con la clase anterior pidiendo a los estudiantes que recordaran o comentaran lo que hicieron o aprendieron antes?",
                 comment: "Pedir a los alumnos recordar o resumir lo trabajado en la sesión previa.",
                 points: 10,
-                targetMin: 8
+                targetMin: 8,
+                isTransversal: false
             },
             {
                 id: "item_4",
@@ -48,7 +51,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor revisó o preguntó sobre una tarea que los estudiantes debían hacer en casa?",
                 comment: "Revisar o consultar por la tarea pendiente asignada para el hogar.",
                 points: 10,
-                targetMin: 12
+                targetMin: 12,
+                isTransversal: false
             }
         ]
     },
@@ -67,7 +71,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor dio instrucciones en pasos pequeños y manejables que los estudiantes pudieran seguir?",
                 comment: "Dividir la explicación en pasos clave bien estructurados.",
                 points: 1,
-                targetMin: 20
+                targetMin: 20,
+                isTransversal: false
             },
             {
                 id: "item_6",
@@ -77,7 +82,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor demostró, modeló o explicó la tarea antes de pedir que los estudiantes trabajaran de forma independiente?",
                 comment: "Demostrar y explicar el procedimiento en pantalla antes del trabajo autónomo.",
                 points: 1,
-                targetMin: 30
+                targetMin: 30,
+                isTransversal: false
             },
             {
                 id: "item_18",
@@ -87,7 +93,8 @@ const CRITERIA_DATA = [
                 item_question: "¿La lección incluyó una etapa clara de práctica del estudiante?",
                 comment: "Otorgar espacio dedicado para que los alumnos apliquen lo aprendido de forma práctica.",
                 points: 1,
-                targetMin: 45
+                targetMin: 45,
+                isTransversal: false
             },
             {
                 id: "item_19",
@@ -97,7 +104,8 @@ const CRITERIA_DATA = [
                 item_question: "¿Las actividades estuvieron en un nivel de dificultad apropiado para los estudiantes?",
                 comment: "Adaptar el nivel de dificultad al ritmo y nivel de los estudiantes.",
                 points: 1,
-                targetMin: 55
+                targetMin: 55,
+                isTransversal: true
             }
         ]
     },
@@ -116,7 +124,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor involucró a varios estudiantes en lugar de depender principalmente de uno solo?",
                 comment: "Involucrar activamente a múltiples estudiantes durante toda la clase.",
                 points: 1,
-                targetMin: 60
+                targetMin: 60,
+                isTransversal: true
             },
             {
                 id: "item_8",
@@ -126,7 +135,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor se dirigió a los estudiantes por su nombre o con una referencia individual clara durante la interacción de aprendizaje?",
                 comment: "Llamar a cada alumno directamente por su nombre propio.",
                 points: 5,
-                targetMin: 25
+                targetMin: 25,
+                isTransversal: true
             },
             {
                 id: "item_12",
@@ -136,7 +146,8 @@ const CRITERIA_DATA = [
                 item_question: "¿Al menos dos estudiantes diferentes participaron en la interacción de aprendizaje?",
                 comment: "Asegurar que participen al menos 2 estudiantes distintos durante la clase.",
                 points: 1,
-                targetMin: 35
+                targetMin: 35,
+                isTransversal: true
             },
             {
                 id: "item_13",
@@ -146,7 +157,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor generó interacción de aprendizaje repetida durante la lección?",
                 comment: "Múltiples momentos de interacción distribuidos a lo largo de toda la lección.",
                 points: 1,
-                targetMin: 50
+                targetMin: 50,
+                isTransversal: true
             }
         ]
     },
@@ -165,7 +177,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor dio retroalimentación que ayudó a un estudiante a mejorar su trabajo o comprensión?",
                 comment: "Proporcionar explicaciones constructivas al corregir errores de los alumnos.",
                 points: 5,
-                targetMin: 40
+                targetMin: 40,
+                isTransversal: true
             },
             {
                 id: "item_15",
@@ -175,7 +188,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor hizo una pregunta de razonamiento/explicación y obtuvo una respuesta relevante del estudiante?",
                 comment: "Formular preguntas de razonamiento ('¿por qué ocurre esto?') y permitir que expliquen.",
                 points: 1,
-                targetMin: 65
+                targetMin: 65,
+                isTransversal: true
             },
             {
                 id: "item_16",
@@ -185,7 +199,8 @@ const CRITERIA_DATA = [
                 item_question: "¿La lección evitó confusión explícita o estancamiento repetido del estudiante?",
                 comment: "Resolver dudas a tiempo para evitar bloqueos persistentes en el aprendizaje.",
                 points: 1,
-                targetMin: 68
+                targetMin: 68,
+                isTransversal: true
             },
             {
                 id: "item_17",
@@ -195,7 +210,8 @@ const CRITERIA_DATA = [
                 item_question: "¿La lección evitó rechazo explícito, aburrimiento o insatisfacción del estudiante?",
                 comment: "Mantener el dinamismo y compromiso de los alumnos durante la lección.",
                 points: 1,
-                targetMin: 70
+                targetMin: 70,
+                isTransversal: true
             },
             {
                 id: "item_20",
@@ -205,7 +221,8 @@ const CRITERIA_DATA = [
                 item_question: "¿La lección mantuvo un ambiente de aprendizaje positivo y de apoyo?",
                 comment: "Fomentar un clima positivo, de respeto y constante motivación.",
                 points: 1,
-                targetMin: 72
+                targetMin: 72,
+                isTransversal: true
             }
         ]
     },
@@ -224,7 +241,8 @@ const CRITERIA_DATA = [
                 item_question: "¿La lección incluyó un resumen, repaso o reflexión al final?",
                 comment: "Dedicar los minutos finales a una recapitulación o repaso de lo aprendido.",
                 points: 10,
-                targetMin: 78
+                targetMin: 78,
+                isTransversal: false
             },
             {
                 id: "item_10",
@@ -234,7 +252,8 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor explicó claramente qué deben hacer los estudiantes en casa antes de la próxima clase?",
                 comment: "Explicar y asignar claramente la tarea para el hogar.",
                 points: 10,
-                targetMin: 83
+                targetMin: 83,
+                isTransversal: false
             },
             {
                 id: "item_11",
@@ -244,13 +263,14 @@ const CRITERIA_DATA = [
                 item_question: "¿El tutor explicó claramente qué aprenderán, construirán, practicarán o trabajarán en la próxima clase?",
                 comment: "Anticipar el tema o proyecto de la siguiente lección.",
                 points: 10,
-                targetMin: 87
+                targetMin: 87,
+                isTransversal: false
             }
         ]
     }
 ];
 
-// CLAVES DE STORAGE GENÉRICAS AÍSLADAS (v4)
+// CLAVES DE STORAGE
 const STORAGE_KEY_COMPLETED = "tutorChecklist_v4_completed";
 const STORAGE_KEY_NOTES = "tutorChecklist_v4_notes";
 const STORAGE_KEY_COLLAPSED = "tutorChecklist_v4_collapsed";
@@ -343,7 +363,7 @@ function getAllItems() {
     return list.sort((a, b) => a.number - b.number);
 }
 
-// DEPURAR Y SANITIZAR DATOS DE STORAGE DE VERSIONES ANTERIORES
+// DEPURAR Y SANITIZAR DATOS DE STORAGE
 function loadAndSanitizeStorage() {
     localStorage.removeItem("teacherChecklist");
     localStorage.removeItem("tutorChecklist_completed");
@@ -471,7 +491,7 @@ function resetTimer() {
     updateAssistantUI();
 }
 
-// CÁLCULO DE RECOMENDACIÓN CON RITMO DOSIFICADO (DISTRIBUCIÓN 90 MIN)
+// CÁLCULO DE RECOMENDACIÓN CON RITMO Y MANEJO DE CRITERIOS TRANSVERSALES/CONTINUOS
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -501,15 +521,22 @@ function updateAssistantUI() {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
             suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida y objetivo antes del Min 15 (+${suggestedItem.points} pts).`;
         } else {
-            suggestionIcon.textContent = "⏳";
-            suggestionTag.textContent = `RITMO IDEAL (MIN ${minutes})`;
-            suggestionTitle.textContent = "¡Inicio completado con éxito!";
-            suggestionReason.textContent = "Excelente ritmo. Tómate unos minutos para iniciar tu explicación antes de pasar a la siguiente fase.";
-            suggestionPtsText.textContent = "0";
-            suggestionCompleteBtn.classList.add("hidden");
-            currentSuggestedItem = null;
-            assistantPhaseBadge.textContent = phaseName;
-            return;
+            // Si ya completó el inicio, recordar un criterio continuo
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal);
+            if (pendingTransversal.length > 0) {
+                suggestedItem = pendingTransversal[0];
+                suggestionReasonText = `🔁 Criterio continuo: Aplícalo a lo largo de toda la sesión (+${suggestedItem.points} pts).`;
+            } else {
+                suggestionIcon.textContent = "⏳";
+                suggestionTag.textContent = `RITMO IDEAL (MIN ${minutes})`;
+                suggestionTitle.textContent = "¡Inicio completado con éxito!";
+                suggestionReason.textContent = "Excelente ritmo. Tómate unos minutos para iniciar tu explicación antes de pasar a la siguiente fase.";
+                suggestionPtsText.textContent = "0";
+                suggestionCompleteBtn.classList.add("hidden");
+                currentSuggestedItem = null;
+                assistantPhaseBadge.textContent = phaseName;
+                return;
+            }
         }
 
     } else if (minutes < 45) {
@@ -521,9 +548,10 @@ function updateAssistantUI() {
             suggestedItem = pendingInstruccion[0];
             suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y modela en pantalla sin prisa antes del Min 45.`;
         } else {
-            const pendingInteraccionBaja = pendingItems.filter(i => i.categoryKey === "participacion" || i.categoryKey === "pedagogia");
-            suggestedItem = pendingInteraccionBaja[0] || pendingItems[0];
-            suggestionReasonText = `Continúa guiando la sesión. Aprovecha este espacio para dirigirte por su nombre a los alumnos.`;
+            // Rotar sugerencias continuas (Participación, Trato directo #8, Feedback #14)
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal);
+            suggestedItem = pendingTransversal[0] || pendingItems[0];
+            suggestionReasonText = `🔁 Recordatorio continuo (Toda la clase): Mantén la interacción llamando a cada alumno por su nombre.`;
         }
 
     } else if (minutes < 75) {
@@ -533,7 +561,8 @@ function updateAssistantUI() {
         const pendingPractica = pendingItems.filter(i => i.categoryKey === "instruccion" || i.categoryKey === "participacion" || i.categoryKey === "pedagogia");
         if (pendingPractica.length > 0) {
             suggestedItem = pendingPractica.find(i => i.targetMin <= minutes + 5) || pendingPractica[0];
-            suggestionReasonText = `Fase de práctica: Permite trabajo autónomo y formula preguntas de razonamiento ('¿por qué funciona?').`;
+            const tagText = suggestedItem.isTransversal ? "🔁 Criterio continuo" : "Fase de práctica";
+            suggestionReasonText = `${tagText}: Permite trabajo autónomo y formula preguntas de razonamiento ('¿por qué funciona?').`;
         } else {
             suggestedItem = pendingItems[0];
             suggestionReasonText = `Buen ritmo de práctica. Prepárate mentalmente para el cierre de lección al Min 75.`;
@@ -799,7 +828,7 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZAR CHECKLIST
+// RENDERIZAR CHECKLIST CON DISTINCIÓN DE CRITERIOS TRANSVERSALES
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
@@ -861,13 +890,21 @@ function renderChecklistCategories() {
             const isChecked = completedItems.includes(item.id);
             const userNote = itemNotes[item.id] || "";
             const isHighPriority = item.points === 10;
+            const isTransversal = item.isTransversal;
 
             const itemCard = document.createElement("div");
             itemCard.className = `check-item ${isChecked ? "completed" : ""} ${isHighPriority ? "high-priority" : ""}`;
 
-            const ptsBadgeHtml = isHighPriority 
-                ? `<span class="pts-badge high-priority-pts" title="¡Criterio de alto valor (10 pts)!"><span class="gold-star-icon">⭐</span> +10 pts</span>`
-                : `<span class="pts-badge">+${item.points} pts</span>`;
+            let ptsBadgeHtml = "";
+            if (isHighPriority) {
+                ptsBadgeHtml = `<span class="pts-badge high-priority-pts" title="¡Criterio de alto valor (10 pts)!"><span class="gold-star-icon">⭐</span> +10 pts</span>`;
+            } else {
+                ptsBadgeHtml = `<span class="pts-badge">+${item.points} pts</span>`;
+            }
+
+            const transversalBadgeHtml = isTransversal 
+                ? `<span class="transversal-badge" title="Criterio continuo: Se aplica durante toda la lección de 90 min">🔁 Toda la clase</span>`
+                : "";
 
             itemCard.innerHTML = `
                 <div class="item-main">
@@ -882,6 +919,7 @@ function renderChecklistCategories() {
                         <div class="item-text-wrap">
                             <span class="item-title">${item.title}</span>
                             ${ptsBadgeHtml}
+                            ${transversalBadgeHtml}
                         </div>
                     </div>
 
@@ -968,8 +1006,9 @@ function openExportModal() {
             const isDone = completedItems.includes(item.id);
             const status = isDone ? "[✓]" : "[ ]";
             const star = item.points === 10 ? "⭐ " : "";
+            const continuousTag = item.isTransversal ? " [🔁 Toda la clase]" : "";
             const note = itemNotes[item.id] ? ` (Nota: ${itemNotes[item.id]})` : "";
-            report += `${status} #${item.number} ${star}${item.title} (+${item.points} pts)${note}\n`;
+            report += `${status} #${item.number} ${star}${item.title} (+${item.points} pts)${continuousTag}${note}\n`;
         });
         report += `\n`;
     });
