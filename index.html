@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Observación de la Clase - Tutor List Checker</title>
+    <!-- Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER CON BADGES Y ACCIONES -->
+        <header class="app-header">
+            <div class="header-brand">
+                <div class="logo-badge">T</div>
+                <div>
+                    <h1>Checklist de Observación de la Clase</h1>
+                    <p class="subtitle">Marca ✓ si el tutor cumplió con el criterio observado.</p>
+                </div>
+            </div>
+
+            <!-- CHIPS DE PUNTAJE Y PROGRESO LIMPIOS -->
+            <div class="header-stats-wrapper">
+                <div class="stat-badge score-badge" title="Puntaje obtenido / Puntaje total">
+                    <span class="stat-icon">🏆</span>
+                    <span class="stat-value" id="scoreText">0 / 79 pts</span>
+                </div>
+
+                <div class="stat-badge count-badge" title="Criterios cumplidos de 20">
+                    <span class="stat-percent" id="progressPercentage">0%</span>
+                    <span class="stat-divider">•</span>
+                    <span class="stat-count" id="progressText">0 / 20</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button id="assistantToggleBtn" class="btn btn-sm btn-assistant" title="Activar Modo Asistente de Clase (90 min)">
+                    <span>🤖</span> <span class="btn-text">Modo Asistente</span>
+                </button>
+                <button id="exportBtn" class="btn btn-sm btn-primary" title="Copiar o descargar informe de clase">
+                    <span>📋</span> <span class="btn-text">Reporte</span>
+                </button>
+                <button id="infoModalBtn" class="btn btn-sm btn-icon" title="Ver información y propósito del sitio">
+                    <span>ℹ️</span>
+                </button>
+                <button id="themeToggle" class="btn btn-sm btn-icon" title="Cambiar Tema" aria-label="Cambiar tema">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button id="resetBtn" class="btn btn-sm btn-ghost-danger" title="Reiniciar checklist">
+                    <span>🔄</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- WIDGET MODOS ASISTENTE DE CLASE (90 MIN) -->
+        <section id="assistantWidget" class="assistant-widget hidden">
+            <div class="assistant-header">
+                <div class="assistant-timer-wrap">
+                    <span class="assistant-badge-live">LIVE 90 MIN</span>
+                    <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
+                    <div class="assistant-controls">
+                        <button id="assistantPlayPauseBtn" class="btn-play-pause" title="Iniciar/Pausar tiempo">▶️</button>
+                        <button id="assistantResetTimerBtn" class="btn-timer-reset" title="Reiniciar reloj">🔄</button>
+                    </div>
+                </div>
+
+                <div class="assistant-phase-badge" id="assistantPhaseBadge">
+                    🚀 Fase 1: Inicio (Min 0 - 15)
+                </div>
+            </div>
+
+            <!-- SUGERENCIA DINÁMICA DE ACCIÓN ÚNICA -->
+            <div class="assistant-suggestion-card" id="assistantSuggestionCard">
+                <div class="suggestion-icon" id="suggestionIcon">🖐️</div>
+                <div class="suggestion-body">
+                    <span class="suggestion-tag" id="suggestionTag">SUGERIDO AHORA</span>
+                    <h4 id="suggestionTitle">Saludo y calentamiento</h4>
+                    <p id="suggestionReason">Empieza saludando a los alumnos y preguntándoles cómo están (+10 pts).</p>
+                </div>
+                <button id="suggestionCompleteBtn" class="btn btn-sm btn-success-action">
+                    ✓ ¡Cumplido! (+<span id="suggestionPtsText">10</span> pts)
+                </button>
+            </div>
+
+            <!-- BARRA DE TIEMPO VS PACING DE CIERRE -->
+            <div class="assistant-timeline-bar">
+                <div id="assistantTimelineProgress" class="timeline-fill"></div>
+            </div>
+        </section>
+
+        <!-- SLIM PROGRESS BAR -->
+        <div class="progress-bar-slim">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+
+        <div class="status-banner">
+            <span id="progressMessage" class="status-tip">¡Cada detalle cuenta para crear experiencias de aprendizaje increíbles!</span>
+        </div>
+
+        <!-- CATEGORY STRIP -->
+        <div class="category-strip" id="categoryStatsGrid">
+            <!-- Renderizado dinámico -->
+        </div>
+
+        <!-- COMPACT TOOLBAR -->
+        <section class="toolbar">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar criterio o número..." autocomplete="off">
+                <button id="clearSearch" class="clear-btn hidden">✕</button>
+            </div>
+
+            <div class="segmented-control">
+                <button class="filter-tab active" data-filter="all">Todos (<span id="countAll">20</span>)</button>
+                <button class="filter-tab" data-filter="pending">Pendientes (<span id="countPending">20</span>)</button>
+                <button class="filter-tab" data-filter="completed">Cumplidos (<span id="countCompleted">0</span>)</button>
+            </div>
+
+            <select id="categoryFilter" class="select-input-sm">
+                <option value="all">Todas las etapas</option>
+                <option value="inicio">1. Inicio de Clase</option>
+                <option value="instruccion">2. Instrucción y Modelado</option>
+                <option value="participacion">3. Participación e Interacción</option>
+                <option value="pedagogia">4. Pedagogía y Clima</option>
+                <option value="cierre">5. Cierre y Continuidad</option>
+            </select>
+
+            <button id="toggleExpandBtn" class="btn btn-sm btn-ghost" title="Expandir o colapsar detalles">
+                <span id="expandIcon">📖</span> <span id="expandText">Detalles</span>
+            </button>
+        </section>
+
+        <!-- CHECKLIST CONTAINER -->
+        <main id="checklist" class="checklist-container">
+            <!-- Renderizado dinámico desde script.js -->
+        </main>
+
+        <!-- FOOTER PRINCIPAL CON AUTORÍA Y ENLACE DE GITHUB -->
+        <footer class="app-footer">
+            <div class="footer-score-box">
+                <span>Puntaje Total: <strong id="footerScoreText">0 / 79 Puntos</strong></span>
+                <span class="dot-divider">•</span>
+                <span id="completedText">0 de 20 criterios completados</span>
+            </div>
+
+            <div class="footer-author-box">
+                <span>Desarrollado con ❤️ por <strong>erazoandres</strong></span>
+                <span class="dot-divider">•</span>
+                <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="github-footer-link" title="Visitar repositorio en GitHub">
+                    <svg class="github-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    github.com/erazoandres/ListCheckTutor
+                </a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- MODAL DE BIENVENIDA Y PROPÓSITO DEL SITIO -->
+    <div id="welcomeModal" class="modal-backdrop hidden">
+        <div class="modal-card welcome-modal-card">
+            <div class="modal-header">
+                <h3>👋 Bienvenid@ a Tutor List Checker</h3>
+                <button id="closeWelcomeModalBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body welcome-modal-body">
+                <div class="welcome-hero-badge">🎯 HERRAMIENTA PEDAGÓGICA PARA TUTORES</div>
+                
+                <h4>Propósito del Sitio</h4>
+                <p>
+                    Esta aplicación fue diseñada para ayudar a los tutores a <strong>evaluar, medir y garantizar la calidad pedagógica de sus clases de 90 minutos</strong>. 
+                    Te permite verificar los 20 criterios pedagógicos oficiales, acumular hasta 79 puntos en vivo y generar reportes profesionales al instante.
+                </p>
+
+                <div class="welcome-features-list">
+                    <div class="welcome-feature-item">
+                        <span>🤖</span>
+                        <div>
+                            <strong>Modo Asistente (90 Min)</strong>
+                            <p>Cronograma inteligente que dosifica el tiempo de clase y te sugiere la acción más importante en cada momento.</p>
+                        </div>
+                    </div>
+                    <div class="welcome-feature-item">
+                        <span>🏆</span>
+                        <div>
+                            <strong>Puntaje Ponderado (79 pts)</strong>
+                            <p>Cálculo automático de puntos destacando con brillo dorado (⭐) los 6 criterios clave de 10 puntos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-author-card">
+                    <span class="author-label">DESARROLLADO POR:</span>
+                    <div class="author-info">
+                        <strong>erazoandres</strong>
+                        <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="github-badge-link">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                            erazoandres/ListCheckTutor
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="startLessonBtn" class="btn btn-primary btn-block">
+                    🚀 ¡Comenzar Lección!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EXPORTACIÓN CON OPCIÓN DE DESCARGA EN FORMATO .TXT -->
+    <div id="exportModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📋 Reporte de Observación de Clase</h3>
+                <button id="closeModalBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Resumen formateado de la lección con puntaje total:</p>
+                <textarea id="reportTextarea" class="report-textarea" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="downloadTxtBtn" class="btn btn-sm btn-success-action" title="Descargar informe como archivo de texto (.txt)">
+                    <span>📥</span> Descargar .txt
+                </button>
+                <button id="copyModalBtn" class="btn btn-sm btn-primary">
+                    <span>✂️</span> Copiar
+                </button>
+                <button id="closeModalBottomBtn" class="btn btn-sm btn-secondary">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
