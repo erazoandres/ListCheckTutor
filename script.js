@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - CRITERIOS TRANSVERSALES Y CONTINUOS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON TOUR GUIADO DRIVER.JS
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -288,7 +288,7 @@ let searchQuery = "";
 let isExpandedAll = false;
 let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || "light";
 
-// ESTADO DEL MODO ASISTENTE CON RITMO
+// ESTADO DEL MODO ASISTENTE
 let isAssistantActive = false;
 let assistantSeconds = parseInt(localStorage.getItem(STORAGE_KEY_ASSISTANT_TIME)) || 0;
 let assistantInterval = null;
@@ -335,11 +335,13 @@ const suggestionReason = document.getElementById("suggestionReason");
 const suggestionPtsText = document.getElementById("suggestionPtsText");
 const suggestionCompleteBtn = document.getElementById("suggestionCompleteBtn");
 
-// MODAL DE BIENVENIDA DOM
+// MODAL DE BIENVENIDA & TOUR DOM
 const welcomeModal = document.getElementById("welcomeModal");
 const closeWelcomeModalBtn = document.getElementById("closeWelcomeModalBtn");
 const startLessonBtn = document.getElementById("startLessonBtn");
 const infoModalBtn = document.getElementById("infoModalBtn");
+const startTourBtn = document.getElementById("startTourBtn");
+const welcomeTourBtn = document.getElementById("welcomeTourBtn");
 
 const countAllEl = document.getElementById("countAll");
 const countPendingEl = document.getElementById("countPending");
@@ -420,6 +422,84 @@ function closeWelcomeModal() {
     localStorage.setItem(STORAGE_KEY_WELCOME_SHOWN, "true");
 }
 
+// TOUR GUIADO CON DRIVER.JS
+function launchGuidedTour() {
+    closeWelcomeModal();
+
+    if (typeof window.driver === "undefined" || !window.driver.js) {
+        alert("El tour guiado está cargando... Por favor, intenta de nuevo en unos segundos.");
+        return;
+    }
+
+    const driverObj = window.driver.js.driver({
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        doneBtnText: '¡Entendido! 🚀',
+        nextBtnText: 'Siguiente →',
+        prevBtnText: '← Anterior',
+        progressText: 'Paso {{current}} de {{total}}',
+        steps: [
+            {
+                element: '.app-header',
+                popover: {
+                    title: '👋 ¡Bienvenido a Tutor List Checker!',
+                    description: 'Esta es tu barra principal. Aquí verás tu puntaje acumulado en vivo (hasta 79 pts) y el conteo de criterios cumplidos.',
+                    side: 'bottom',
+                    align: 'start'
+                }
+            },
+            {
+                element: '#assistantToggleBtn',
+                popover: {
+                    title: '🤖 Modo Asistente (90 Min)',
+                    description: 'Activa este copiloto en tiempo real durante tu lección. Medirá el tiempo y te recomendará una única acción pedagógica en cada etapa.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#exportBtn',
+                popover: {
+                    title: '📋 Generador de Reportes',
+                    description: 'Al terminar la clase, genera tu informe completo. Podrás copiarlo al portapapeles o descargarlo como archivo .txt con un solo clic.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#categoryStatsGrid',
+                popover: {
+                    title: '📂 Filtros por Etapa de Clase',
+                    description: 'Filtra rápidamente por Inicio, Instrucción, Participación, Pedagogía o Cierre de la clase.',
+                    side: 'bottom',
+                    align: 'start'
+                }
+            },
+            {
+                element: '.toolbar',
+                popover: {
+                    title: '🔍 Buscador y Filtros de Estado',
+                    description: 'Encuentra criterios por número o palabra clave, y conmuta entre ver Todos, Pendientes o Cumplidos.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#checklist',
+                popover: {
+                    title: '✅ Criterios Pedagógicos & Estrellas Doradas',
+                    description: 'Haz clic en cualquier criterio para marcarlo como cumplido. ¡Los ítems con estrella ⭐ valen 10 puntos! Y las etiquetas 🔁 son prácticas continuas para toda la clase.',
+                    side: 'top',
+                    align: 'center'
+                }
+            }
+        ]
+    });
+
+    driverObj.drive();
+}
+
 // APLICAR TEMA
 function applyTheme(theme) {
     currentTheme = theme;
@@ -491,7 +571,7 @@ function resetTimer() {
     updateAssistantUI();
 }
 
-// CÁLCULO DE RECOMENDACIÓN CON RITMO Y MANEJO DE CRITERIOS TRANSVERSALES/CONTINUOS
+// CÁLCULO DE RECOMENDACIÓN CON RITMO
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -521,7 +601,6 @@ function updateAssistantUI() {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
             suggestionReasonText = `Ritmo adecuado: Enfócate en la bienvenida y objetivo antes del Min 15 (+${suggestedItem.points} pts).`;
         } else {
-            // Si ya completó el inicio, recordar un criterio continuo
             const pendingTransversal = pendingItems.filter(i => i.isTransversal);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
@@ -548,7 +627,6 @@ function updateAssistantUI() {
             suggestedItem = pendingInstruccion[0];
             suggestionReasonText = `Ritmo dosificado: Explica en pasos pequeños y modela en pantalla sin prisa antes del Min 45.`;
         } else {
-            // Rotar sugerencias continuas (Participación, Trato directo #8, Feedback #14)
             const pendingTransversal = pendingItems.filter(i => i.isTransversal);
             suggestedItem = pendingTransversal[0] || pendingItems[0];
             suggestionReasonText = `🔁 Recordatorio continuo (Toda la clase): Mantén la interacción llamando a cada alumno por su nombre.`;
@@ -631,7 +709,10 @@ function setupEventListeners() {
         }
     });
 
-    // Eventos de Modal de Bienvenida
+    // Eventos de Tour Guiado y Modales
+    startTourBtn.addEventListener("click", launchGuidedTour);
+    welcomeTourBtn.addEventListener("click", launchGuidedTour);
+
     infoModalBtn.addEventListener("click", openWelcomeModal);
     closeWelcomeModalBtn.addEventListener("click", closeWelcomeModal);
     startLessonBtn.addEventListener("click", closeWelcomeModal);
@@ -828,7 +909,7 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZAR CHECKLIST CON DISTINCIÓN DE CRITERIOS TRANSVERSALES
+// RENDERIZAR CHECKLIST
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
