@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT SIN MENCIÓN DE TIEMPOS NI PUNTOS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON EFECTO CONFETI LOCALIZADO
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -354,6 +354,29 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
+// EFECTO DE CONFETI LOCALIZADO EN EL ELEMENTO PRESIONADO
+function triggerConfettiAtElement(element) {
+    if (typeof window.confetti !== 'function') return;
+
+    let x = 0.5;
+    let y = 0.5;
+
+    if (element && element.getBoundingClientRect) {
+        const rect = element.getBoundingClientRect();
+        x = (rect.left + rect.width / 2) / window.innerWidth;
+        y = (rect.top + rect.height / 2) / window.innerHeight;
+    }
+
+    window.confetti({
+        particleCount: 35,
+        spread: 60,
+        startVelocity: 25,
+        origin: { x, y },
+        colors: ['#2563eb', '#0d9488', '#059669', '#fbbf24', '#7c3aed', '#ec4899'],
+        disableForReducedMotion: true
+    });
+}
+
 // OBTENER TODOS LOS ELEMENTOS PLANOS
 function getAllItems() {
     const list = [];
@@ -592,7 +615,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN TR ANQUILA Y PEDAGÓGICA (SIN TIEMPOS NI PUNTOS PRESIONANTES)
+// CÁLCULO DE RECOMENDACIÓN TR ANQUILA Y PEDAGÓGICA
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -773,8 +796,9 @@ function setupEventListeners() {
 
     assistantResetTimerBtn.addEventListener("click", resetTimer);
 
-    suggestionCompleteBtn.addEventListener("click", () => {
+    suggestionCompleteBtn.addEventListener("click", (e) => {
         if (currentSuggestedItem) {
+            triggerConfettiAtElement(suggestionCompleteBtn);
             toggleItem(currentSuggestedItem.id);
             expandCategory(currentSuggestedItem.categoryKey);
             updateAssistantUI();
@@ -887,13 +911,19 @@ function downloadReportAsTxt() {
     URL.revokeObjectURL(link.href);
 }
 
-// TOGGLE ITEM CHECK
-function toggleItem(id) {
-    if (completedItems.includes(id)) {
-        completedItems = completedItems.filter(itemId => itemId !== id);
-    } else {
+// TOGGLE ITEM CHECK CON CONFETI
+function toggleItem(id, event) {
+    const isNowCompleted = !completedItems.includes(id);
+    
+    if (isNowCompleted) {
         completedItems.push(id);
+        if (event && event.currentTarget) {
+            triggerConfettiAtElement(event.currentTarget);
+        }
+    } else {
+        completedItems = completedItems.filter(itemId => itemId !== id);
     }
+    
     localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedItems));
     render();
     if (isAssistantActive) updateAssistantUI();
@@ -1111,7 +1141,7 @@ function renderChecklistCategories() {
                     toggleBtn.textContent = detailsAccordion.classList.contains("hidden") ? "ℹ️" : "🔼";
                     return;
                 }
-                toggleItem(item.id);
+                toggleItem(item.id, e);
             });
 
             notesTextarea.addEventListener("click", (e) => e.stopPropagation());
