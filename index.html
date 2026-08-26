@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checklist de Observación de la Clase - Tutor List Checker</title>
-    <!-- Font Inter -->
+    <!-- Font Inter & Plus Jakarta Sans for friendly typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
 
-        <!-- HEADER CON BADGES Y ACCIONES -->
+        <!-- HEADER DIVERTIDO Y AMIGABLE -->
         <header class="app-header">
             <div class="header-brand">
-                <div class="logo-badge">T</div>
+                <div class="logo-badge">🚀</div>
                 <div>
-                    <h1>Checklist de Observación de la Clase</h1>
-                    <p class="subtitle">Marca ✓ si el tutor cumplió con el criterio observado.</p>
+                    <h1>Tutor List Checker 🎯</h1>
+                    <p class="subtitle">¡Haz que cada lección de 90 minutos sea épica e inolvidable!</p>
                 </div>
             </div>
 
-            <!-- CHIPS DE PUNTAJE Y PROGRESO LIMPIOS -->
+            <!-- CHIPS DE PUNTAJE Y PROGRESO DIVERTIDOS -->
             <div class="header-stats-wrapper">
                 <div class="stat-badge score-badge" title="Puntaje obtenido / Puntaje total">
                     <span class="stat-icon">🏆</span>
@@ -46,7 +46,7 @@
                     <span>📋</span> <span class="btn-text">Reporte</span>
                 </button>
                 <button id="infoModalBtn" class="btn btn-sm btn-icon" title="Ver información y propósito del sitio">
-                    <span>ℹ️</span>
+                    <span>✨</span>
                 </button>
                 <button id="themeToggle" class="btn btn-sm btn-icon" title="Cambiar Tema" aria-label="Cambiar tema">
                     <span id="themeIcon">🌙</span>
@@ -57,11 +57,11 @@
             </div>
         </header>
 
-        <!-- WIDGET MODOS ASISTENTE DE CLASE (90 MIN) -->
+        <!-- WIDGET MODO ASISTENTE COLORIDO Y DINÁMICO (90 MIN) -->
         <section id="assistantWidget" class="assistant-widget hidden">
             <div class="assistant-header">
                 <div class="assistant-timer-wrap">
-                    <span class="assistant-badge-live">LIVE 90 MIN</span>
+                    <span class="assistant-badge-live">⚡ CO-PILOTO 90 MIN</span>
                     <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
                     <div class="assistant-controls">
                         <button id="assistantPlayPauseBtn" class="btn-play-pause" title="Iniciar/Pausar tiempo">▶️</button>
@@ -78,16 +78,16 @@
             <div class="assistant-suggestion-card" id="assistantSuggestionCard">
                 <div class="suggestion-icon" id="suggestionIcon">🖐️</div>
                 <div class="suggestion-body">
-                    <span class="suggestion-tag" id="suggestionTag">SUGERIDO AHORA</span>
+                    <span class="suggestion-tag" id="suggestionTag">SUGERENCIA EN VIVO</span>
                     <h4 id="suggestionTitle">Saludo y calentamiento</h4>
                     <p id="suggestionReason">Empieza saludando a los alumnos y preguntándoles cómo están (+10 pts).</p>
                 </div>
                 <button id="suggestionCompleteBtn" class="btn btn-sm btn-success-action">
-                    ✓ ¡Cumplido! (+<span id="suggestionPtsText">10</span> pts)
+                    ✓ ¡Cumplido! (+<span id="suggestionPtsText">10</span> pts) 🎉
                 </button>
             </div>
 
-            <!-- BARRA DE TIEMPO VS PACING DE CIERRE -->
+            <!-- BARRA DE TIEMPO COLORIDA -->
             <div class="assistant-timeline-bar">
                 <div id="assistantTimelineProgress" class="timeline-fill"></div>
             </div>
@@ -107,7 +107,7 @@
             <!-- Renderizado dinámico -->
         </div>
 
-        <!-- COMPACT TOOLBAR -->
+        <!-- TOOLBAR DIVERTIDA -->
         <section class="toolbar">
             <div class="search-input-wrapper">
                 <span class="search-icon">🔍</span>
@@ -140,7 +140,7 @@
             <!-- Renderizado dinámico desde script.js -->
         </main>
 
-        <!-- FOOTER PRINCIPAL CON AUTORÍA Y ENLACE DE GITHUB -->
+        <!-- FOOTER PRINCIPAL CON AUTORÍA -->
         <footer class="app-footer">
             <div class="footer-score-box">
                 <span>Puntaje Total: <strong id="footerScoreText">0 / 79 Puntos</strong></span>
@@ -149,7 +149,7 @@
             </div>
 
             <div class="footer-author-box">
-                <span>Desarrollado con ❤️ por <strong>erazoandres</strong></span>
+                <span>Creado con ❤️ por <strong>erazoandres</strong></span>
                 <span class="dot-divider">•</span>
                 <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="github-footer-link" title="Visitar repositorio en GitHub">
                     <svg class="github-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
@@ -162,37 +162,37 @@
 
     </div>
 
-    <!-- MODAL DE BIENVENIDA Y PROPÓSITO REDISEÑADO CON ESTILO PREMIUM -->
+    <!-- MODAL DE BIENVENIDA VIBRANTE Y AMIGABLE -->
     <div id="welcomeModal" class="modal-backdrop hidden">
         <div class="modal-card welcome-modal-card">
             
             <div class="welcome-hero-header">
                 <button id="closeWelcomeModalBtn" class="close-icon-btn" aria-label="Cerrar">&times;</button>
-                <div class="hero-icon-ring">✨</div>
-                <h2>Tutor List Checker</h2>
-                <span class="hero-subtitle-tag">Copiloto Pedagógico & Medidor de Clase</span>
+                <div class="hero-icon-ring">🚀</div>
+                <h2>Tutor List Checker 🎯</h2>
+                <span class="hero-subtitle-tag">¡Tu copiloto para lecciones geniales!</span>
             </div>
 
             <div class="modal-body welcome-modal-body">
                 <p class="welcome-intro-text">
-                    Evalúa, mide y garantiza la calidad pedagógica de tus <strong>clases de 90 minutos</strong>. 
-                    Supervisa los 20 criterios clave, acumula hasta <strong>79 puntos en vivo</strong> y genera reportes al instante.
+                    Mide y potencia la calidad pedagógica de tus <strong>clases de 90 minutos</strong>. 
+                    Verifica los 20 criterios clave, acumula hasta <strong>79 puntos en tiempo real</strong> y genera reportes listos para compartir.
                 </p>
 
                 <div class="welcome-grid-cards">
                     <div class="grid-card">
                         <div class="grid-card-icon">🤖</div>
                         <div class="grid-card-content">
-                            <strong>Asistente en Tiempo Real</strong>
-                            <p>Dosifica el tiempo de la lección recomendándote una acción clave a la vez.</p>
+                            <strong>Copiloto Inteligente</strong>
+                            <p>Dosifica los 90 minutos y te sugiere la mejor acción en cada etapa.</p>
                         </div>
                     </div>
 
                     <div class="grid-card">
                         <div class="grid-card-icon">⭐</div>
                         <div class="grid-card-content">
-                            <strong>Puntuación de Alto Valor</strong>
-                            <p>Destaca con brillo dorado los 6 criterios indispensables de 10 puntos.</p>
+                            <strong>Estrellas Doradas (+10 pts)</strong>
+                            <p>Resalta con brillo especial los 6 criterios indispensables de mayor valor.</p>
                         </div>
                     </div>
                 </div>
@@ -205,25 +205,25 @@
                             </svg>
                         </div>
                         <div>
-                            <span class="author-label-small">PROYECTO OPEN SOURCE POR</span>
+                            <span class="author-label-small">CREADO POR</span>
                             <strong class="author-name-text">@erazoandres</strong>
                         </div>
                     </div>
                     <a href="https://github.com/erazoandres/ListCheckTutor" target="_blank" rel="noopener noreferrer" class="btn-github-link">
-                        Ver Repositorio &rarr;
+                        GitHub Repo &rarr;
                     </a>
                 </div>
             </div>
 
             <div class="welcome-modal-footer">
                 <button id="startLessonBtn" class="btn btn-cta-start">
-                    🚀 ¡Comenzar Evaluación de Lección!
+                    🚀 ¡Empezar Lección!
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE EXPORTACIÓN CON DISEÑO RENOVADO -->
+    <!-- MODAL DE EXPORTACIÓN -->
     <div id="exportModal" class="modal-backdrop hidden">
         <div class="modal-card export-modal-card">
             <div class="modal-header">
