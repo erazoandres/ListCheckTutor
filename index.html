@@ -18,7 +18,7 @@
 
     <div class="app-container">
 
-        <!-- HEADER CON BOTÓN CLARO DE TUTORIAL -->
+        <!-- HEADER CON BOTÓN CLARO DE TUTORIAL Y CONTADOR DE VISITAS -->
         <header class="app-header">
             <div class="header-brand">
                 <div class="logo-badge">🚀</div>
@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            <!-- CHIPS DE PUNTAJE Y PROGRESO -->
+            <!-- CHIPS DE PUNTAJE, PROGRESO Y VISITAS EN VIVO -->
             <div class="header-stats-wrapper">
                 <div class="stat-badge score-badge" title="Puntaje obtenido / Puntaje total">
                     <span class="stat-icon">🏆</span>
@@ -39,6 +39,11 @@
                     <span class="stat-percent" id="progressPercentage">0%</span>
                     <span class="stat-divider">•</span>
                     <span class="stat-count" id="progressText">0 / 20</span>
+                </div>
+
+                <div class="stat-badge visits-badge" title="Visitas totales al sitio web (Firestore)">
+                    <span class="stat-icon">👁️</span>
+                    <span class="stat-value" id="visitCountText">...</span>
                 </div>
             </div>
 
@@ -293,6 +298,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Firebase App & Firestore SDKs (v10.8.0 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <!-- Canvas Confetti CDN Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>

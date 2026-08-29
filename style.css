@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON AUTO-COLAPSO DE CATEGORÍAS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON CONTADOR DE VISITAS
    ========================================================================== */
 
 :root {
@@ -164,12 +164,13 @@ body {
     font-weight: 600;
 }
 
-/* STATS BADGES REFINADOS */
+/* STATS BADGES REFINADOS CON VISITAS */
 .header-stats-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    flex-wrap: wrap;
 }
 
 .stat-badge {
@@ -185,6 +186,19 @@ body {
     line-height: 1;
 }
 
+.stat-badge.visits-badge {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+    color: #0284c7;
+    font-weight: 700;
+}
+
+[data-theme="dark"] .stat-badge.visits-badge {
+    background: rgba(14, 165, 233, 0.18);
+    border-color: rgba(56, 189, 248, 0.35);
+    color: #38bdf8;
+}
+
 .stat-icon {
     font-size: 14px;
     line-height: 1;
@@ -196,6 +210,11 @@ body {
     color: var(--success);
     white-space: nowrap;
     line-height: 1;
+}
+
+.stat-badge.visits-badge .stat-value {
+    color: inherit;
+    font-size: 12px;
 }
 
 .stat-percent {

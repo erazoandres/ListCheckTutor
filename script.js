@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON OBJETIVO AL FINAL Y AUTO-COLAPSO
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON CONTADOR DE VISITAS FIRESTORE
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -279,11 +279,22 @@ const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
 const STORAGE_KEY_MANUAL_EXPANDED = "tutorChecklist_v4_manual_expanded";
 
+// CONFIGURACIÓN DE FIREBASE PARA CONTADOR DE VISITAS EN VIVO
+// Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
+const firebaseConfig = {
+    apiKey: "AIzaSy_TutorListChecker_DefaultKey",
+    authDomain: "tutor-list-checker.firebaseapp.com",
+    projectId: "tutor-list-checker",
+    storageBucket: "tutor-list-checker.appspot.com",
+    messagingSenderId: "100000000000",
+    appId: "1:100000000000:web:tutorlistchecker"
+};
+
 // GESTIÓN DE ESTADO
 let completedItems = [];
 let itemNotes = {};
 let collapsedCategories = [];
-let manualExpandedCategories = []; // Para recordar cuando el usuario expande manualmente una categoría completa
+let manualExpandedCategories = [];
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
 let searchQuery = "";
@@ -307,6 +318,7 @@ const footerScoreText = document.getElementById("footerScoreText");
 const progressMessage = document.getElementById("progressMessage");
 const completedText = document.getElementById("completedText");
 const categoryStatsGrid = document.getElementById("categoryStatsGrid");
+const visitCountText = document.getElementById("visitCountText");
 
 const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearch");
@@ -358,6 +370,55 @@ const closeModalBottomBtn = document.getElementById("closeModalBottomBtn");
 const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
+
+// INICIALIZACIÓN DEL CONTADOR DE VISITAS FIRESTORE EN VIVO
+function initVisitCounter() {
+    if (typeof firebase === "undefined" || !firebase.firestore) {
+        if (visitCountText) visitCountText.textContent = "1 visitas";
+        return;
+    }
+
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.firestore();
+        // Colección: "visitas_list_checker" | Doc: "visitas" | Campo: "count"
+        const visitsDocRef = db.collection("visitas_list_checker").doc("visitas");
+
+        // Registrar incremento único por sesión
+        const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
+        if (!hasVisitedThisSession) {
+            visitsDocRef.set({
+                count: firebase.firestore.FieldValue.increment(1)
+            }, { merge: true }).then(() => {
+                sessionStorage.setItem("tutor_visit_recorded", "true");
+            }).catch(err => {
+                console.warn("Conexión Firestore:", err.message);
+            });
+        }
+
+        // Suscribirse a actualizaciones en tiempo real del campo "count"
+        visitsDocRef.onSnapshot((doc) => {
+            if (doc.exists && doc.data().count !== undefined) {
+                const totalVisits = doc.data().count;
+                if (visitCountText) {
+                    visitCountText.textContent = `${totalVisits.toLocaleString()} visitas`;
+                }
+            } else {
+                if (visitCountText) visitCountText.textContent = "1 visitas";
+            }
+        }, (error) => {
+            console.warn("Escuchador Firestore:", error.message);
+            if (visitCountText) visitCountText.textContent = "1 visitas";
+        });
+
+    } catch (e) {
+        console.warn("Error inicializando visitas Firestore:", e);
+        if (visitCountText) visitCountText.textContent = "1 visitas";
+    }
+}
 
 // EFECTO DE CONFETI LOCALIZADO EN EL ELEMENTO PRESIONADO
 function triggerConfettiAtElement(element) {
@@ -431,6 +492,7 @@ function init() {
     applyTheme(currentTheme);
     setupEventListeners();
     checkWelcomeModal();
+    initVisitCounter();
     render();
 }
 
@@ -473,7 +535,7 @@ function launchGuidedTour() {
                 element: '.app-header',
                 popover: {
                     title: '👋 ¡Bienvenido a Tutor List Checker!',
-                    description: 'Esta es tu barra principal. Aquí verás tu puntaje acumulado en vivo (hasta 79 pts) y el conteo de criterios cumplidos.',
+                    description: 'Esta es tu barra principal. Aquí verás tu puntaje acumulado en vivo (hasta 79 pts), el conteo de criterios y las visitas en tiempo real.',
                     side: 'bottom',
                     align: 'start'
                 }
@@ -1079,7 +1141,6 @@ function renderChecklistCategories() {
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
         
-        // Auto-colapsar si la categoría está 100% completada (a menos que el usuario la expanda manualmente)
         const isManuallyExpanded = manualExpandedCategories.includes(category.categoryKey);
         const isCatCollapsed = isAllCompleted ? !isManuallyExpanded : collapsedCategories.includes(category.categoryKey);
 
