@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON CONTADOR DE VISITAS FIRESTORE
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MANEJO DE PERMISOS FIRESTORE
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -91,7 +91,7 @@ const CRITERIA_DATA = [
                 icon: "✏️",
                 title: "Etapa de práctica presente",
                 item_question: "¿La lección incluyó una etapa clara de práctica del estudiante?",
-                comment: "Otorgar espacio dedicated para que los alumnos apliquen lo aprendido de forma práctica.",
+                comment: "Otorgar espacio dedicado para que los alumnos apliquen lo aprendido de forma práctica.",
                 points: 1,
                 targetMin: 45,
                 isTransversal: false
@@ -278,9 +278,8 @@ const STORAGE_KEY_THEME = "tutorChecklist_v4_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
 
-// CONFIGURACIÓN DE FIREBASE FIRESTORE PARA VISITAS EN VIVO
+// CONFIGURACIÓN DE FIREBASE FIRESTORE
 // Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
-// Puedes definir window.FIREBASE_CONFIG en la página o reemplazar este objeto con tus credenciales reales:
 const firebaseConfig = window.FIREBASE_CONFIG || {
     apiKey: "AIzaSy_TutorListChecker_DefaultKey",
     authDomain: "tutor-list-checker.firebaseapp.com",
@@ -370,10 +369,9 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// INICIALIZACIÓN CON DIAGNÓSTICO Y CONEXIÓN A FIRESTORE
+// INICIALIZACIÓN FIRESTORE CON MANEJO ELEGANTE DE PERMISOS
 function initVisitCounter() {
     if (typeof firebase === "undefined" || !firebase.firestore) {
-        console.warn("⚠️ Firebase SDK no está cargado.");
         if (visitCountText) visitCountText.textContent = "1 visitas";
         return;
     }
@@ -384,10 +382,8 @@ function initVisitCounter() {
         }
 
         const db = firebase.firestore();
-        // Colección: "visitas_list_checker" | Doc: "visitas" | Campo: "count"
         const visitsDocRef = db.collection("visitas_list_checker").doc("visitas");
 
-        // Incrementar visita por sesión
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
         if (!hasVisitedThisSession) {
             visitsDocRef.set({
@@ -395,14 +391,16 @@ function initVisitCounter() {
                 lastVisited: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true }).then(() => {
                 sessionStorage.setItem("tutor_visit_recorded", "true");
-                console.log("✅ Visita registrada correctamente en Firestore (visitas_list_checker -> visitas -> count).");
+                console.log("✅ Visita registrada correctamente en Firestore.");
             }).catch(err => {
-                console.error("❌ Error escribiendo visita en Firestore:", err.code, err.message);
-                console.info("💡 Consejo: Verifica en tu consola de Firebase que las Reglas de Seguridad de Firestore permitan lectura/escritura en la colección 'visitas_list_checker'.");
+                if (err.code === "permission-denied") {
+                    console.warn("🔒 Permiso denegado por Reglas de Seguridad en Firestore Database (tutor-list-checker).");
+                } else {
+                    console.warn("Nota de escritura en Firestore:", err.message);
+                }
             });
         }
 
-        // Escuchar cambios en vivo del contador
         visitsDocRef.onSnapshot((doc) => {
             if (doc.exists && doc.data() && typeof doc.data().count === "number") {
                 const totalVisits = doc.data().count;
@@ -413,12 +411,16 @@ function initVisitCounter() {
                 if (visitCountText) visitCountText.textContent = "1 visitas";
             }
         }, (error) => {
-            console.error("❌ Error leyendo contador de Firestore:", error.message);
+            if (error.code === "permission-denied") {
+                console.warn("🔒 Firestore Rules bloquean la lectura de visitas. Configura las reglas en Firebase Console -> Firestore Database -> Rules.");
+            } else {
+                console.warn("Escuchador Firestore:", error.message);
+            }
             if (visitCountText) visitCountText.textContent = "1 visitas";
         });
 
     } catch (e) {
-        console.error("❌ Excepción en initVisitCounter:", e);
+        console.warn("Excepción inicializando contador visitas:", e);
         if (visitCountText) visitCountText.textContent = "1 visitas";
     }
 }
