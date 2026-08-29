@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON MODO RESILIENTE DE VISITAS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON FIRESTORE REST API (SPRITES LOCKER)
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -278,16 +278,12 @@ const STORAGE_KEY_THEME = "tutorChecklist_v4_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
 
-// CONFIGURACIÓN DE FIREBASE FIRESTORE
-// Reemplaza con tus claves reales de Firebase Console cuando desees conectar Firestore en vivo
-const firebaseConfig = window.FIREBASE_CONFIG || {
-    apiKey: "AIzaSy_TutorListChecker_DefaultKey",
-    authDomain: "tutor-list-checker.firebaseapp.com",
-    projectId: "tutor-list-checker",
-    storageBucket: "tutor-list-checker.appspot.com",
-    messagingSenderId: "100000000000",
-    appId: "1:100000000000:web:tutorlistchecker"
-};
+// ==========================================================================
+// CONTADOR DE VISITAS EN VIVO CON FIRESTORE REST API (PROYECTO: tienda-c69be)
+// Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
+// ==========================================================================
+const FIRESTORE_PROJECT_ID = 'tienda-c69be';
+const FIRESTORE_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents/visitas_list_checker/visitas`;
 
 // GESTIÓN DE ESTADO
 let completedItems = [];
@@ -369,77 +365,53 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// INICIALIZACIÓN HÍBRIDA FIRESTORE CON FALLBACK RESILIENTE
-function initVisitCounter() {
+// CONEXIÓN DIRECTA A FIRESTORE REST API (AL ESTILO DE SPRITES LOCKER)
+async function initVisitCounter() {
     if (!visitCountText) return;
 
-    const isDefaultConfig = firebaseConfig.apiKey.includes("DefaultKey");
-
-    if (isDefaultConfig) {
-        console.info("💡 Usando contador de visitas de respaldo. Para vincular con tu Firebase Console real, reemplaza el objeto firebaseConfig con tus credenciales.");
-        fetchFallbackVisits();
-        return;
-    }
-
-    if (typeof firebase === "undefined" || !firebase.firestore) {
-        fetchFallbackVisits();
-        return;
-    }
-
     try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        // 1. Obtener conteo actual desde Firestore
+        let currentCount = 0;
+        const getRes = await fetch(FIRESTORE_DOC_URL);
+        
+        if (getRes.ok) {
+            const data = await getRes.json();
+            if (data.fields && data.fields.count) {
+                currentCount = Number(data.fields.count.integerValue || data.fields.count.doubleValue || 0);
+            }
         }
 
-        const db = firebase.firestore();
-        const visitsDocRef = db.collection("visitas_list_checker").doc("visitas");
-
+        // 2. Control anti-inflación por sesión de navegador
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
+
         if (!hasVisitedThisSession) {
-            visitsDocRef.set({
-                count: firebase.firestore.FieldValue.increment(1),
-                lastVisited: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).then(() => {
-                sessionStorage.setItem("tutor_visit_recorded", "true");
-                console.log("✅ Visita incrementada exitosamente en Firestore.");
+            currentCount += 1;
+
+            // 3. Incrementar en vivo en Firestore mediante PATCH REST API
+            fetch(`${FIRESTORE_DOC_URL}?updateMask.fieldPaths=count`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fields: {
+                        count: { integerValue: String(currentCount) }
+                    }
+                })
+            }).then(patchRes => {
+                if (patchRes.ok) {
+                    sessionStorage.setItem("tutor_visit_recorded", "true");
+                    console.log(`✅ Visita en vivo registrada exitosamente en Firestore REST API (Count: ${currentCount}).`);
+                }
             }).catch(err => {
-                console.warn("Escribiendo visita Firestore (usando contador resiliente):", err.message);
-                fetchFallbackVisits();
+                console.warn("Nota de actualización en Firestore:", err);
             });
         }
 
-        visitsDocRef.onSnapshot((doc) => {
-            if (doc.exists && doc.data() && typeof doc.data().count === "number") {
-                const totalVisits = doc.data().count;
-                if (visitCountText) {
-                    visitCountText.textContent = `${totalVisits.toLocaleString()} visitas`;
-                }
-            } else {
-                fetchFallbackVisits();
-            }
-        }, (error) => {
-            console.warn("Escuchador Firestore restringido por Reglas de Seguridad. Usando contador de respaldo.");
-            fetchFallbackVisits();
-        });
+        // 4. Mostrar en pantalla
+        visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
 
-    } catch (e) {
-        fetchFallbackVisits();
-    }
-}
-
-// CONTADOR DE VISITAS DE RESPALDO SIEMPRE FUNCIONAL
-function fetchFallbackVisits() {
-    let localVisits = parseInt(localStorage.getItem("tutor_local_visits")) || 124;
-    const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
-    
-    if (!hasVisitedThisSession) {
-        localVisits += 1;
-        localStorage.setItem("tutor_local_visits", localVisits);
-        sessionStorage.setItem("tutor_visit_recorded", "true");
-    }
-
-    if (visitCountText) {
-        visitCountText.textContent = `${localVisits.toLocaleString()} visitas`;
+    } catch (error) {
+        console.warn("Error leyendo contador de visitas Firestore REST API:", error);
+        visitCountText.textContent = `1 visitas`;
     }
 }
 
@@ -515,14 +487,7 @@ function init() {
     setupEventListeners();
     checkWelcomeModal();
     render();
-
-    setTimeout(() => {
-        try {
-            initVisitCounter();
-        } catch (e) {
-            console.warn("Deferred counter:", e);
-        }
-    }, 150);
+    initVisitCounter();
 }
 
 // COMPROBAR Y MOSTRAR MODAL DE BIENVENIDA
