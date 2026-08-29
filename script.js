@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON CONTADOR DE VISITAS FIRESTORE
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT RESTAURADO CON TODAS LAS CATEGORÍAS VISIBLES
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -277,10 +277,8 @@ const STORAGE_KEY_COLLAPSED = "tutorChecklist_v4_collapsed";
 const STORAGE_KEY_THEME = "tutorChecklist_v4_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
-const STORAGE_KEY_MANUAL_EXPANDED = "tutorChecklist_v4_manual_expanded";
 
-// CONFIGURACIÓN DE FIREBASE PARA CONTADOR DE VISITAS EN VIVO
-// Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
+// CONFIGURACIÓN DE FIREBASE FIRESTORE EN VIVO
 const firebaseConfig = {
     apiKey: "AIzaSy_TutorListChecker_DefaultKey",
     authDomain: "tutor-list-checker.firebaseapp.com",
@@ -294,7 +292,6 @@ const firebaseConfig = {
 let completedItems = [];
 let itemNotes = {};
 let collapsedCategories = [];
-let manualExpandedCategories = [];
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
 let searchQuery = "";
@@ -371,7 +368,7 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// INICIALIZACIÓN DEL CONTADOR DE VISITAS FIRESTORE EN VIVO
+// INICIALIZACIÓN DE CONTADOR DE VISITAS FIRESTORE
 function initVisitCounter() {
     if (typeof firebase === "undefined" || !firebase.firestore) {
         if (visitCountText) visitCountText.textContent = "1 visitas";
@@ -384,10 +381,8 @@ function initVisitCounter() {
         }
 
         const db = firebase.firestore();
-        // Colección: "visitas_list_checker" | Doc: "visitas" | Campo: "count"
         const visitsDocRef = db.collection("visitas_list_checker").doc("visitas");
 
-        // Registrar incremento único por sesión
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
         if (!hasVisitedThisSession) {
             visitsDocRef.set({
@@ -395,11 +390,10 @@ function initVisitCounter() {
             }, { merge: true }).then(() => {
                 sessionStorage.setItem("tutor_visit_recorded", "true");
             }).catch(err => {
-                console.warn("Conexión Firestore:", err.message);
+                console.warn("Firestore increment:", err.message);
             });
         }
 
-        // Suscribirse a actualizaciones en tiempo real del campo "count"
         visitsDocRef.onSnapshot((doc) => {
             if (doc.exists && doc.data().count !== undefined) {
                 const totalVisits = doc.data().count;
@@ -410,17 +404,17 @@ function initVisitCounter() {
                 if (visitCountText) visitCountText.textContent = "1 visitas";
             }
         }, (error) => {
-            console.warn("Escuchador Firestore:", error.message);
+            console.warn("Firestore listener:", error.message);
             if (visitCountText) visitCountText.textContent = "1 visitas";
         });
 
     } catch (e) {
-        console.warn("Error inicializando visitas Firestore:", e);
+        console.warn("Error contador visitas:", e);
         if (visitCountText) visitCountText.textContent = "1 visitas";
     }
 }
 
-// EFECTO DE CONFETI LOCALIZADO EN EL ELEMENTO PRESIONADO
+// EFECTO DE CONFETI LOCALIZADO
 function triggerConfettiAtElement(element) {
     if (typeof window.confetti !== 'function') return;
 
@@ -472,7 +466,6 @@ function loadAndSanitizeStorage() {
 
     itemNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {};
     collapsedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_COLLAPSED)) || [];
-    manualExpandedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_MANUAL_EXPANDED)) || [];
 }
 
 // CALCULAR PUNTAJE TOTAL MÁXIMO Y OBTENIDO
@@ -486,14 +479,22 @@ function calculateScores() {
     return { maxScore, earnedScore };
 }
 
-// INICIALIZACIÓN
+// INICIALIZACIÓN PRINCIPAL GARA NTIZADA
 function init() {
     loadAndSanitizeStorage();
     applyTheme(currentTheme);
     setupEventListeners();
     checkWelcomeModal();
-    initVisitCounter();
     render();
+
+    // Contador diferido para asegurar que la UI responda instantáneamente
+    setTimeout(() => {
+        try {
+            initVisitCounter();
+        } catch (e) {
+            console.warn("Deffered visit counter note:", e);
+        }
+    }, 150);
 }
 
 // COMPROBAR Y MOSTRAR MODAL DE BIENVENIDA
@@ -607,23 +608,14 @@ function expandCategory(catKey) {
     }
 }
 
-// TOGGLE COLAPSO EN CATEGORÍA
-function handleCategoryHeaderClick(catKey, isAllCompleted) {
-    if (isAllCompleted) {
-        if (manualExpandedCategories.includes(catKey)) {
-            manualExpandedCategories = manualExpandedCategories.filter(k => k !== catKey);
-        } else {
-            manualExpandedCategories.push(catKey);
-        }
-        localStorage.setItem(STORAGE_KEY_MANUAL_EXPANDED, JSON.stringify(manualExpandedCategories));
+// TOGGLE COLAPSO EN CATEGORÍA (CONTROL MANUAL CLARO)
+function handleCategoryHeaderClick(catKey) {
+    if (collapsedCategories.includes(catKey)) {
+        collapsedCategories = collapsedCategories.filter(k => k !== catKey);
     } else {
-        if (collapsedCategories.includes(catKey)) {
-            collapsedCategories = collapsedCategories.filter(k => k !== catKey);
-        } else {
-            collapsedCategories.push(catKey);
-        }
-        localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+        collapsedCategories.push(catKey);
     }
+    localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
     render();
 }
 
@@ -707,7 +699,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN TR ANQUILA Y PEDAGÓGICA
+// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -848,7 +840,6 @@ function updateAssistantUI() {
     assistantPhaseBadge.textContent = phaseName;
     updatePhaseStepper(phaseNum);
 
-    // Calcular criterios de la categoría activa
     const catObject = CRITERIA_DATA.find(c => c.categoryKey === currentCategoryKey);
     if (catObject) {
         const totalCatItems = catObject.items.length;
@@ -897,7 +888,6 @@ function setupEventListeners() {
         }
     });
 
-    // Eventos de Tour Guiado y Modales
     startTourBtn.addEventListener("click", launchGuidedTour);
     welcomeTourBtn.addEventListener("click", launchGuidedTour);
 
@@ -958,7 +948,6 @@ function setupEventListeners() {
             completedItems = [];
             itemNotes = {};
             collapsedCategories = [];
-            manualExpandedCategories = [];
             resetTimer();
             isAssistantActive = false;
             document.body.classList.remove("assistant-focus-active");
@@ -971,7 +960,6 @@ function setupEventListeners() {
             localStorage.removeItem(STORAGE_KEY_COMPLETED);
             localStorage.removeItem(STORAGE_KEY_NOTES);
             localStorage.removeItem(STORAGE_KEY_COLLAPSED);
-            localStorage.removeItem(STORAGE_KEY_MANUAL_EXPANDED);
             render();
         }
     });
@@ -990,13 +978,12 @@ function closeModal() {
     exportModal.classList.add("hidden");
 }
 
-// DESCARGAR REPORTE EN FORMATO .TXT
 function downloadReportAsTxt() {
     const reportText = reportTextarea.value;
     if (!reportText) return;
 
     const now = new Date();
-    const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
+    const dateStr = now.toISOString().split("T")[0];
     const filename = `Reporte_Observacion_Clase_${dateStr}.txt`;
 
     const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
@@ -1009,7 +996,6 @@ function downloadReportAsTxt() {
     URL.revokeObjectURL(link.href);
 }
 
-// TOGGLE ITEM CHECK CON CONFETI
 function toggleItem(id, event) {
     const isNowCompleted = !completedItems.includes(id);
     
@@ -1027,13 +1013,12 @@ function toggleItem(id, event) {
     if (isAssistantActive) updateAssistantUI();
 }
 
-// SAVE NOTE
 function saveNote(id, noteContent) {
     itemNotes[id] = noteContent;
     localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(itemNotes));
 }
 
-// RENDERIZADO PRINCIPAL
+// RENDERIZADO PRINCIPAL DE CHECKLIST
 function render() {
     const allItems = getAllItems();
     const totalCount = allItems.length;
@@ -1050,7 +1035,6 @@ function render() {
     if (isAssistantActive) updateAssistantUI();
 }
 
-// ACTUALIZAR PUNTAJE Y BARRA DE PROGRESO
 function updateProgressUI(total, completed) {
     const { maxScore, earnedScore } = calculateScores();
 
@@ -1069,7 +1053,6 @@ function updateProgressUI(total, completed) {
     else progressMessage.textContent = "🎉 ¡100% Excelente lección! Puntaje máximo alcanzado.";
 }
 
-// RENDERIZAR TIRA DE CATEGORÍAS
 function renderCategoryStrip() {
     categoryStatsGrid.innerHTML = "";
 
@@ -1110,7 +1093,7 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZAR CHECKLIST CON OCULTAMIENTO AUTOMÁTICO DE CATEGORÍAS COMPLETADAS
+// RENDERIZADO VISIBLE DE TODAS LAS CATEGORÍAS
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
@@ -1141,8 +1124,8 @@ function renderChecklistCategories() {
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
         
-        const isManuallyExpanded = manualExpandedCategories.includes(category.categoryKey);
-        const isCatCollapsed = isAllCompleted ? !isManuallyExpanded : collapsedCategories.includes(category.categoryKey);
+        // Las categorías permanecen 100% visibles por defecto (sólo se colapsan si el usuario lo decide activamente)
+        const isCatCollapsed = collapsedCategories.includes(category.categoryKey);
 
         const categoryGroup = document.createElement("div");
         categoryGroup.className = `category-group ${isAllCompleted ? "category-completed" : ""}`;
@@ -1152,7 +1135,7 @@ function renderChecklistCategories() {
         categoryHeader.setAttribute("title", isCatCollapsed ? "Haz clic para desplegar" : "Haz clic para colapsar");
 
         const statusBadgeHtml = isAllCompleted 
-            ? `<span class="category-completed-badge">✓ Completada</span>`
+            ? `<span class="category-completed-badge">✓ Completada (${catDoneCount}/${category.items.length})</span>`
             : `<span class="category-count">${catDoneCount} / ${category.items.length}</span>`;
 
         categoryHeader.innerHTML = `
@@ -1167,13 +1150,13 @@ function renderChecklistCategories() {
         `;
 
         categoryHeader.addEventListener("click", () => {
-            handleCategoryHeaderClick(category.categoryKey, isAllCompleted);
+            handleCategoryHeaderClick(category.categoryKey);
         });
 
         categoryGroup.appendChild(categoryHeader);
 
         const itemsContainer = document.createElement("div");
-        itemsContainer.className = `category-items ${isCatCollapsed ? "auto-collapsed hidden" : ""}`;
+        itemsContainer.className = `category-items ${isCatCollapsed ? "hidden" : ""}`;
 
         filteredItems.forEach(item => {
             const isChecked = completedItems.includes(item.id);
