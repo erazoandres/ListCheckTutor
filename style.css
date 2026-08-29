@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON AUTO-COLAPSO DE CATEGORÍAS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON HERRAMIENTA DE SPRITES Y RECORTADOR
    ========================================================================== */
 
 :root {
@@ -1215,6 +1215,312 @@ body.assistant-focus-active .assistant-widget {
     border-color: var(--primary);
 }
 
+/* ==========================================================================
+   HERRAMIENTA INTERACTIVA DE SPRITES, RECORTADOR Y PREVISUALIZACIÓN DE JUEGO
+   ========================================================================== */
+
+.sprite-modal-card {
+    max-width: 820px;
+    width: 95%;
+}
+
+.sprite-modal-body {
+    padding: 16px 20px;
+}
+
+.sprite-stepper-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--bg-main);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.sprite-step-tab {
+    flex: 1;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.sprite-step-tab.active {
+    background: var(--bg-card);
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.upload-dropzone-box {
+    border: 2px dashed var(--primary);
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 14px;
+}
+
+.upload-dropzone-box:hover {
+    background: #dbeafe;
+    border-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.dropzone-icon {
+    font-size: 38px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.upload-dropzone-box strong {
+    font-size: 14px;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.upload-dropzone-box p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.crop-area-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.crop-instruction-banner {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.crop-canvas-container {
+    background: #0f172a;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    max-height: 380px;
+    position: relative;
+}
+
+.crop-canvas-container canvas {
+    max-width: 100%;
+    max-height: 380px;
+    cursor: crosshair;
+}
+
+.crop-actions-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* PASO 2: REDIMENSIONAR & VISUALIZAR EN FONDO DE JUEGO */
+.background-selector-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    background: var(--bg-main);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.bar-label {
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.preset-bg-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.bg-preset-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 14px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.bg-preset-btn:hover, .bg-preset-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+.custom-bg-label {
+    margin-left: auto;
+}
+
+.size-stats-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+    background: linear-gradient(135deg, #1e3a8a, #0d9488);
+    color: #ffffff;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    font-size: 12px;
+    flex-wrap: wrap;
+}
+
+.stat-box-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-lbl {
+    opacity: 0.85;
+}
+
+.highlight-stat strong {
+    color: #fbbf24;
+    font-size: 13px;
+}
+
+.stat-box-divider {
+    opacity: 0.4;
+}
+
+.game-stage-wrapper {
+    position: relative;
+    background: #090d16;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 2px solid var(--border-color);
+}
+
+.stage-canvas-container {
+    width: 100%;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage-canvas-container canvas {
+    max-width: 100%;
+    max-height: 320px;
+    cursor: grab;
+}
+
+.stage-canvas-container canvas:active {
+    cursor: grabbing;
+}
+
+.stage-overlay-hint {
+    background: rgba(15, 23, 42, 0.85);
+    color: #cbd5e1;
+    font-size: 11px;
+    padding: 6px 12px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resize-controls-card {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+}
+
+.control-row-slider {
+    margin-bottom: 10px;
+}
+
+.control-row-slider label {
+    font-size: 12px;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.slider-input {
+    width: 100%;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.control-inputs-flex {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.input-unit-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.number-input {
+    width: 75px;
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    color: var(--text-primary);
+}
+
+.checkbox-aspect-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.step2-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
 /* MODALES Y FOOTER DE ELECCIÓN DE TUTORIAL */
 .modal-backdrop {
     position: fixed;
@@ -1585,4 +1891,8 @@ body.assistant-focus-active .assistant-widget {
     .welcome-author-banner { flex-direction: column; align-items: stretch; text-align: center; }
     .author-left { justify-content: center; }
     .btn-github-link { width: 100%; text-align: center; }
+    .size-stats-banner { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .stat-box-divider { display: none; }
+    .step2-footer-actions { flex-direction: column; }
+    .step2-footer-actions button { width: 100%; }
 }

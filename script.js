@@ -1,5 +1,6 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON OBJETIVO AL FINAL Y AUTO-COLAPSO
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON HERRAMIENTA DE RECORTADO,
+   REDIMENSIÓN Y PREVISUALIZACIÓN DE SPRITES EN FONDO DE JUEGO
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -283,7 +284,7 @@ const STORAGE_KEY_MANUAL_EXPANDED = "tutorChecklist_v4_manual_expanded";
 let completedItems = [];
 let itemNotes = {};
 let collapsedCategories = [];
-let manualExpandedCategories = []; // Para recordar cuando el usuario expande manualmente una categoría completa
+let manualExpandedCategories = [];
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
 let searchQuery = "";
@@ -359,6 +360,61 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
+// HERRAMIENTA DE RECORTADO & REDIMENSIÓN DE SPRITE
+const spriteToolBtn = document.getElementById("spriteToolBtn");
+const spriteToolModal = document.getElementById("spriteToolModal");
+const closeSpriteModalBtn = document.getElementById("closeSpriteModalBtn");
+const step1Tab = document.getElementById("step1Tab");
+const step2Tab = document.getElementById("step2Tab");
+const spriteStep1Content = document.getElementById("spriteStep1Content");
+const spriteStep2Content = document.getElementById("spriteStep2Content");
+
+const dropzoneBox = document.getElementById("dropzoneBox");
+const spriteFileInput = document.getElementById("spriteFileInput");
+const cropAreaWrapper = document.getElementById("cropAreaWrapper");
+const cropCanvas = document.getElementById("cropCanvas");
+const executeCropBtn = document.getElementById("executeCropBtn");
+
+const gameStageCanvas = document.getElementById("gameStageCanvas");
+const presetBgButtons = document.querySelectorAll(".bg-preset-btn");
+const customBgInput = document.getElementById("customBgInput");
+
+const spriteDimensionsText = document.getElementById("spriteDimensionsText");
+const stageDimensionsText = document.getElementById("stageDimensionsText");
+const spritePercentageText = document.getElementById("spritePercentageText");
+
+const scaleSlider = document.getElementById("scaleSlider");
+const scaleValText = document.getElementById("scaleValText");
+const spriteWidthInput = document.getElementById("spriteWidthInput");
+const spriteHeightInput = document.getElementById("spriteHeightInput");
+const aspectRatioCheck = document.getElementById("aspectRatioCheck");
+const resetSizeBtn = document.getElementById("resetSizeBtn");
+const backToCropBtn = document.getElementById("backToCropBtn");
+const downloadSpriteBtn = document.getElementById("downloadSpriteBtn");
+
+// ESTADO INTERACTIVO DE RECORTADO & ESCALA
+let spriteCropState = {
+    originalImage: null,
+    cropBox: { x: 50, y: 50, width: 200, height: 200 },
+    isDragging: false,
+    isResizingHandle: null,
+    dragStart: { x: 0, y: 0 }
+};
+
+let spriteResizeState = {
+    croppedImage: null,
+    bgType: "space", // space, platform, scratch, grid, custom
+    customBgImage: null,
+    spritePos: { x: 300, y: 200, width: 120, height: 120 },
+    baseWidth: 120,
+    baseHeight: 120,
+    stageWidth: 800,
+    stageHeight: 600,
+    isDragging: false,
+    isResizingHandle: null,
+    dragStart: { x: 0, y: 0 }
+};
+
 // EFECTO DE CONFETI LOCALIZADO EN EL ELEMENTO PRESIONADO
 function triggerConfettiAtElement(element) {
     if (typeof window.confetti !== 'function') return;
@@ -430,6 +486,7 @@ function init() {
     loadAndSanitizeStorage();
     applyTheme(currentTheme);
     setupEventListeners();
+    setupSpriteTool();
     checkWelcomeModal();
     render();
 }
@@ -483,6 +540,15 @@ function launchGuidedTour() {
                 popover: {
                     title: '🤖 Modo Asistente / 🎮 Modo Manual',
                     description: 'Conmuta entre el Copiloto Inteligente de 90 min y el Modo Manual Libre con animación de giro orbital.',
+                    side: 'bottom',
+                    align: 'center'
+                }
+            },
+            {
+                element: '#spriteToolBtn',
+                popover: {
+                    title: '🖼️ Herramienta de Sprites para Juegos',
+                    description: 'Recorta, redimensiona y visualiza gráficamente la escala exacta de los personajes en relación al fondo del juego.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -645,7 +711,7 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN TR ANQUILA Y PEDAGÓGICA
+// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA EN VIVO
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
@@ -786,7 +852,6 @@ function updateAssistantUI() {
     assistantPhaseBadge.textContent = phaseName;
     updatePhaseStepper(phaseNum);
 
-    // Calcular criterios de la categoría activa
     const catObject = CRITERIA_DATA.find(c => c.categoryKey === currentCategoryKey);
     if (catObject) {
         const totalCatItems = catObject.items.length;
@@ -811,140 +876,526 @@ function updateAssistantUI() {
     }
 }
 
-// EVENTOS DE LA APLICACIÓN
-function setupEventListeners() {
-    themeToggle.addEventListener("click", () => {
-        applyTheme(currentTheme === "light" ? "dark" : "light");
+// ==========================================================================
+// LÓGICA INTERACTIVA DE RECORTADO, REDIMENSIÓN Y DIBUJO DE SPRITE EN FONDO DE JUEGO
+// ==========================================================================
+
+function setupSpriteTool() {
+    spriteToolBtn.addEventListener("click", () => {
+        spriteToolModal.classList.remove("hidden");
+        switchSpriteStep(1);
     });
 
-    assistantToggleBtn.addEventListener("click", toggleAssistantMode);
-
-    assistantPlayPauseBtn.addEventListener("click", () => {
-        if (isTimerRunning) pauseTimer();
-        else startTimer();
+    closeSpriteModalBtn.addEventListener("click", () => {
+        spriteToolModal.classList.add("hidden");
     });
 
-    assistantResetTimerBtn.addEventListener("click", resetTimer);
+    step1Tab.addEventListener("click", () => switchSpriteStep(1));
+    step2Tab.addEventListener("click", () => switchSpriteStep(2));
 
-    suggestionCompleteBtn.addEventListener("click", (e) => {
-        if (currentSuggestedItem) {
-            triggerConfettiAtElement(suggestionCompleteBtn);
-            toggleItem(currentSuggestedItem.id);
-            expandCategory(currentSuggestedItem.categoryKey);
-            updateAssistantUI();
+    dropzoneBox.addEventListener("click", () => spriteFileInput.click());
+
+    dropzoneBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzoneBox.style.borderColor = "#2563eb";
+        dropzoneBox.style.background = "#dbeafe";
+    });
+
+    dropzoneBox.addEventListener("dragleave", () => {
+        dropzoneBox.style.borderColor = "";
+        dropzoneBox.style.background = "";
+    });
+
+    dropzoneBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropzoneBox.style.borderColor = "";
+        dropzoneBox.style.background = "";
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleImageUpload(e.dataTransfer.files[0]);
         }
     });
 
-    // Eventos de Tour Guiado y Modales
-    startTourBtn.addEventListener("click", launchGuidedTour);
-    welcomeTourBtn.addEventListener("click", launchGuidedTour);
-
-    infoModalBtn.addEventListener("click", openWelcomeModal);
-    closeWelcomeModalBtn.addEventListener("click", closeWelcomeModal);
-    startLessonBtn.addEventListener("click", closeWelcomeModal);
-    welcomeModal.addEventListener("click", (e) => {
-        if (e.target === welcomeModal) closeWelcomeModal();
+    spriteFileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+            handleImageUpload(e.target.files[0]);
+        }
     });
 
-    searchInput.addEventListener("input", (e) => {
-        searchQuery = e.target.value.toLowerCase().trim();
-        clearSearchBtn.classList.toggle("hidden", searchQuery.length === 0);
-        render();
-    });
+    executeCropBtn.addEventListener("click", executeCropAndProceed);
 
-    clearSearchBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        searchQuery = "";
-        clearSearchBtn.classList.add("hidden");
-        render();
-    });
-
-    filterTabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            filterTabs.forEach(t => t.classList.remove("active"));
-            tab.classList.add("active");
-            activeStatusFilter = tab.getAttribute("data-filter");
-            render();
+    // Eventos de control de Redimensión en Paso 2
+    presetBgButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            presetBgButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            spriteResizeState.bgType = btn.getAttribute("data-bg");
+            if (spriteResizeState.bgType === "scratch") {
+                spriteResizeState.stageWidth = 480;
+                spriteResizeState.stageHeight = 360;
+            } else {
+                spriteResizeState.stageWidth = 800;
+                spriteResizeState.stageHeight = 600;
+            }
+            renderGameStage();
         });
     });
 
-    categoryFilterSelect.addEventListener("change", (e) => {
-        activeCategoryFilter = e.target.value;
-        if (activeCategoryFilter !== "all") {
-            expandCategory(activeCategoryFilter);
-        } else {
-            collapsedCategories = [];
-            localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+    customBgInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    spriteResizeState.bgType = "custom";
+                    spriteResizeState.customBgImage = img;
+                    spriteResizeState.stageWidth = img.width || 800;
+                    spriteResizeState.stageHeight = img.height || 600;
+                    presetBgButtons.forEach(b => b.classList.remove("active"));
+                    renderGameStage();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
         }
-        render();
     });
 
-    toggleExpandBtn.addEventListener("click", () => {
-        isExpandedAll = !isExpandedAll;
-        expandIcon.textContent = isExpandedAll ? "📖" : "📘";
-        expandText.textContent = isExpandedAll ? "Ocultar" : "Detalles";
+    scaleSlider.addEventListener("input", (e) => {
+        const scalePct = parseInt(e.target.value);
+        scaleValText.textContent = `${scalePct}%`;
         
-        if (isExpandedAll) {
-            collapsedCategories = [];
-            localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+        const newW = Math.round(spriteResizeState.baseWidth * (scalePct / 100));
+        const newH = Math.round(spriteResizeState.baseHeight * (scalePct / 100));
+        
+        spriteResizeState.spritePos.width = Math.max(10, newW);
+        spriteResizeState.spritePos.height = Math.max(10, newH);
+        
+        spriteWidthInput.value = spriteResizeState.spritePos.width;
+        spriteHeightInput.value = spriteResizeState.spritePos.height;
+        
+        renderGameStage();
+    });
+
+    spriteWidthInput.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value) || 10;
+        spriteResizeState.spritePos.width = val;
+        if (aspectRatioCheck.checked && spriteResizeState.baseWidth > 0) {
+            const ratio = spriteResizeState.baseHeight / spriteResizeState.baseWidth;
+            spriteResizeState.spritePos.height = Math.round(val * ratio);
+            spriteHeightInput.value = spriteResizeState.spritePos.height;
         }
-        render();
+        updateScaleSliderFromDimensions();
+        renderGameStage();
     });
 
-    resetBtn.addEventListener("click", () => {
-        if (confirm("¿Estás seguro de reiniciar a 0 toda la checklist y las notas de la lección?")) {
-            completedItems = [];
-            itemNotes = {};
-            collapsedCategories = [];
-            manualExpandedCategories = [];
-            resetTimer();
-            isAssistantActive = false;
-            document.body.classList.remove("assistant-focus-active");
-            assistantWidget.classList.add("hidden");
-            assistantToggleBtn.classList.remove("active");
-            
-            if (assistantIcon) assistantIcon.textContent = "🤖";
-            if (assistantBtnText) assistantBtnText.textContent = "Modo Asistente";
-
-            localStorage.removeItem(STORAGE_KEY_COMPLETED);
-            localStorage.removeItem(STORAGE_KEY_NOTES);
-            localStorage.removeItem(STORAGE_KEY_COLLAPSED);
-            localStorage.removeItem(STORAGE_KEY_MANUAL_EXPANDED);
-            render();
+    spriteHeightInput.addEventListener("input", (e) => {
+        const val = parseInt(e.target.value) || 10;
+        spriteResizeState.spritePos.height = val;
+        if (aspectRatioCheck.checked && spriteResizeState.baseHeight > 0) {
+            const ratio = spriteResizeState.baseWidth / spriteResizeState.baseHeight;
+            spriteResizeState.spritePos.width = Math.round(val * ratio);
+            spriteWidthInput.value = spriteResizeState.spritePos.width;
         }
+        updateScaleSliderFromDimensions();
+        renderGameStage();
     });
 
-    exportBtn.addEventListener("click", openExportModal);
-    closeModalBtn.addEventListener("click", closeModal);
-    closeModalBottomBtn.addEventListener("click", closeModal);
-    exportModal.addEventListener("click", (e) => {
-        if (e.target === exportModal) closeModal();
+    resetSizeBtn.addEventListener("click", () => {
+        spriteResizeState.spritePos.width = spriteResizeState.baseWidth;
+        spriteResizeState.spritePos.height = spriteResizeState.baseHeight;
+        scaleSlider.value = 100;
+        scaleValText.textContent = "100%";
+        spriteWidthInput.value = spriteResizeState.baseWidth;
+        spriteHeightInput.value = spriteResizeState.baseHeight;
+        renderGameStage();
     });
-    copyModalBtn.addEventListener("click", copyReportToClipboard);
-    downloadTxtBtn.addEventListener("click", downloadReportAsTxt);
+
+    backToCropBtn.addEventListener("click", () => switchSpriteStep(1));
+    downloadSpriteBtn.addEventListener("click", downloadAdjustedSpritePNG);
+
+    setupCropCanvasMouseEvents();
+    setupGameStageMouseEvents();
 }
 
-function closeModal() {
-    exportModal.classList.add("hidden");
+function switchSpriteStep(stepNum) {
+    if (stepNum === 1) {
+        step1Tab.classList.add("active");
+        step2Tab.classList.remove("active");
+        spriteStep1Content.classList.remove("hidden");
+        spriteStep2Content.classList.add("hidden");
+    } else {
+        if (!spriteResizeState.croppedImage) {
+            alert("Primero carga y recorta una imagen en el Paso 1.");
+            return;
+        }
+        step1Tab.classList.remove("active");
+        step2Tab.classList.add("active");
+        spriteStep1Content.classList.add("hidden");
+        spriteStep2Content.classList.remove("hidden");
+        renderGameStage();
+    }
 }
 
-// DESCARGAR REPORTE EN FORMATO .TXT
-function downloadReportAsTxt() {
-    const reportText = reportTextarea.value;
-    if (!reportText) return;
+function handleImageUpload(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            spriteCropState.originalImage = img;
+            cropAreaWrapper.classList.remove("hidden");
+            dropzoneBox.classList.add("hidden");
+            initCropCanvas();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 
-    const now = new Date();
-    const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
-    const filename = `Reporte_Observacion_Clase_${dateStr}.txt`;
+function initCropCanvas() {
+    const img = spriteCropState.originalImage;
+    if (!img) return;
 
-    const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
+    cropCanvas.width = img.width;
+    cropCanvas.height = img.height;
+
+    // Inicializar rectángulo de recorte al 80% centrado
+    const marginW = Math.round(img.width * 0.1);
+    const marginH = Math.round(img.height * 0.1);
+    spriteCropState.cropBox = {
+        x: marginW,
+        y: marginH,
+        width: Math.max(40, img.width - marginW * 2),
+        height: Math.max(40, img.height - marginH * 2)
+    };
+
+    drawCropCanvas();
+}
+
+function drawCropCanvas() {
+    const img = spriteCropState.originalImage;
+    const ctx = cropCanvas.getContext("2d");
+    if (!img || !ctx) return;
+
+    ctx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+    ctx.drawImage(img, 0, 0);
+
+    const cb = spriteCropState.cropBox;
+
+    // Fondo semitransparente oscuro fuera del crop
+    ctx.fillStyle = "rgba(15, 23, 42, 0.65)";
+    ctx.fillRect(0, 0, cropCanvas.width, cb.y);
+    ctx.fillRect(0, cb.y + cb.height, cropCanvas.width, cropCanvas.height - (cb.y + cb.height));
+    ctx.fillRect(0, cb.y, cb.x, cb.height);
+    ctx.fillRect(cb.x + cb.width, cb.y, cropCanvas.width - (cb.x + cb.width), cb.height);
+
+    // Borde brillante del recuadro
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(cb.x, cb.y, cb.width, cb.height);
+
+    // Esquinas ajustables de arrastre
+    const handleSize = 10;
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 2;
+
+    const handles = [
+        { x: cb.x, y: cb.y },
+        { x: cb.x + cb.width, y: cb.y },
+        { x: cb.x, y: cb.y + cb.height },
+        { x: cb.x + cb.width, y: cb.y + cb.height }
+    ];
+
+    handles.forEach(h => {
+        ctx.beginPath();
+        ctx.arc(h.x, h.y, handleSize / 2 + 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    });
+}
+
+function setupCropCanvasMouseEvents() {
+    let isDown = false;
+    let activeCorner = null;
+
+    function getCanvasCoords(e) {
+        const rect = cropCanvas.getBoundingClientRect();
+        const scaleX = cropCanvas.width / rect.width;
+        const scaleY = cropCanvas.height / rect.height;
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
+    }
+
+    cropCanvas.addEventListener("mousedown", (e) => {
+        const pt = getCanvasCoords(e);
+        const cb = spriteCropState.cropBox;
+        const radius = 20;
+
+        // Comprobar esquinas
+        if (Math.hypot(pt.x - cb.x, pt.y - cb.y) < radius) activeCorner = "tl";
+        else if (Math.hypot(pt.x - (cb.x + cb.width), pt.y - cb.y) < radius) activeCorner = "tr";
+        else if (Math.hypot(pt.x - cb.x, pt.y - (cb.y + cb.height)) < radius) activeCorner = "bl";
+        else if (Math.hypot(pt.x - (cb.x + cb.width), pt.y - (cb.y + cb.height)) < radius) activeCorner = "br";
+        else if (pt.x >= cb.x && pt.x <= cb.x + cb.width && pt.y >= cb.y && pt.y <= cb.y + cb.height) {
+            activeCorner = "move";
+            spriteCropState.dragStart = { x: pt.x - cb.x, y: pt.y - cb.y };
+        } else {
+            activeCorner = null;
+        }
+
+        if (activeCorner) isDown = true;
+    });
+
+    cropCanvas.addEventListener("mousemove", (e) => {
+        if (!isDown || !activeCorner) return;
+        const pt = getCanvasCoords(e);
+        const cb = spriteCropState.cropBox;
+
+        if (activeCorner === "move") {
+            cb.x = Math.max(0, Math.min(cropCanvas.width - cb.width, pt.x - spriteCropState.dragStart.x));
+            cb.y = Math.max(0, Math.min(cropCanvas.height - cb.height, pt.y - spriteCropState.dragStart.y));
+        } else if (activeCorner === "br") {
+            cb.width = Math.max(30, Math.min(cropCanvas.width - cb.x, pt.x - cb.x));
+            cb.height = Math.max(30, Math.min(cropCanvas.height - cb.y, pt.y - cb.y));
+        } else if (activeCorner === "tl") {
+            const newW = cb.x + cb.width - pt.x;
+            const newH = cb.y + cb.height - pt.y;
+            if (newW > 30 && pt.x >= 0) { cb.width = newW; cb.x = pt.x; }
+            if (newH > 30 && pt.y >= 0) { cb.height = newH; cb.y = pt.y; }
+        }
+
+        drawCropCanvas();
+    });
+
+    window.addEventListener("mouseup", () => {
+        isDown = false;
+        activeCorner = null;
+    });
+}
+
+function executeCropAndProceed() {
+    const cb = spriteCropState.cropBox;
+    const offCanvas = document.createElement("canvas");
+    offCanvas.width = cb.width;
+    offCanvas.height = cb.height;
+    const ctx = offCanvas.getContext("2d");
+
+    ctx.drawImage(spriteCropState.originalImage, cb.x, cb.y, cb.width, cb.height, 0, 0, cb.width, cb.height);
+
+    const croppedImg = new Image();
+    croppedImg.onload = () => {
+        spriteResizeState.croppedImage = croppedImg;
+        spriteResizeState.baseWidth = cb.width;
+        spriteResizeState.baseHeight = cb.height;
+        spriteResizeState.spritePos = {
+            x: Math.round((spriteResizeState.stageWidth - cb.width) / 2),
+            y: Math.round((spriteResizeState.stageHeight - cb.height) / 2),
+            width: cb.width,
+            height: cb.height
+        };
+
+        scaleSlider.value = 100;
+        scaleValText.textContent = "100%";
+        spriteWidthInput.value = cb.width;
+        spriteHeightInput.value = cb.height;
+
+        triggerConfettiAtElement(executeCropBtn);
+        switchSpriteStep(2);
+    };
+    croppedImg.src = offCanvas.toDataURL("image/png");
+}
+
+function updateScaleSliderFromDimensions() {
+    if (spriteResizeState.baseWidth > 0) {
+        const pct = Math.round((spriteResizeState.spritePos.width / spriteResizeState.baseWidth) * 100);
+        scaleSlider.value = pct;
+        scaleValText.textContent = `${pct}%`;
+    }
+}
+
+// RENDERING DEL FONDO DEL JUEGO Y EL SPRITE SOBREPUESTO CON ASISTENCIA VISUAL
+function renderGameStage() {
+    gameStageCanvas.width = spriteResizeState.stageWidth;
+    gameStageCanvas.height = spriteResizeState.stageHeight;
+    const ctx = gameStageCanvas.getContext("2d");
+    if (!ctx) return;
+
+    // 1. Dibujar el Fondo de Juego Seleccionado
+    const w = gameStageCanvas.width;
+    const h = gameStageCanvas.height;
+
+    if (spriteResizeState.bgType === "custom" && spriteResizeState.customBgImage) {
+        ctx.drawImage(spriteResizeState.customBgImage, 0, 0, w, h);
+    } else if (spriteResizeState.bgType === "space") {
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, "#0b0f19");
+        grad.addColorStop(1, "#1e1b4b");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = "#ffffff";
+        for (let i = 0; i < 60; i++) {
+            const sx = (Math.sin(i * 99) * 0.5 + 0.5) * w;
+            const sy = (Math.cos(i * 33) * 0.5 + 0.5) * h;
+            const sr = (i % 3 === 0) ? 2 : 1;
+            ctx.beginPath();
+            ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    } else if (spriteResizeState.bgType === "platform") {
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = "#059669";
+        ctx.fillRect(0, h - 80, w, 80);
+        ctx.fillStyle = "#d97706";
+        ctx.fillRect(0, h - 60, w, 60);
+    } else if (spriteResizeState.bgType === "scratch") {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h);
+        ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#64748b";
+        ctx.font = "12px sans-serif";
+        ctx.fillText("Escenario Scratch (480 x 360 px)", 10, 20);
+    } else {
+        // Cuadrícula Píxel Grid
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 32) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 32) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+    }
+
+    // 2. Dibujar el Sprite Recortado sobre el Fondo
+    const sp = spriteResizeState.spritePos;
+    if (spriteResizeState.croppedImage) {
+        ctx.drawImage(spriteResizeState.croppedImage, sp.x, sp.y, sp.width, sp.height);
+    }
+
+    // 3. Dibujar Guías Visuales y Manijas de Redimensión en Esquinas
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(sp.x, sp.y, sp.width, sp.height);
+    ctx.setLineDash([]);
+
+    const handleSize = 8;
+    ctx.fillStyle = "#fbbf24";
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 1.5;
+
+    const corners = [
+        { x: sp.x, y: sp.y },
+        { x: sp.x + sp.width, y: sp.y },
+        { x: sp.x, y: sp.y + sp.height },
+        { x: sp.x + sp.width, y: sp.y + sp.height }
+    ];
+
+    corners.forEach(c => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, handleSize / 2 + 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+    });
+
+    // 4. Actualizar Estadísticas Gráficas de Proporción
+    spriteDimensionsText.textContent = `${sp.width} px × ${sp.height} px`;
+    stageDimensionsText.textContent = `${w} px × ${h} px`;
+    const widthRatioPct = ((sp.width / w) * 100).toFixed(1);
+    spritePercentageText.textContent = `${widthRatioPct}% del ancho del juego`;
+}
+
+function setupGameStageMouseEvents() {
+    let isDown = false;
+    let activeCorner = null;
+
+    function getStageCoords(e) {
+        const rect = gameStageCanvas.getBoundingClientRect();
+        const scaleX = gameStageCanvas.width / rect.width;
+        const scaleY = gameStageCanvas.height / rect.height;
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
+    }
+
+    gameStageCanvas.addEventListener("mousedown", (e) => {
+        const pt = getStageCoords(e);
+        const sp = spriteResizeState.spritePos;
+        const radius = 20;
+
+        if (Math.hypot(pt.x - (sp.x + sp.width), pt.y - (sp.y + sp.height)) < radius) activeCorner = "br";
+        else if (Math.hypot(pt.x - sp.x, pt.y - sp.y) < radius) activeCorner = "tl";
+        else if (pt.x >= sp.x && pt.x <= sp.x + sp.width && pt.y >= sp.y && pt.y <= sp.y + sp.height) {
+            activeCorner = "move";
+            spriteResizeState.dragStart = { x: pt.x - sp.x, y: pt.y - sp.y };
+        } else {
+            activeCorner = null;
+        }
+
+        if (activeCorner) isDown = true;
+    });
+
+    gameStageCanvas.addEventListener("mousemove", (e) => {
+        if (!isDown || !activeCorner) return;
+        const pt = getStageCoords(e);
+        const sp = spriteResizeState.spritePos;
+
+        if (activeCorner === "move") {
+            sp.x = pt.x - spriteResizeState.dragStart.x;
+            sp.y = pt.y - spriteResizeState.dragStart.y;
+        } else if (activeCorner === "br") {
+            const newW = Math.max(10, pt.x - sp.x);
+            const newH = Math.max(10, pt.y - sp.y);
+            sp.width = Math.round(newW);
+            sp.height = Math.round(newH);
+            spriteWidthInput.value = sp.width;
+            spriteHeightInput.value = sp.height;
+            updateScaleSliderFromDimensions();
+        }
+
+        renderGameStage();
+    });
+
+    window.addEventListener("mouseup", () => {
+        isDown = false;
+        activeCorner = null;
+    });
+}
+
+function downloadAdjustedSpritePNG() {
+    if (!spriteResizeState.croppedImage) return;
+
+    const sp = spriteResizeState.spritePos;
+    const exportCanvas = document.createElement("canvas");
+    exportCanvas.width = sp.width;
+    exportCanvas.height = sp.height;
+
+    const ctx = exportCanvas.getContext("2d");
+    ctx.drawImage(spriteResizeState.croppedImage, 0, 0, sp.width, sp.height);
+
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
+    link.download = `sprite_ajustado_${sp.width}x${sp.height}.png`;
+    link.href = exportCanvas.toDataURL("image/png");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+
+    triggerConfettiAtElement(downloadSpriteBtn);
 }
 
 // TOGGLE ITEM CHECK CON CONFETI
@@ -1079,7 +1530,6 @@ function renderChecklistCategories() {
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
         
-        // Auto-colapsar si la categoría está 100% completada (a menos que el usuario la expanda manualmente)
         const isManuallyExpanded = manualExpandedCategories.includes(category.categoryKey);
         const isCatCollapsed = isAllCompleted ? !isManuallyExpanded : collapsedCategories.includes(category.categoryKey);
 
