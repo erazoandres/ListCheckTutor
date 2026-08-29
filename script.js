@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON ACCORDION TRANSITION
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON OBJETIVO AL FINAL Y AUTO-COLAPSO
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -22,35 +22,35 @@ const CRITERIA_DATA = [
                 isTransversal: false
             },
             {
-                id: "item_2",
-                number: 2,
-                icon: "💡",
-                title: "Objetivo de la lección",
-                item_question: "¿El tutor expresó qué aprenderán, practicarán, construirán, crearán, discutirán o serán capaces de hacer en esta lección?",
-                comment: "El tutor declara el objetivo explícito de aprendizaje de la sesión.",
-                points: 1,
-                targetMin: 5,
-                isTransversal: false
-            },
-            {
                 id: "item_3",
-                number: 3,
+                number: 2,
                 icon: "🔗",
                 title: "Conexión con la clase anterior",
                 item_question: "¿El tutor conectó la lección con la clase anterior pidiendo a los estudiantes que recordaran o comentaran lo que hicieron o aprendieron antes?",
                 comment: "Pedir a los alumnos recordar o resumir lo trabajado en la sesión previa.",
                 points: 10,
-                targetMin: 8,
+                targetMin: 5,
                 isTransversal: false
             },
             {
                 id: "item_4",
-                number: 4,
+                number: 3,
                 icon: "📋",
                 title: "Revisión de tarea en casa",
                 item_question: "¿El tutor revisó o preguntó sobre una tarea que los estudiantes debían hacer en casa?",
                 comment: "Revisar o consultar por la tarea pendiente asignada para el hogar.",
                 points: 10,
+                targetMin: 8,
+                isTransversal: false
+            },
+            {
+                id: "item_2",
+                number: 4,
+                icon: "💡",
+                title: "Objetivo de la lección",
+                item_question: "¿El tutor expresó qué aprenderán, practicarán, construirán, crearán, discutirán o serán capaces de hacer en esta lección?",
+                comment: "El tutor declara el objetivo explícito de aprendizaje de la sesión al finalizar la etapa inicial.",
+                points: 1,
                 targetMin: 12,
                 isTransversal: false
             }
@@ -87,7 +87,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_18",
-                number: 18,
+                number: 7,
                 icon: "✏️",
                 title: "Etapa de práctica presente",
                 item_question: "¿La lección incluyó una etapa clara de práctica del estudiante?",
@@ -98,7 +98,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_19",
-                number: 19,
+                number: 8,
                 icon: "🎯",
                 title: "Desafío apropiado",
                 item_question: "¿Las actividades estuvieron en un nivel de dificultad apropiado para los estudiantes?",
@@ -118,7 +118,7 @@ const CRITERIA_DATA = [
         items: [
             {
                 id: "item_7",
-                number: 7,
+                number: 9,
                 icon: "👥",
                 title: "Participación amplia",
                 item_question: "¿El tutor involucró a varios estudiantes en lugar de depender principalmente de uno solo?",
@@ -129,7 +129,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_8",
-                number: 8,
+                number: 10,
                 icon: "👤",
                 title: "Trato directo al estudiante",
                 item_question: "¿El tutor se dirigió a los estudiantes por su nombre o con una referencia individual clara durante la interacción de aprendizaje?",
@@ -140,7 +140,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_12",
-                number: 12,
+                number: 11,
                 icon: "👥",
                 title: "Participación de al menos dos estudiantes",
                 item_question: "¿Al menos dos estudiantes diferentes participaron en la interacción de aprendizaje?",
@@ -151,7 +151,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_13",
-                number: 13,
+                number: 12,
                 icon: "🔁",
                 title: "Interacción de aprendizaje repetida",
                 item_question: "¿El tutor generó interacción de aprendizaje repetida durante la lección?",
@@ -171,7 +171,7 @@ const CRITERIA_DATA = [
         items: [
             {
                 id: "item_14",
-                number: 14,
+                number: 13,
                 icon: "⭐",
                 title: "Retroalimentación útil y formativa",
                 item_question: "¿El tutor dio retroalimentación que ayudó a un estudiante a mejorar su trabajo o comprensión?",
@@ -182,7 +182,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_15",
-                number: 15,
+                number: 14,
                 icon: "❓",
                 title: "Razonamiento del estudiante",
                 item_question: "¿El tutor hizo una pregunta de razonamiento/explicación y obtuvo una respuesta relevante del estudiante?",
@@ -193,7 +193,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_16",
-                number: 16,
+                number: 15,
                 icon: "🙂",
                 title: "Poca confusión repetida",
                 item_question: "¿La lección evitó confusión explícita o estancamiento repetido del estudiante?",
@@ -204,7 +204,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_17",
-                number: 17,
+                number: 16,
                 icon: "😐",
                 title: "Sin rechazo o aburrimiento explícito",
                 item_question: "¿La lección evitó rechazo explícito, aburrimiento o insatisfacción del estudiante?",
@@ -215,7 +215,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_20",
-                number: 20,
+                number: 17,
                 icon: "🛡️",
                 title: "Ambiente de aprendizaje positivo",
                 item_question: "¿La lección mantuvo un ambiente de aprendizaje positivo y de apoyo?",
@@ -235,7 +235,7 @@ const CRITERIA_DATA = [
         items: [
             {
                 id: "item_9",
-                number: 9,
+                number: 18,
                 icon: "🔄",
                 title: "Resumen o repaso final",
                 item_question: "¿La lección incluyó un resumen, repaso o reflexión al final?",
@@ -246,7 +246,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_10",
-                number: 10,
+                number: 19,
                 icon: "🏠",
                 title: "Tarea para la próxima clase",
                 item_question: "¿El tutor explicó claramente qué deben hacer los estudiantes en casa antes de la próxima clase?",
@@ -257,7 +257,7 @@ const CRITERIA_DATA = [
             },
             {
                 id: "item_11",
-                number: 11,
+                number: 20,
                 icon: "📅",
                 title: "Continuidad de la próxima lección",
                 item_question: "¿El tutor explicó claramente qué aprenderán, construirán, practicarán o trabajarán en la próxima clase?",
@@ -277,11 +277,13 @@ const STORAGE_KEY_COLLAPSED = "tutorChecklist_v4_collapsed";
 const STORAGE_KEY_THEME = "tutorChecklist_v4_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
+const STORAGE_KEY_MANUAL_EXPANDED = "tutorChecklist_v4_manual_expanded";
 
 // GESTIÓN DE ESTADO
 let completedItems = [];
 let itemNotes = {};
 let collapsedCategories = [];
+let manualExpandedCategories = []; // Para recordar cuando el usuario expande manualmente una categoría completa
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
 let searchQuery = "";
@@ -409,6 +411,7 @@ function loadAndSanitizeStorage() {
 
     itemNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {};
     collapsedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_COLLAPSED)) || [];
+    manualExpandedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_MANUAL_EXPANDED)) || [];
 }
 
 // CALCULAR PUNTAJE TOTAL MÁXIMO Y OBTENIDO
@@ -543,13 +546,22 @@ function expandCategory(catKey) {
 }
 
 // TOGGLE COLAPSO EN CATEGORÍA
-function handleCategoryHeaderClick(catKey) {
-    if (collapsedCategories.includes(catKey)) {
-        collapsedCategories.push(catKey);
+function handleCategoryHeaderClick(catKey, isAllCompleted) {
+    if (isAllCompleted) {
+        if (manualExpandedCategories.includes(catKey)) {
+            manualExpandedCategories = manualExpandedCategories.filter(k => k !== catKey);
+        } else {
+            manualExpandedCategories.push(catKey);
+        }
+        localStorage.setItem(STORAGE_KEY_MANUAL_EXPANDED, JSON.stringify(manualExpandedCategories));
     } else {
-        collapsedCategories = collapsedCategories.filter(k => k !== catKey);
+        if (collapsedCategories.includes(catKey)) {
+            collapsedCategories = collapsedCategories.filter(k => k !== catKey);
+        } else {
+            collapsedCategories.push(catKey);
+        }
+        localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
     }
-    localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
     render();
 }
 
@@ -557,10 +569,9 @@ function handleCategoryHeaderClick(catKey) {
 function toggleAssistantMode() {
     isAssistantActive = !isAssistantActive;
 
-    // Disparar animación de giro orbital 360° en el icono
     if (assistantIcon) {
         assistantIcon.classList.remove("mode-orbiting");
-        void assistantIcon.offsetWidth; // Forzar reflow para reiniciar la animación
+        void assistantIcon.offsetWidth;
         assistantIcon.classList.add("mode-orbiting");
 
         setTimeout(() => {
@@ -666,9 +677,9 @@ function updateAssistantUI() {
         const pendingInicio = pendingItems.filter(i => i.categoryKey === "inicio");
         if (pendingInicio.length > 0) {
             suggestedItem = pendingInicio.find(i => i.targetMin <= minutes + 2) || pendingInicio[0];
-            suggestionReasonText = `Enfócate en la bienvenida amable, conexión con la clase anterior y declaración del objetivo.`;
+            suggestionReasonText = `Enfócate en la bienvenida amable, conexión con la clase anterior, revisión de tareas y declaración del objetivo explícito.`;
         } else {
-            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 8);
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 10);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
                 suggestionReasonText = `🔁 Criterio continuo: Llama a cada alumno directamente por su nombre durante las interacciones.`;
@@ -694,12 +705,12 @@ function updateAssistantUI() {
         phaseName = "💡 Fase 2: Explicación y Modelado (Min 15 - 45)";
         phaseTag = `DEMOSTRACIÓN Y MODELADO`;
 
-        const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion" && i.number <= 6);
+        const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion" && i.number <= 8);
         if (pendingInstruccion.length > 0) {
             suggestedItem = pendingInstruccion[0];
             suggestionReasonText = `Explica las instrucciones en pasos pequeños y demuestra el procedimiento en pantalla.`;
         } else {
-            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 14);
+            const pendingTransversal = pendingItems.filter(i => i.isTransversal && i.number <= 13);
             if (pendingTransversal.length > 0) {
                 suggestedItem = pendingTransversal[0];
                 suggestionReasonText = `🔁 Recordatorio continuo: Proporciona retroalimentación útil y explicaciones claras cuando revises trabajos.`;
@@ -754,11 +765,11 @@ function updateAssistantUI() {
 
         if (minutes < 80) {
             phaseTag = `REPASO Y RESUMEN`;
-            suggestedItem = pendingCierre.find(i => i.number === 9) || pendingCierre[0] || pendingItems[0];
+            suggestedItem = pendingCierre.find(i => i.number === 18) || pendingCierre[0] || pendingItems[0];
             suggestionReasonText = `Dedica este momento a realizar un resumen y repaso final de los conocimientos aprendidos.`;
         } else {
             phaseTag = `TAREA PARA EL HOGAR`;
-            suggestedItem = pendingCierre.find(i => i.number === 10) || pendingCierre[0] || pendingItems[0];
+            suggestedItem = pendingCierre.find(i => i.number === 19) || pendingCierre[0] || pendingItems[0];
             suggestionReasonText = `Explica con claridad la tarea asignada para realizar en el hogar.`;
         }
 
@@ -768,7 +779,7 @@ function updateAssistantUI() {
         phaseName = `🏁 Fase 5: Final de Lección (Min 85 - 90)`;
         phaseTag = `CONTINUIDAD Y DESPEDIDA`;
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
-        suggestedItem = pendingCierre.find(i => i.number === 11) || pendingCierre[0] || pendingItems[0];
+        suggestedItem = pendingCierre.find(i => i.number === 20) || pendingCierre[0] || pendingItems[0];
         suggestionReasonText = `Anticipa a los alumnos qué aprenderán o construirán en la siguiente clase.`;
     }
 
@@ -885,6 +896,7 @@ function setupEventListeners() {
             completedItems = [];
             itemNotes = {};
             collapsedCategories = [];
+            manualExpandedCategories = [];
             resetTimer();
             isAssistantActive = false;
             document.body.classList.remove("assistant-focus-active");
@@ -897,6 +909,7 @@ function setupEventListeners() {
             localStorage.removeItem(STORAGE_KEY_COMPLETED);
             localStorage.removeItem(STORAGE_KEY_NOTES);
             localStorage.removeItem(STORAGE_KEY_COLLAPSED);
+            localStorage.removeItem(STORAGE_KEY_MANUAL_EXPANDED);
             render();
         }
     });
@@ -1014,13 +1027,14 @@ function renderCategoryStrip() {
         const catTotal = cat.items.length;
         const catDone = cat.items.filter(item => completedItems.includes(item.id)).length;
         const isActive = activeCategoryFilter === cat.categoryKey;
+        const isAllDone = catDone === catTotal && catTotal > 0;
 
         const chip = document.createElement("div");
-        chip.className = `cat-strip-badge ${isActive ? "active" : ""}`;
+        chip.className = `cat-strip-badge ${isActive ? "active" : ""} ${isAllDone ? "strip-completed" : ""}`;
         chip.innerHTML = `
             <span class="cat-dot" style="background:${cat.dotColor}"></span>
             ${cat.shortTitle}
-            <span class="cat-num-tag">(${catDone}/${catTotal})</span>
+            <span class="cat-num-tag">${isAllDone ? "✓" : `(${catDone}/${catTotal})`}</span>
         `;
 
         chip.addEventListener("click", () => {
@@ -1034,7 +1048,7 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZAR CHECKLIST CON TRANSICIÓN EN ACCORDION
+// RENDERIZAR CHECKLIST CON OCULTAMIENTO AUTOMÁTICO DE CATEGORÍAS COMPLETADAS
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
@@ -1062,15 +1076,23 @@ function renderChecklistCategories() {
 
         visibleItemsCount += filteredItems.length;
 
-        const categoryGroup = document.createElement("div");
-        categoryGroup.className = "category-group";
-
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
-        const isCatCollapsed = collapsedCategories.includes(category.categoryKey);
+        const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
+        
+        // Auto-colapsar si la categoría está 100% completada (a menos que el usuario la expanda manualmente)
+        const isManuallyExpanded = manualExpandedCategories.includes(category.categoryKey);
+        const isCatCollapsed = isAllCompleted ? !isManuallyExpanded : collapsedCategories.includes(category.categoryKey);
+
+        const categoryGroup = document.createElement("div");
+        categoryGroup.className = `category-group ${isAllCompleted ? "category-completed" : ""}`;
 
         const categoryHeader = document.createElement("div");
-        categoryHeader.className = `category-header ${isCatCollapsed ? "is-collapsed" : ""}`;
+        categoryHeader.className = `category-header ${isCatCollapsed ? "is-collapsed" : ""} ${isAllCompleted ? "is-completed-header" : ""}`;
         categoryHeader.setAttribute("title", isCatCollapsed ? "Haz clic para desplegar" : "Haz clic para colapsar");
+
+        const statusBadgeHtml = isAllCompleted 
+            ? `<span class="category-completed-badge">✓ Completada</span>`
+            : `<span class="category-count">${catDoneCount} / ${category.items.length}</span>`;
 
         categoryHeader.innerHTML = `
             <div class="category-title-badge">
@@ -1078,19 +1100,19 @@ function renderChecklistCategories() {
                 <h3>${category.categoryTitle}</h3>
             </div>
             <div class="category-header-right">
-                <span class="category-count">${catDoneCount} / ${category.items.length}</span>
+                ${statusBadgeHtml}
                 <span class="cat-collapse-arrow">▼</span>
             </div>
         `;
 
         categoryHeader.addEventListener("click", () => {
-            handleCategoryHeaderClick(category.categoryKey);
+            handleCategoryHeaderClick(category.categoryKey, isAllCompleted);
         });
 
         categoryGroup.appendChild(categoryHeader);
 
         const itemsContainer = document.createElement("div");
-        itemsContainer.className = `category-items ${isCatCollapsed ? "hidden" : ""}`;
+        itemsContainer.className = `category-items ${isCatCollapsed ? "auto-collapsed hidden" : ""}`;
 
         filteredItems.forEach(item => {
             const isChecked = completedItems.includes(item.id);
@@ -1136,20 +1158,18 @@ function renderChecklistCategories() {
                     </div>
                 </div>
 
-                <div class="item-details-accordion ${isExpandedAll ? "is-open" : ""}">
-                    <div class="accordion-inner">
-                        <div class="detail-box">
-                            <span class="detail-label">❓ Pregunta Evaluada</span>
-                            <div class="detail-text">${item.item_question}</div>
-                        </div>
-                        <div class="detail-box evidence">
-                            <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
-                            <div class="detail-text">${item.comment}</div>
-                        </div>
-                        <div class="notes-input-box">
-                            <span class="detail-label">✏️ Nota de la Lección</span>
-                            <textarea placeholder="Apuntar notas de la clase..." data-id="${item.id}">${userNote}</textarea>
-                        </div>
+                <div class="item-details-accordion ${isExpandedAll ? "" : "hidden"}">
+                    <div class="detail-box">
+                        <span class="detail-label">❓ Pregunta Evaluada</span>
+                        <div class="detail-text">${item.item_question}</div>
+                    </div>
+                    <div class="detail-box evidence">
+                        <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
+                        <div class="detail-text">${item.comment}</div>
+                    </div>
+                    <div class="notes-input-box">
+                        <span class="detail-label">✏️ Nota de la Lección</span>
+                        <textarea placeholder="Apuntar notas de la clase..." data-id="${item.id}">${userNote}</textarea>
                     </div>
                 </div>
             `;
@@ -1162,8 +1182,8 @@ function renderChecklistCategories() {
             mainArea.addEventListener("click", (e) => {
                 if (e.target.closest(".toggle-details-btn")) {
                     e.stopPropagation();
-                    const isOpen = detailsAccordion.classList.toggle("is-open");
-                    toggleBtn.textContent = isOpen ? "🔼" : "ℹ️";
+                    detailsAccordion.classList.toggle("hidden");
+                    toggleBtn.textContent = detailsAccordion.classList.contains("hidden") ? "ℹ️" : "🔼";
                     return;
                 }
                 toggleItem(item.id, e);
