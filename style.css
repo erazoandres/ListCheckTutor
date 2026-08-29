@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET CON CONTADOR DE VISITAS
+   CHECKLIST DE OBSERVACIÓN DE CLASE - STYLESHEET FIJO SIN DESPLAZAMIENTOS
    ========================================================================== */
 
 :root {
@@ -115,7 +115,7 @@ body {
     padding: 24px 18px 48px;
 }
 
-/* HEADER MODERNO */
+/* HEADER MODERNO ESTABLE SIN DESPLAZAMIENTOS */
 .app-header {
     display: flex;
     align-items: center;
@@ -134,6 +134,7 @@ body {
     display: flex;
     align-items: center;
     gap: 14px;
+    flex-shrink: 0;
 }
 
 .logo-badge {
@@ -164,13 +165,13 @@ body {
     font-weight: 600;
 }
 
-/* STATS BADGES REFINADOS CON VISITAS */
+/* STATS BADGES REFINADOS FIJOS */
 .header-stats-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .stat-badge {
@@ -191,6 +192,10 @@ body {
     border-color: #bae6fd;
     color: #0284c7;
     font-weight: 700;
+    min-width: 92px;
+    justify-content: center;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
 [data-theme="dark"] .stat-badge.visits-badge {
@@ -1590,9 +1595,10 @@ body.assistant-focus-active .assistant-widget {
 
 .hidden { display: none !important; }
 
-/* RESPONSIVE MODAL */
+/* RESPONSIVE MODAL & HEADER COMPACTO */
 @media (max-width: 640px) {
     .btn-text { display: none; }
+    .header-stats-wrapper { width: 100%; justify-content: space-between; }
     .toolbar { flex-direction: column; align-items: stretch; }
     .segmented-control { width: 100%; justify-content: space-between; }
     .filter-tab { flex: 1; text-align: center; }
