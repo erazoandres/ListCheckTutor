@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT RESTAURADO CON TODAS LAS CATEGORÍAS VISIBLES
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON CONTADOR DE VISITAS FIRESTORE
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -91,7 +91,7 @@ const CRITERIA_DATA = [
                 icon: "✏️",
                 title: "Etapa de práctica presente",
                 item_question: "¿La lección incluyó una etapa clara de práctica del estudiante?",
-                comment: "Otorgar espacio dedicado para que los alumnos apliquen lo aprendido de forma práctica.",
+                comment: "Otorgar espacio dedicated para que los alumnos apliquen lo aprendido de forma práctica.",
                 points: 1,
                 targetMin: 45,
                 isTransversal: false
@@ -278,8 +278,10 @@ const STORAGE_KEY_THEME = "tutorChecklist_v4_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v4_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v4_welcome_shown";
 
-// CONFIGURACIÓN DE FIREBASE FIRESTORE EN VIVO
-const firebaseConfig = {
+// CONFIGURACIÓN DE FIREBASE FIRESTORE PARA VISITAS EN VIVO
+// Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
+// Puedes definir window.FIREBASE_CONFIG en la página o reemplazar este objeto con tus credenciales reales:
+const firebaseConfig = window.FIREBASE_CONFIG || {
     apiKey: "AIzaSy_TutorListChecker_DefaultKey",
     authDomain: "tutor-list-checker.firebaseapp.com",
     projectId: "tutor-list-checker",
@@ -368,9 +370,10 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// INICIALIZACIÓN DE CONTADOR DE VISITAS FIRESTORE
+// INICIALIZACIÓN CON DIAGNÓSTICO Y CONEXIÓN A FIRESTORE
 function initVisitCounter() {
     if (typeof firebase === "undefined" || !firebase.firestore) {
+        console.warn("⚠️ Firebase SDK no está cargado.");
         if (visitCountText) visitCountText.textContent = "1 visitas";
         return;
     }
@@ -381,21 +384,27 @@ function initVisitCounter() {
         }
 
         const db = firebase.firestore();
+        // Colección: "visitas_list_checker" | Doc: "visitas" | Campo: "count"
         const visitsDocRef = db.collection("visitas_list_checker").doc("visitas");
 
+        // Incrementar visita por sesión
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
         if (!hasVisitedThisSession) {
             visitsDocRef.set({
-                count: firebase.firestore.FieldValue.increment(1)
+                count: firebase.firestore.FieldValue.increment(1),
+                lastVisited: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true }).then(() => {
                 sessionStorage.setItem("tutor_visit_recorded", "true");
+                console.log("✅ Visita registrada correctamente en Firestore (visitas_list_checker -> visitas -> count).");
             }).catch(err => {
-                console.warn("Firestore increment:", err.message);
+                console.error("❌ Error escribiendo visita en Firestore:", err.code, err.message);
+                console.info("💡 Consejo: Verifica en tu consola de Firebase que las Reglas de Seguridad de Firestore permitan lectura/escritura en la colección 'visitas_list_checker'.");
             });
         }
 
+        // Escuchar cambios en vivo del contador
         visitsDocRef.onSnapshot((doc) => {
-            if (doc.exists && doc.data().count !== undefined) {
+            if (doc.exists && doc.data() && typeof doc.data().count === "number") {
                 const totalVisits = doc.data().count;
                 if (visitCountText) {
                     visitCountText.textContent = `${totalVisits.toLocaleString()} visitas`;
@@ -404,12 +413,12 @@ function initVisitCounter() {
                 if (visitCountText) visitCountText.textContent = "1 visitas";
             }
         }, (error) => {
-            console.warn("Firestore listener:", error.message);
+            console.error("❌ Error leyendo contador de Firestore:", error.message);
             if (visitCountText) visitCountText.textContent = "1 visitas";
         });
 
     } catch (e) {
-        console.warn("Error contador visitas:", e);
+        console.error("❌ Excepción en initVisitCounter:", e);
         if (visitCountText) visitCountText.textContent = "1 visitas";
     }
 }
@@ -479,7 +488,7 @@ function calculateScores() {
     return { maxScore, earnedScore };
 }
 
-// INICIALIZACIÓN PRINCIPAL GARA NTIZADA
+// INICIALIZACIÓN PRINCIPAL
 function init() {
     loadAndSanitizeStorage();
     applyTheme(currentTheme);
@@ -487,12 +496,11 @@ function init() {
     checkWelcomeModal();
     render();
 
-    // Contador diferido para asegurar que la UI responda instantáneamente
     setTimeout(() => {
         try {
             initVisitCounter();
         } catch (e) {
-            console.warn("Deffered visit counter note:", e);
+            console.warn("Deferred counter:", e);
         }
     }, 150);
 }
@@ -608,7 +616,7 @@ function expandCategory(catKey) {
     }
 }
 
-// TOGGLE COLAPSO EN CATEGORÍA (CONTROL MANUAL CLARO)
+// TOGGLE COLAPSO EN CATEGORÍA
 function handleCategoryHeaderClick(catKey) {
     if (collapsedCategories.includes(catKey)) {
         collapsedCategories = collapsedCategories.filter(k => k !== catKey);
@@ -1093,7 +1101,6 @@ function renderCategoryStrip() {
     });
 }
 
-// RENDERIZADO VISIBLE DE TODAS LAS CATEGORÍAS
 function renderChecklistCategories() {
     checklistContainer.innerHTML = "";
     let visibleItemsCount = 0;
@@ -1124,7 +1131,6 @@ function renderChecklistCategories() {
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
         
-        // Las categorías permanecen 100% visibles por defecto (sólo se colapsan si el usuario lo decide activamente)
         const isCatCollapsed = collapsedCategories.includes(category.categoryKey);
 
         const categoryGroup = document.createElement("div");
