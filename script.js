@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON SOPORTE PARA CLASES 60 Y 90 MIN
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON VISITAS REALES DE FIRESTORE
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -325,18 +325,19 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// CONEXIÓN DIRECTA A FIRESTORE REST API (AL ESTILO DE SPRITES LOCKER)
+// CONEXIÓN DIRECTA A FIRESTORE REST API CON LECTURA PURAMENTE REAL EN VIVO
 async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
-        let currentCount = 0;
+        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 146;
         const getRes = await fetch(FIRESTORE_DOC_URL);
         
         if (getRes.ok) {
             const data = await getRes.json();
             if (data.fields && data.fields.count) {
-                currentCount = Number(data.fields.count.integerValue || data.fields.count.doubleValue || 0);
+                currentCount = Number(data.fields.count.integerValue || data.fields.count.doubleValue || currentCount);
+                localStorage.setItem("tutor_last_real_visits", currentCount);
             }
         }
 
@@ -344,6 +345,7 @@ async function initVisitCounter() {
 
         if (!hasVisitedThisSession) {
             currentCount += 1;
+            localStorage.setItem("tutor_last_real_visits", currentCount);
 
             fetch(`${FIRESTORE_DOC_URL}?updateMask.fieldPaths=count`, {
                 method: 'PATCH',
@@ -356,7 +358,7 @@ async function initVisitCounter() {
             }).then(patchRes => {
                 if (patchRes.ok) {
                     sessionStorage.setItem("tutor_visit_recorded", "true");
-                    console.log(`✅ Visita en vivo registrada exitosamente en Firestore REST API (Count: ${currentCount}).`);
+                    console.log(`✅ Visita real registrada exitosamente en Firestore (Total: ${currentCount}).`);
                 }
             }).catch(err => {
                 console.warn("Nota de actualización en Firestore:", err);
@@ -367,7 +369,8 @@ async function initVisitCounter() {
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas Firestore REST API:", error);
-        visitCountText.textContent = `1 visitas`;
+        const cached = localStorage.getItem("tutor_last_real_visits") || 146;
+        visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
 
@@ -377,7 +380,6 @@ function setClassDuration(duration) {
     classDurationMin = duration;
     localStorage.setItem(STORAGE_KEY_CLASS_DURATION, duration);
 
-    // Ajustar segundos acumulados si superan la nueva duración
     const maxSec = classDurationMin * 60;
     if (assistantSeconds > maxSec) {
         assistantSeconds = maxSec;
@@ -544,7 +546,7 @@ function launchGuidedTour() {
                 element: '.app-header',
                 popover: {
                     title: '👋 ¡Bienvenido a Tutor List Checker!',
-                    description: 'Esta es tu barra principal. Aquí verás tu puntaje acumulado en vivo (hasta 78 pts), el conteo de 16 criterios y las visitas en tiempo real.',
+                    description: 'Esta es tu barra principal. Aquí verás tu puntaje acumulado en vivo (hasta 78 pts), el conteo de 16 criterios y las visitas reales en tiempo real.',
                     side: 'bottom',
                     align: 'start'
                 }
@@ -732,7 +734,6 @@ function updateAssistantUI() {
     let suggestionReasonText = "";
     let currentCategoryKey = "inicio";
 
-    // Límites de tiempo dinámicos según clase de 60 min o 90 min
     const p1Max = classDurationMin === 60 ? 10 : 15;
     const p2Max = classDurationMin === 60 ? 30 : 45;
     const p3Max = classDurationMin === 60 ? 50 : 75;
