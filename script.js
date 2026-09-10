@@ -276,7 +276,6 @@ const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearch");
 const filterTabs = document.querySelectorAll(".filter-tab");
 const categoryFilterSelect = document.getElementById("categoryFilter");
-const classDurationSelect = document.getElementById("classDurationSelect");
 const durationBtns = document.querySelectorAll(".duration-btn");
 const toggleExpandBtn = document.getElementById("toggleExpandBtn");
 const expandIcon = document.getElementById("expandIcon");
@@ -423,8 +422,6 @@ function updatePhaseStepperLabels() {
 
     const assistantLiveDurationText = document.getElementById("assistantLiveDurationText");
     if (assistantLiveDurationText) assistantLiveDurationText.textContent = classDurationMin;
-
-    if (classDurationSelect) classDurationSelect.value = String(classDurationMin);
 
     const dBtns = document.querySelectorAll(".duration-btn");
     dBtns.forEach(btn => {
@@ -581,8 +578,8 @@ function launchGuidedTour() {
             {
                 element: '.toolbar',
                 popover: {
-                    title: '🔍 Buscador y Selector de Duración (60 / 90 min)',
-                    description: 'Filtra por duración de lección (60m o 90m), busca por palabra clave y conmuta entre ver Todos, Pendientes o Cumplidos.',
+                    title: '🔍 Buscador y Filtros de Estado',
+                    description: 'Busca por palabra clave o número y conmuta entre ver Todos, Pendientes o Cumplidos.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -895,12 +892,6 @@ function setupEventListeners() {
     });
 
     assistantResetTimerBtn.addEventListener("click", resetTimer);
-
-    if (classDurationSelect) {
-        classDurationSelect.addEventListener("change", (e) => {
-            setClassDuration(parseInt(e.target.value));
-        });
-    }
 
     durationBtns.forEach(btn => {
         btn.addEventListener("click", () => {
