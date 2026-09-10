@@ -24,7 +24,7 @@
                 <div class="logo-badge">🚀</div>
                 <div>
                     <h1>Tutor List Checker 🎯</h1>
-                    <p class="subtitle">Medidor pedagógico y copiloto en tiempo real para clases de 90 min</p>
+                    <p class="subtitle">Medidor pedagógico y copiloto en tiempo real para clases de <span id="headerDurationText">90</span> min</p>
                 </div>
             </div>
 
@@ -70,13 +70,17 @@
             </div>
         </header>
 
-        <!-- WIDGET MODO ASISTENTE (90 MIN) CON FOCO EN LA ACCIÓN -->
+        <!-- WIDGET MODO ASISTENTE (60 MIN / 90 MIN) CON FOCO EN LA ACCIÓN -->
         <section id="assistantWidget" class="assistant-widget hidden">
             <div class="assistant-header">
                 <div class="assistant-timer-wrap">
-                    <span class="assistant-badge-live">⚡ COPILOTO 90 MIN</span>
+                    <span class="assistant-badge-live">⚡ COPILOTO <span id="assistantLiveDurationText">90</span> MIN</span>
                     <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
                     <div class="assistant-controls">
+                        <div class="duration-segmented-control" title="Seleccionar duración de la clase">
+                            <button class="duration-btn active" data-duration="90">90m</button>
+                            <button class="duration-btn" data-duration="60">60m</button>
+                        </div>
                         <button id="assistantPlayPauseBtn" class="btn-play-pause" title="Iniciar/Pausar tiempo">▶️</button>
                         <button id="assistantResetTimerBtn" class="btn-timer-reset" title="Reiniciar reloj">🔄</button>
                     </div>
@@ -160,7 +164,7 @@
             <!-- Renderizado dinámico -->
         </div>
 
-        <!-- TOOLBAR MODERNA -->
+        <!-- TOOLBAR MODERNA CON SELECTOR DE DURACIÓN DE CLASE -->
         <section class="toolbar">
             <div class="search-input-wrapper">
                 <span class="search-icon">🔍</span>
@@ -173,6 +177,11 @@
                 <button class="filter-tab" data-filter="pending">Pendientes (<span id="countPending">16</span>)</button>
                 <button class="filter-tab" data-filter="completed">Cumplidos (<span id="countCompleted">0</span>)</button>
             </div>
+
+            <select id="classDurationSelect" class="select-input-sm" title="Duración de la clase">
+                <option value="90">⏱️ Clase 90 min</option>
+                <option value="60">⏱️ Clase 60 min</option>
+            </select>
 
             <select id="categoryFilter" class="select-input-sm">
                 <option value="all">Todas las etapas</option>
@@ -221,7 +230,7 @@
 
             <div class="modal-body welcome-modal-body">
                 <p class="welcome-intro-text">
-                    Mide y potencia la calidad pedagógica de tus <strong>clases de 90 minutos</strong>. 
+                    Mide y potencia la calidad pedagógica de tus <strong>clases de 60 o 90 minutos</strong>. 
                     Verifica los 16 criterios clave, acumula hasta <strong>78 puntos en tiempo real</strong> y genera reportes listos para compartir.
                 </p>
 
@@ -230,7 +239,7 @@
                         <div class="grid-card-icon">🤖</div>
                         <div class="grid-card-content">
                             <strong>Copiloto Inteligente</strong>
-                            <p>Dosifica los 90 minutos y te sugiere la mejor acción en cada etapa.</p>
+                            <p>Dosifica las clases de 60 o 90 min y te sugiere la mejor acción en cada etapa.</p>
                         </div>
                     </div>
 

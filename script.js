@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT ACTUALIZADO A 16 CRITERIOS (78 PTS)
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON SOPORTE PARA CLASES 60 Y 90 MIN
    ========================================================================== */
 
 const CRITERIA_DATA = [
@@ -233,6 +233,7 @@ const STORAGE_KEY_COLLAPSED = "tutorChecklist_v5_collapsed";
 const STORAGE_KEY_THEME = "tutorChecklist_v5_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v5_assistant_time";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v5_welcome_shown";
+const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
 // ==========================================================================
 // CONTADOR DE VISITAS EN VIVO CON FIRESTORE REST API (PROYECTO: tienda-c69be)
@@ -250,6 +251,7 @@ let activeCategoryFilter = "all";
 let searchQuery = "";
 let isExpandedAll = false;
 let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || "light";
+let classDurationMin = parseInt(localStorage.getItem(STORAGE_KEY_CLASS_DURATION)) || 90;
 
 // ESTADO DEL MODO ASISTENTE
 let isAssistantActive = false;
@@ -274,6 +276,8 @@ const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearch");
 const filterTabs = document.querySelectorAll(".filter-tab");
 const categoryFilterSelect = document.getElementById("categoryFilter");
+const classDurationSelect = document.getElementById("classDurationSelect");
+const durationBtns = document.querySelectorAll(".duration-btn");
 const toggleExpandBtn = document.getElementById("toggleExpandBtn");
 const expandIcon = document.getElementById("expandIcon");
 const expandText = document.getElementById("expandText");
@@ -326,7 +330,6 @@ async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
-        // 1. Obtener conteo actual desde Firestore
         let currentCount = 0;
         const getRes = await fetch(FIRESTORE_DOC_URL);
         
@@ -337,13 +340,11 @@ async function initVisitCounter() {
             }
         }
 
-        // 2. Control anti-inflación por sesión de navegador
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
 
         if (!hasVisitedThisSession) {
             currentCount += 1;
 
-            // 3. Incrementar en vivo en Firestore mediante PATCH REST API
             fetch(`${FIRESTORE_DOC_URL}?updateMask.fieldPaths=count`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -362,13 +363,71 @@ async function initVisitCounter() {
             });
         }
 
-        // 4. Mostrar en pantalla
         visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas Firestore REST API:", error);
         visitCountText.textContent = `1 visitas`;
     }
+}
+
+// CAMBIAR DURACIÓN DE CLASE (60 MIN O 90 MIN)
+function setClassDuration(duration) {
+    if (duration !== 60 && duration !== 90) return;
+    classDurationMin = duration;
+    localStorage.setItem(STORAGE_KEY_CLASS_DURATION, duration);
+
+    // Ajustar segundos acumulados si superan la nueva duración
+    const maxSec = classDurationMin * 60;
+    if (assistantSeconds > maxSec) {
+        assistantSeconds = maxSec;
+        localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, assistantSeconds);
+    }
+
+    updatePhaseStepperLabels();
+    if (isAssistantActive) updateAssistantUI();
+}
+
+// ACTUALIZAR ETIQUETAS E HITOS DE FASES SEGÚN DURACIÓN
+function updatePhaseStepperLabels() {
+    const is60 = classDurationMin === 60;
+    const stepperNodes = document.querySelectorAll("#assistantPhaseStepper .step-node");
+    
+    if (stepperNodes.length >= 5) {
+        stepperNodes[0].querySelector(".node-label").textContent = is60 ? "Inicio (0-10')" : "Inicio (0-15')";
+        stepperNodes[1].querySelector(".node-label").textContent = is60 ? "Explicación (10-30')" : "Explicación (15-45')";
+        stepperNodes[2].querySelector(".node-label").textContent = is60 ? "Práctica (30-50')" : "Práctica (45-75')";
+        stepperNodes[3].querySelector(".node-label").textContent = is60 ? "Cierre (50-57')" : "Cierre (75-85')";
+        stepperNodes[4].querySelector(".node-label").textContent = is60 ? "Final (57-60')" : "Final (85-90')";
+    }
+
+    const milestonesContainer = document.querySelector(".timeline-milestones");
+    if (milestonesContainer) {
+        milestonesContainer.innerHTML = is60
+            ? `<span class="milestone-dot" style="left: 0%;">0'</span>
+               <span class="milestone-dot" style="left: 16.6%;">10'</span>
+               <span class="milestone-dot" style="left: 50%;">30'</span>
+               <span class="milestone-dot" style="left: 83.3%;">50'</span>
+               <span class="milestone-dot" style="left: 100%;">60'</span>`
+            : `<span class="milestone-dot" style="left: 0%;">0'</span>
+               <span class="milestone-dot" style="left: 16.6%;">15'</span>
+               <span class="milestone-dot" style="left: 50%;">45'</span>
+               <span class="milestone-dot" style="left: 83.3%;">75'</span>
+               <span class="milestone-dot" style="left: 100%;">90'</span>`;
+    }
+
+    const headerDurationText = document.getElementById("headerDurationText");
+    if (headerDurationText) headerDurationText.textContent = classDurationMin;
+
+    const assistantLiveDurationText = document.getElementById("assistantLiveDurationText");
+    if (assistantLiveDurationText) assistantLiveDurationText.textContent = classDurationMin;
+
+    if (classDurationSelect) classDurationSelect.value = String(classDurationMin);
+
+    const dBtns = document.querySelectorAll(".duration-btn");
+    dBtns.forEach(btn => {
+        btn.classList.toggle("active", parseInt(btn.getAttribute("data-duration")) === classDurationMin);
+    });
 }
 
 // EFECTO DE CONFETI LOCALIZADO
@@ -440,6 +499,7 @@ function init() {
     loadAndSanitizeStorage();
     applyTheme(currentTheme);
     setupEventListeners();
+    updatePhaseStepperLabels();
     checkWelcomeModal();
     render();
     initVisitCounter();
@@ -493,7 +553,7 @@ function launchGuidedTour() {
                 element: '#assistantToggleBtn',
                 popover: {
                     title: '🤖 Modo Asistente / 🎮 Modo Manual',
-                    description: 'Conmuta entre el Copiloto Inteligente de 90 min y el Modo Manual Libre con animación de giro orbital.',
+                    description: 'Conmuta entre el Copiloto Inteligente (para clases de 60 o 90 min) y el Modo Manual Libre con animación orbital.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -519,8 +579,8 @@ function launchGuidedTour() {
             {
                 element: '.toolbar',
                 popover: {
-                    title: '🔍 Buscador y Filtros de Estado',
-                    description: 'Encuentra criterios por número o palabra clave, y conmuta entre ver Todos, Pendientes o Cumplidos.',
+                    title: '🔍 Buscador y Selector de Duración (60 / 90 min)',
+                    description: 'Filtra por duración de lección (60m o 90m), busca por palabra clave y conmuta entre ver Todos, Pendientes o Cumplidos.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -600,7 +660,8 @@ function startTimer() {
     isTimerRunning = true;
     assistantPlayPauseBtn.textContent = "⏸️";
     assistantInterval = setInterval(() => {
-        if (assistantSeconds < 5400) {
+        const maxSec = classDurationMin * 60;
+        if (assistantSeconds < maxSec) {
             assistantSeconds++;
             localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, assistantSeconds);
             updateAssistantUI();
@@ -647,17 +708,18 @@ function updatePhaseStepper(activePhaseNum) {
     });
 }
 
-// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA (16 CRITERIOS)
+// CÁLCULO DE RECOMENDACIÓN PEDAGÓGICA (DINÁMICO PARA 60 MIN O 90 MIN)
 function updateAssistantUI() {
     if (!isAssistantActive) return;
 
+    const maxSeconds = classDurationMin * 60;
     const minutes = Math.floor(assistantSeconds / 60);
     const secs = assistantSeconds % 60;
     const formatMin = String(minutes).padStart(2, '0');
     const formatSec = String(secs).padStart(2, '0');
 
-    assistantTimerText.textContent = `${formatMin}:${formatSec} / 90:00`;
-    const timelinePct = Math.min((assistantSeconds / 5400) * 100, 100);
+    assistantTimerText.textContent = `${formatMin}:${formatSec} / ${classDurationMin}:00`;
+    const timelinePct = Math.min((assistantSeconds / maxSeconds) * 100, 100);
     assistantTimelineProgress.style.width = `${timelinePct}%`;
 
     const allItems = getAllItems();
@@ -670,10 +732,16 @@ function updateAssistantUI() {
     let suggestionReasonText = "";
     let currentCategoryKey = "inicio";
 
-    if (minutes < 15) {
+    // Límites de tiempo dinámicos según clase de 60 min o 90 min
+    const p1Max = classDurationMin === 60 ? 10 : 15;
+    const p2Max = classDurationMin === 60 ? 30 : 45;
+    const p3Max = classDurationMin === 60 ? 50 : 75;
+    const p4Max = classDurationMin === 60 ? 57 : 85;
+
+    if (minutes < p1Max) {
         phaseNum = 1;
         currentCategoryKey = "inicio";
-        phaseName = "🚀 Fase 1: Inicio (Min 0 - 15)";
+        phaseName = `🚀 Fase 1: Inicio (Min 0 - ${p1Max})`;
         phaseTag = `ETAPA DE INICIO`;
 
         const pendingInicio = pendingItems.filter(i => i.categoryKey === "inicio");
@@ -701,10 +769,10 @@ function updateAssistantUI() {
             }
         }
 
-    } else if (minutes < 45) {
+    } else if (minutes < p2Max) {
         phaseNum = 2;
         currentCategoryKey = "instruccion";
-        phaseName = "💡 Fase 2: Explicación y Práctica (Min 15 - 45)";
+        phaseName = `💡 Fase 2: Explicación y Práctica (Min ${p1Max} - ${p2Max})`;
         phaseTag = `INSTRUCCIÓN Y PRÁCTICA`;
 
         const pendingInstruccion = pendingItems.filter(i => i.categoryKey === "instruccion");
@@ -733,10 +801,10 @@ function updateAssistantUI() {
             }
         }
 
-    } else if (minutes < 75) {
+    } else if (minutes < p3Max) {
         phaseNum = 3;
         currentCategoryKey = "participacion";
-        phaseName = "✏️ Fase 3: Participación e Interacción (Min 45 - 75)";
+        phaseName = `✏️ Fase 3: Participación e Interacción (Min ${p2Max} - ${p3Max})`;
         phaseTag = `PARTICIPACIÓN Y PEDAGOGÍA`;
 
         const pendingPractica = pendingItems.filter(i => (i.categoryKey === "participacion" || i.categoryKey === "pedagogia") && i.categoryKey !== "cierre");
@@ -758,14 +826,14 @@ function updateAssistantUI() {
             return;
         }
 
-    } else if (minutes < 85) {
+    } else if (minutes < p4Max) {
         phaseNum = 4;
         currentCategoryKey = "cierre";
-        phaseName = `🎯 Fase 4: Cierre de Clase (Min 75 - 85)`;
+        phaseName = `🎯 Fase 4: Cierre de Clase (Min ${p3Max} - ${p4Max})`;
 
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
 
-        if (minutes < 80) {
+        if (minutes < (p3Max + 3)) {
             phaseTag = `REPASO Y RESUMEN`;
             suggestedItem = pendingCierre.find(i => i.number === 14) || pendingCierre[0] || pendingItems[0];
             suggestionReasonText = `Dedica este momento a realizar una recapitulación o resumen final de la lección.`;
@@ -778,7 +846,7 @@ function updateAssistantUI() {
     } else {
         phaseNum = 5;
         currentCategoryKey = "cierre";
-        phaseName = `🏁 Fase 5: Final de Lección (Min 85 - 90)`;
+        phaseName = `🏁 Fase 5: Final de Lección (Min ${p4Max} - ${classDurationMin})`;
         phaseTag = `CONTINUIDAD Y DESPEDIDA`;
         const pendingCierre = pendingItems.filter(i => i.categoryKey === "cierre");
         suggestedItem = pendingCierre.find(i => i.number === 16) || pendingCierre[0] || pendingItems[0];
@@ -826,6 +894,19 @@ function setupEventListeners() {
     });
 
     assistantResetTimerBtn.addEventListener("click", resetTimer);
+
+    if (classDurationSelect) {
+        classDurationSelect.addEventListener("change", (e) => {
+            setClassDuration(parseInt(e.target.value));
+        });
+    }
+
+    durationBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const duration = parseInt(btn.getAttribute("data-duration"));
+            setClassDuration(duration);
+        });
+    });
 
     suggestionCompleteBtn.addEventListener("click", (e) => {
         if (currentSuggestedItem) {
@@ -932,7 +1013,7 @@ function downloadReportAsTxt() {
 
     const now = new Date();
     const dateStr = now.toISOString().split("T")[0];
-    const filename = `Reporte_Observacion_Clase_${dateStr}.txt`;
+    const filename = `Reporte_Observacion_Clase_${classDurationMin}min_${dateStr}.txt`;
 
     const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
     const link = document.createElement("a");
@@ -1121,7 +1202,7 @@ function renderChecklistCategories() {
             }
 
             const transversalBadgeHtml = isTransversal 
-                ? `<span class="transversal-badge" title="Criterio continuo: Se aplica durante toda la lección de 90 min">🔁 Toda la clase</span>`
+                ? `<span class="transversal-badge" title="Criterio continuo: Se aplica durante toda la lección de ${classDurationMin} min">🔁 Toda la clase</span>`
                 : "";
 
             itemCard.innerHTML = `
@@ -1212,7 +1293,7 @@ function openExportModal() {
     const dateStr = now.toLocaleDateString("es-ES", { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
     let report = `====================================\n`;
-    report += `CHECKLIST DE OBSERVACIÓN DE CLASE\n`;
+    report += `CHECKLIST DE OBSERVACIÓN DE CLASE (${classDurationMin} MIN)\n`;
     report += `Fecha: ${dateStr}\n`;
     report += `Criterios Cumplidos: ${completedCount} / ${totalCount} (${percentage}%)\n`;
     report += `PUNTAJE TOTAL: ${earnedScore} / ${maxScore} PUNTOS\n`;
