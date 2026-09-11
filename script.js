@@ -275,7 +275,6 @@ const visitCountText = document.getElementById("visitCountText");
 const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearch");
 const filterTabs = document.querySelectorAll(".filter-tab");
-const categoryFilterSelect = document.getElementById("categoryFilter");
 const durationBtns = document.querySelectorAll(".duration-btn");
 const toggleExpandBtn = document.getElementById("toggleExpandBtn");
 const expandIcon = document.getElementById("expandIcon");
@@ -941,16 +940,6 @@ function setupEventListeners() {
         });
     });
 
-    categoryFilterSelect.addEventListener("change", (e) => {
-        activeCategoryFilter = e.target.value;
-        if (activeCategoryFilter !== "all") {
-            expandCategory(activeCategoryFilter);
-        } else {
-            collapsedCategories = [];
-            localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
-        }
-        render();
-    });
 
     toggleExpandBtn.addEventListener("click", () => {
         isExpandedAll = !isExpandedAll;
@@ -1082,7 +1071,6 @@ function renderCategoryStrip() {
     allChip.innerHTML = `<span class="cat-dot" style="background:#64748b"></span> Todas (${completedItems.length}/${getAllItems().length})`;
     allChip.addEventListener("click", () => {
         activeCategoryFilter = "all";
-        categoryFilterSelect.value = "all";
         collapsedCategories = [];
         localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
         render();
@@ -1105,7 +1093,6 @@ function renderCategoryStrip() {
 
         chip.addEventListener("click", () => {
             activeCategoryFilter = cat.categoryKey;
-            categoryFilterSelect.value = cat.categoryKey;
             expandCategory(cat.categoryKey);
             render();
         });
