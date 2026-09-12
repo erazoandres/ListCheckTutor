@@ -241,6 +241,7 @@ const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 // ==========================================================================
 const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/count-listchecker";
 const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
+const BASE_VISITS_OFFSET = 200; // Base inicial acumulada de 200 visitas sumadas en vivo
 
 // GESTIÓN DE ESTADO
 let completedItems = [];
@@ -330,12 +331,8 @@ async function initVisitCounter() {
     if (!visitCountText) return;
 
     // Carga inicial desde caché local si existe
-    let currentCount = parseInt(localStorage.getItem(STORAGE_KEY_VISITS_CACHE)) || 0;
-    if (currentCount > 0) {
-        visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
-    } else {
-        visitCountText.textContent = `... visitas`;
-    }
+    let currentCount = parseInt(localStorage.getItem(STORAGE_KEY_VISITS_CACHE)) || BASE_VISITS_OFFSET;
+    visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
 
     try {
         const targetUrl = `${COUNTER_API_BASE_URL}/up?token=${COUNTER_API_TOKEN}&_t=${Date.now()}`;
@@ -344,16 +341,16 @@ async function initVisitCounter() {
         if (res.ok) {
             const json = await res.json();
             if (json.data && typeof json.data.up_count === "number") {
-                currentCount = json.data.up_count;
+                currentCount = BASE_VISITS_OFFSET + json.data.up_count;
                 localStorage.setItem(STORAGE_KEY_VISITS_CACHE, currentCount);
-                console.log(`✅ Nueva visita contabilizada en CounterAPI v2 (Total Real: ${currentCount}).`);
+                console.log(`✅ Nueva visita contabilizada en CounterAPI v2 (Total en pantalla: ${currentCount}).`);
                 visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
             }
         }
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas CounterAPI v2:", error);
-        const cached = localStorage.getItem(STORAGE_KEY_VISITS_CACHE) || 0;
+        const cached = localStorage.getItem(STORAGE_KEY_VISITS_CACHE) || BASE_VISITS_OFFSET;
         visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
