@@ -41,7 +41,7 @@
                     <span class="stat-count" id="progressText">0 / 16</span>
                 </div>
 
-                <div class="stat-badge visits-badge" title="Visitas totales al sitio web (Firestore)">
+                <div class="stat-badge visits-badge" title="Visitas totales en vivo (CounterAPI)">
                     <span class="stat-icon">👁️</span>
                     <span class="stat-value" id="visitCountText">...</span>
                 </div>
@@ -166,12 +166,6 @@
 
         <!-- TOOLBAR MODERNA -->
         <section class="toolbar">
-            <div class="search-input-wrapper">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Buscar criterio o número..." autocomplete="off">
-                <button id="clearSearch" class="clear-btn hidden">✕</button>
-            </div>
-
             <div class="segmented-control">
                 <button class="filter-tab active" data-filter="all">Todos (<span id="countAll">16</span>)</button>
                 <button class="filter-tab" data-filter="pending">Pendientes (<span id="countPending">16</span>)</button>

@@ -248,7 +248,6 @@ let itemNotes = {};
 let collapsedCategories = [];
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
-let searchQuery = "";
 let isExpandedAll = false;
 let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || "light";
 let classDurationMin = parseInt(localStorage.getItem(STORAGE_KEY_CLASS_DURATION)) || 90;
@@ -272,8 +271,6 @@ const completedText = document.getElementById("completedText");
 const categoryStatsGrid = document.getElementById("categoryStatsGrid");
 const visitCountText = document.getElementById("visitCountText");
 
-const searchInput = document.getElementById("searchInput");
-const clearSearchBtn = document.getElementById("clearSearch");
 const filterTabs = document.querySelectorAll(".filter-tab");
 const durationBtns = document.querySelectorAll(".duration-btn");
 const toggleExpandBtn = document.getElementById("toggleExpandBtn");
@@ -330,8 +327,11 @@ const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hora (60 minutos)
 async function initVisitCounter() {
     if (!visitCountText) return;
 
+    // Renderizado instantáneo de la cifra en caché (0ms de retraso visual)
+    let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 0;
+    visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
+
     try {
-        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 0;
         const lastVisitTime = parseInt(localStorage.getItem(STORAGE_KEY_LAST_VISIT_TIME)) || 0;
         const now = Date.now();
         const hasHourPassed = (now - lastVisitTime) > ONE_HOUR_MS;
@@ -353,10 +353,9 @@ async function initVisitCounter() {
                     localStorage.setItem(STORAGE_KEY_LAST_VISIT_TIME, now);
                     console.log(`✅ Nueva visita contabilizada tras 1h en CounterAPI v2 (Total: ${currentCount}).`);
                 }
+                visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
             }
         }
-
-        visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas CounterAPI v2:", error);
@@ -570,8 +569,8 @@ function launchGuidedTour() {
             {
                 element: '.toolbar',
                 popover: {
-                    title: '🔍 Buscador y Filtros de Estado',
-                    description: 'Busca por palabra clave o número y conmuta entre ver Todos, Pendientes o Cumplidos.',
+                    title: '🏷️ Filtros de Estado',
+                    description: 'Conmuta entre ver Todos, Pendientes o Cumplidos.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -911,18 +910,6 @@ function setupEventListeners() {
         if (e.target === welcomeModal) closeWelcomeModal();
     });
 
-    searchInput.addEventListener("input", (e) => {
-        searchQuery = e.target.value.toLowerCase().trim();
-        clearSearchBtn.classList.toggle("hidden", searchQuery.length === 0);
-        render();
-    });
-
-    clearSearchBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        searchQuery = "";
-        clearSearchBtn.classList.add("hidden");
-        render();
-    });
 
     filterTabs.forEach(tab => {
         tab.addEventListener("click", () => {
@@ -1107,13 +1094,6 @@ function renderChecklistCategories() {
             const isCompleted = completedItems.includes(item.id);
             if (activeStatusFilter === "pending" && isCompleted) return false;
             if (activeStatusFilter === "completed" && !isCompleted) return false;
-
-            if (searchQuery.length > 0) {
-                const matchNumber = item.number.toString() === searchQuery;
-                const matchTitle = item.title.toLowerCase().includes(searchQuery);
-                const matchQuestion = item.item_question.toLowerCase().includes(searchQuery);
-                return matchNumber || matchTitle || matchQuestion;
-            }
             return true;
         });
 
