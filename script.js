@@ -237,9 +237,9 @@ const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
 // ==========================================================================
 // CONTADOR DE VISITAS EN VIVO CON COUNTERAPI V2
-// Workspace: andres-erazos-team-5506 | Slug: visitar-checklist
+// Workspace: andres-erazos-team-5506 | Slug: count_listChecker (slug en API: count-listchecker)
 // ==========================================================================
-const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/visitar-checklist";
+const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/count-listchecker";
 const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
 
 // GESTIÓN DE ESTADO
@@ -323,40 +323,44 @@ const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 const STORAGE_KEY_LAST_VISIT_TIME = "tutorChecklist_v5_last_visit_timestamp";
 const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hora (60 minutos)
 
-// CONEXIÓN DIRECTA A COUNTERAPI V2 CON CONTROL DE 1 HORA POR VISITA
+const STORAGE_KEY_VISITS_CACHE = "tutor_count_listchecker_visits";
+
+// CONEXIÓN DIRECTA A COUNTERAPI V2 (INCREMENTA Y CONECTA EN VIVO EN CADA RECARGA DE PÁGINA)
 async function initVisitCounter() {
     if (!visitCountText) return;
 
-    // Renderizado instantáneo de la cifra en caché (0ms de retraso visual)
-    let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 0;
-    visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
+    // Carga inicial desde caché local si existe
+    let currentCount = parseInt(localStorage.getItem(STORAGE_KEY_VISITS_CACHE)) || 0;
+    if (currentCount > 0) {
+        visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
+    } else {
+        visitCountText.textContent = `... visitas`;
+    }
 
     try {
-        const lastVisitTime = parseInt(localStorage.getItem(STORAGE_KEY_LAST_VISIT_TIME)) || 0;
-        const now = Date.now();
-        const hasHourPassed = (now - lastVisitTime) > ONE_HOUR_MS;
-
-        const endpoint = hasHourPassed ? `${COUNTER_API_BASE_URL}/up` : COUNTER_API_BASE_URL;
-        const targetUrl = `${endpoint}?token=${COUNTER_API_TOKEN}`;
-
-        const res = await fetch(targetUrl);
+        // Se añade _t=Date.now() y headers anti-caché para evitar que Cloudflare devuelva respuestas cacheadas (HIT 4h)
+        const targetUrl = `${COUNTER_API_BASE_URL}/up?token=${COUNTER_API_TOKEN}&_t=${Date.now()}`;
+        const res = await fetch(targetUrl, {
+            cache: "no-store",
+            headers: {
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache"
+            }
+        });
 
         if (res.ok) {
             const json = await res.json();
             if (json.data && typeof json.data.up_count === "number") {
                 currentCount = json.data.up_count;
-                localStorage.setItem("tutor_last_real_visits", currentCount);
-                if (hasHourPassed) {
-                    localStorage.setItem(STORAGE_KEY_LAST_VISIT_TIME, now);
-                    console.log(`✅ Nueva visita contabilizada tras 1h en CounterAPI v2 (Total: ${currentCount}).`);
-                }
+                localStorage.setItem(STORAGE_KEY_VISITS_CACHE, currentCount);
+                console.log(`✅ Nueva visita contabilizada en CounterAPI v2 (Total Real: ${currentCount}).`);
                 visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
             }
         }
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas CounterAPI v2:", error);
-        const cached = localStorage.getItem("tutor_last_real_visits") || 0;
+        const cached = localStorage.getItem(STORAGE_KEY_VISITS_CACHE) || 0;
         visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
