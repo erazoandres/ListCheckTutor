@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON VISITAS REALES DE FIRESTORE
+   CHECKLIST DE OBSERVACIÓN DE CLASE - SCRIPT CON VISITAS REALES CON COUNTERAPI V2
    ========================================================================== */
 
 const CRITERIA_DATA = [
