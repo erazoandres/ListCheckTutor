@@ -1155,7 +1155,10 @@ function renderChecklistCategories() {
         categoryGroup.appendChild(categoryHeader);
 
         const itemsContainer = document.createElement("div");
-        itemsContainer.className = `category-items ${isCatCollapsed ? "hidden" : ""}`;
+        itemsContainer.className = `category-items ${isCatCollapsed ? "is-collapsed-items" : ""}`;
+
+        const itemsInner = document.createElement("div");
+        itemsInner.className = "category-items-inner";
 
         filteredItems.forEach(item => {
             const isChecked = completedItems.includes(item.id);
@@ -1208,11 +1211,11 @@ function renderChecklistCategories() {
                     </div>
                     <div class="detail-box evidence">
                         <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
-                        <div class="detail-text">${item.comment}</div>
+                        <div class="detail-text">${item.evidence_comment}</div>
                     </div>
-                    <div class="notes-input-box">
-                        <span class="detail-label">✏️ Nota de la Lección</span>
-                        <textarea placeholder="Apuntar notas de la clase..." data-id="${item.id}">${userNote}</textarea>
+                    <div class="notes-wrap">
+                        <span class="detail-label">📝 Notas / Evidencia del Tutor (Opcional)</span>
+                        <textarea placeholder="Escribe observaciones específicas sobre este criterio...">${userNote}</textarea>
                     </div>
                 </div>
             `;
@@ -1237,9 +1240,10 @@ function renderChecklistCategories() {
                 saveNote(item.id, e.target.value);
             });
 
-            itemsContainer.appendChild(itemCard);
+            itemsInner.appendChild(itemCard);
         });
 
+        itemsContainer.appendChild(itemsInner);
         categoryGroup.appendChild(itemsContainer);
         checklistContainer.appendChild(categoryGroup);
     });

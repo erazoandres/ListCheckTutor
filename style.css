@@ -973,12 +973,28 @@ body.assistant-focus-active .assistant-widget {
     100% { transform: scale(1); opacity: 1; }
 }
 
-.category-items.auto-collapsed {
-    max-height: 0;
+/* ANIMACIÓN DE PLEGADO SUAVE (FOLDING SLIDE ACCORDION) */
+.category-items {
+    display: grid;
+    grid-template-rows: 1fr;
+    opacity: 1;
     overflow: hidden;
+    transition: grid-template-rows 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.3s ease;
+    margin-top: 8px;
+}
+
+.category-items-inner {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-items.is-collapsed-items,
+.category-group.is-collapsed .category-items {
+    grid-template-rows: 0fr;
     opacity: 0;
-    transform: translateY(-6px);
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease;
+    margin-top: 0 !important;
+    pointer-events: none;
 }
 
 .category-title-badge {
@@ -1014,7 +1030,7 @@ body.assistant-focus-active .assistant-widget {
 .cat-collapse-arrow {
     font-size: 11px;
     color: var(--text-muted);
-    transition: transform 0.25s ease;
+    transition: transform 0.3s ease;
     display: inline-block;
 }
 
