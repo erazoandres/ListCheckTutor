@@ -240,7 +240,6 @@ const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 // Workspace: andres-erazos-team-5506 | Slug: visitar-checklist
 // ==========================================================================
 const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/visitar-checklist";
-const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
 
 // GESTIÓN DE ESTADO
 let completedItems = [];
@@ -338,11 +337,7 @@ async function initVisitCounter() {
 
         const targetUrl = hasHourPassed ? `${COUNTER_API_BASE_URL}/up` : COUNTER_API_BASE_URL;
 
-        const res = await fetch(targetUrl, {
-            headers: {
-                "Authorization": `Bearer ${COUNTER_API_TOKEN}`
-            }
-        });
+        const res = await fetch(targetUrl);
 
         if (res.ok) {
             const json = await res.json();
