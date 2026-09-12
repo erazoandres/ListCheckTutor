@@ -237,7 +237,7 @@ const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
 // ==========================================================================
 // CONTADOR DE VISITAS EN VIVO CON COUNTERAPI V2
-// Workspace: andres-erazos-team-5506 | Slug: count_listChecker (slug en API: count-listchecker)
+// Workspace: andres-erazos-team-5506 | Slug: count-listchecker
 // ==========================================================================
 const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/count-listchecker";
 const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
