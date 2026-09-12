@@ -237,9 +237,9 @@ const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
 // ==========================================================================
 // CONTADOR DE VISITAS EN VIVO CON COUNTERAPI V2
-// Workspace: andres-erazos-team-5506 | Slug: first-counter-5506
+// Workspace: andres-erazos-team-5506 | Slug: visitar-checklist
 // ==========================================================================
-const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/first-counter-5506";
+const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/visitar-checklist";
 const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
 
 // GESTIÓN DE ESTADO
@@ -331,7 +331,7 @@ async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
-        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 199;
+        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 0;
         const lastVisitTime = parseInt(localStorage.getItem(STORAGE_KEY_LAST_VISIT_TIME)) || 0;
         const now = Date.now();
         const hasHourPassed = (now - lastVisitTime) > ONE_HOUR_MS;
@@ -360,7 +360,7 @@ async function initVisitCounter() {
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas CounterAPI v2:", error);
-        const cached = localStorage.getItem("tutor_last_real_visits") || 199;
+        const cached = localStorage.getItem("tutor_last_real_visits") || 0;
         visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
