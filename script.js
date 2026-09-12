@@ -462,6 +462,16 @@ function loadAndSanitizeStorage() {
 
     itemNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {};
     collapsedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_COLLAPSED)) || [];
+
+    // AUTO-COLLAPSE EN CARGA: Asegurar que las categorías 100% completadas inicien colapsadas
+    CRITERIA_DATA.forEach(category => {
+        const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
+        const isAllDone = (catDoneCount === category.items.length) && (category.items.length > 0);
+        if (isAllDone && !collapsedCategories.includes(category.categoryKey)) {
+            collapsedCategories.push(category.categoryKey);
+        }
+    });
+    localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
 }
 
 // CALCULAR PUNTAJE TOTAL MÁXIMO Y OBTENIDO
@@ -987,6 +997,25 @@ function toggleItem(id, event) {
         }
     } else {
         completedItems = completedItems.filter(itemId => itemId !== id);
+    }
+
+    // AUTO-COLLAPSE: Si la categoría del ítem se completó al 100%, se colapsa (minimiza) automáticamente
+    const category = CRITERIA_DATA.find(cat => cat.items.some(item => item.id === id));
+    if (category) {
+        const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
+        const isAllDone = (catDoneCount === category.items.length) && (category.items.length > 0);
+        
+        if (isAllDone) {
+            if (!collapsedCategories.includes(category.categoryKey)) {
+                collapsedCategories.push(category.categoryKey);
+                localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+            }
+        } else {
+            if (collapsedCategories.includes(category.categoryKey)) {
+                collapsedCategories = collapsedCategories.filter(k => k !== category.categoryKey);
+                localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+            }
+        }
     }
     
     localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedItems));
