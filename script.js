@@ -236,11 +236,11 @@ const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v5_welcome_shown";
 const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
 // ==========================================================================
-// CONTADOR DE VISITAS EN VIVO CON FIRESTORE REST API (PROYECTO: tienda-c69be)
-// Colección: "visitas_list_checker" | Documento: "visitas" | Campo: "count"
+// CONTADOR DE VISITAS EN VIVO CON COUNTERAPI V2
+// Workspace: andres-erazos-team-5506 | Slug: first-counter-5506
 // ==========================================================================
-const FIRESTORE_PROJECT_ID = 'tienda-c69be';
-const FIRESTORE_DOC_URL = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT_ID}/databases/(default)/documents/visitas_list_checker/visitas`;
+const COUNTER_API_BASE_URL = "https://api.counterapi.dev/v2/andres-erazos-team-5506/first-counter-5506";
+const COUNTER_API_TOKEN = "hut_RgMiTYRz64ucJFkNESQwl7GLCPcbo7VEHPBCGuBM";
 
 // GESTIÓN DE ESTADO
 let completedItems = [];
@@ -323,51 +323,38 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// CONEXIÓN DIRECTA A FIRESTORE REST API CON LECTURA PURAMENTE REAL EN VIVO
+// CONEXIÓN DIRECTA A COUNTERAPI V2 CON LECTURA Y CONTEO EN VIVO
 async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
-        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 162;
-        const getRes = await fetch(FIRESTORE_DOC_URL);
-        
-        if (getRes.ok) {
-            const data = await getRes.json();
-            if (data.fields && data.fields.count) {
-                currentCount = Number(data.fields.count.integerValue || data.fields.count.doubleValue || currentCount);
-                localStorage.setItem("tutor_last_real_visits", currentCount);
-            }
-        }
-
+        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 199;
         const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
+        const targetUrl = hasVisitedThisSession ? COUNTER_API_BASE_URL : `${COUNTER_API_BASE_URL}/up`;
 
-        if (!hasVisitedThisSession) {
-            currentCount += 1;
-            localStorage.setItem("tutor_last_real_visits", currentCount);
+        const res = await fetch(targetUrl, {
+            headers: {
+                "Authorization": `Bearer ${COUNTER_API_TOKEN}`
+            }
+        });
 
-            fetch(`${FIRESTORE_DOC_URL}?updateMask.fieldPaths=count`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    fields: {
-                        count: { integerValue: String(currentCount) }
-                    }
-                })
-            }).then(patchRes => {
-                if (patchRes.ok) {
+        if (res.ok) {
+            const json = await res.json();
+            if (json.data && typeof json.data.up_count === "number") {
+                currentCount = json.data.up_count;
+                localStorage.setItem("tutor_last_real_visits", currentCount);
+                if (!hasVisitedThisSession) {
                     sessionStorage.setItem("tutor_visit_recorded", "true");
-                    console.log(`✅ Visita real registrada exitosamente en Firestore (Total: ${currentCount}).`);
+                    console.log(`✅ Visita registrada en CounterAPI v2 (Total: ${currentCount}).`);
                 }
-            }).catch(err => {
-                console.warn("Nota de actualización en Firestore:", err);
-            });
+            }
         }
 
         visitCountText.textContent = `${currentCount.toLocaleString()} visitas`;
 
     } catch (error) {
-        console.warn("Error leyendo contador de visitas Firestore REST API:", error);
-        const cached = localStorage.getItem("tutor_last_real_visits") || 162;
+        console.warn("Error leyendo contador de visitas CounterAPI v2:", error);
+        const cached = localStorage.getItem("tutor_last_real_visits") || 199;
         visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
