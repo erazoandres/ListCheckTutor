@@ -328,7 +328,7 @@ async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
-        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 146;
+        let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 162;
         const getRes = await fetch(FIRESTORE_DOC_URL);
         
         if (getRes.ok) {
@@ -367,7 +367,7 @@ async function initVisitCounter() {
 
     } catch (error) {
         console.warn("Error leyendo contador de visitas Firestore REST API:", error);
-        const cached = localStorage.getItem("tutor_last_real_visits") || 146;
+        const cached = localStorage.getItem("tutor_last_real_visits") || 162;
         visitCountText.textContent = `${Number(cached).toLocaleString()} visitas`;
     }
 }
