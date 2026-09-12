@@ -323,14 +323,20 @@ const reportTextarea = document.getElementById("reportTextarea");
 const copyModalBtn = document.getElementById("copyModalBtn");
 const downloadTxtBtn = document.getElementById("downloadTxtBtn");
 
-// CONEXIÓN DIRECTA A COUNTERAPI V2 CON LECTURA Y CONTEO EN VIVO
+const STORAGE_KEY_LAST_VISIT_TIME = "tutorChecklist_v5_last_visit_timestamp";
+const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hora (60 minutos)
+
+// CONEXIÓN DIRECTA A COUNTERAPI V2 CON CONTROL DE 1 HORA POR VISITA
 async function initVisitCounter() {
     if (!visitCountText) return;
 
     try {
         let currentCount = parseInt(localStorage.getItem("tutor_last_real_visits")) || 199;
-        const hasVisitedThisSession = sessionStorage.getItem("tutor_visit_recorded");
-        const targetUrl = hasVisitedThisSession ? COUNTER_API_BASE_URL : `${COUNTER_API_BASE_URL}/up`;
+        const lastVisitTime = parseInt(localStorage.getItem(STORAGE_KEY_LAST_VISIT_TIME)) || 0;
+        const now = Date.now();
+        const hasHourPassed = (now - lastVisitTime) > ONE_HOUR_MS;
+
+        const targetUrl = hasHourPassed ? `${COUNTER_API_BASE_URL}/up` : COUNTER_API_BASE_URL;
 
         const res = await fetch(targetUrl, {
             headers: {
@@ -343,9 +349,9 @@ async function initVisitCounter() {
             if (json.data && typeof json.data.up_count === "number") {
                 currentCount = json.data.up_count;
                 localStorage.setItem("tutor_last_real_visits", currentCount);
-                if (!hasVisitedThisSession) {
-                    sessionStorage.setItem("tutor_visit_recorded", "true");
-                    console.log(`✅ Visita registrada en CounterAPI v2 (Total: ${currentCount}).`);
+                if (hasHourPassed) {
+                    localStorage.setItem(STORAGE_KEY_LAST_VISIT_TIME, now);
+                    console.log(`✅ Nueva visita contabilizada tras 1h en CounterAPI v2 (Total: ${currentCount}).`);
                 }
             }
         }
