@@ -418,10 +418,17 @@ function triggerConfettiAtElement(element) {
     let x = 0.5;
     let y = 0.5;
 
-    if (element && element.getBoundingClientRect) {
-        const rect = element.getBoundingClientRect();
-        x = (rect.left + rect.width / 2) / window.innerWidth;
-        y = (rect.top + rect.height / 2) / window.innerHeight;
+    if (element && (element instanceof Element || element instanceof HTMLElement) && typeof element.getBoundingClientRect === 'function') {
+        try {
+            const rect = element.getBoundingClientRect();
+            if (rect && typeof rect.left === 'number') {
+                x = (rect.left + rect.width / 2) / window.innerWidth;
+                y = (rect.top + rect.height / 2) / window.innerHeight;
+            }
+        } catch (e) {
+            x = 0.5;
+            y = 0.5;
+        }
     }
 
     window.confetti({
