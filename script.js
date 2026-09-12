@@ -338,15 +338,8 @@ async function initVisitCounter() {
     }
 
     try {
-        // Se añade _t=Date.now() y headers anti-caché para evitar que Cloudflare devuelva respuestas cacheadas (HIT 4h)
         const targetUrl = `${COUNTER_API_BASE_URL}/up?token=${COUNTER_API_TOKEN}&_t=${Date.now()}`;
-        const res = await fetch(targetUrl, {
-            cache: "no-store",
-            headers: {
-                "Cache-Control": "no-cache, no-store, must-revalidate",
-                "Pragma": "no-cache"
-            }
-        });
+        const res = await fetch(targetUrl);
 
         if (res.ok) {
             const json = await res.json();
