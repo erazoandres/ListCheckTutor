@@ -565,15 +565,7 @@ function launchGuidedTour() {
                     align: 'center'
                 }
             },
-            {
-                element: '#categoryStatsGrid',
-                popover: {
-                    title: '📂 Filtros por Etapa de Clase',
-                    description: 'Filtra rápidamente por Inicio, Instrucción, Participación, Pedagogía o Cierre de la clase.',
-                    side: 'bottom',
-                    align: 'start'
-                }
-            },
+
             {
                 element: '.toolbar',
                 popover: {
@@ -1108,41 +1100,8 @@ function updateProgressUI(total, completed) {
 }
 
 function renderCategoryStrip() {
+    if (!categoryStatsGrid) return;
     categoryStatsGrid.innerHTML = "";
-
-    const allChip = document.createElement("div");
-    allChip.className = `cat-strip-badge ${activeCategoryFilter === "all" ? "active" : ""}`;
-    allChip.innerHTML = `<span class="cat-dot" style="background:#64748b"></span> Todas (${completedItems.length}/${getAllItems().length})`;
-    allChip.addEventListener("click", () => {
-        activeCategoryFilter = "all";
-        collapsedCategories = [];
-        localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
-        render();
-    });
-    categoryStatsGrid.appendChild(allChip);
-
-    CRITERIA_DATA.forEach(cat => {
-        const catTotal = cat.items.length;
-        const catDone = cat.items.filter(item => completedItems.includes(item.id)).length;
-        const isActive = activeCategoryFilter === cat.categoryKey;
-        const isAllDone = catDone === catTotal && catTotal > 0;
-
-        const chip = document.createElement("div");
-        chip.className = `cat-strip-badge ${isActive ? "active" : ""} ${isAllDone ? "strip-completed" : ""}`;
-        chip.innerHTML = `
-            <span class="cat-dot" style="background:${cat.dotColor}"></span>
-            ${cat.shortTitle}
-            <span class="cat-num-tag">${isAllDone ? "✓" : `(${catDone}/${catTotal})`}</span>
-        `;
-
-        chip.addEventListener("click", () => {
-            activeCategoryFilter = cat.categoryKey;
-            expandCategory(cat.categoryKey);
-            render();
-        });
-
-        categoryStatsGrid.appendChild(chip);
-    });
 }
 
 function renderChecklistCategories() {
