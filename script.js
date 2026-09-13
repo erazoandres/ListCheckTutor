@@ -250,7 +250,7 @@ let collapsedCategories = [];
 let activeStatusFilter = "all";
 let activeCategoryFilter = "all";
 let isExpandedAll = false;
-let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || "light";
+let currentTheme = localStorage.getItem(STORAGE_KEY_THEME) || "dark";
 let classDurationMin = parseInt(localStorage.getItem(STORAGE_KEY_CLASS_DURATION)) || 90;
 
 // ESTADO DEL MODO ASISTENTE
