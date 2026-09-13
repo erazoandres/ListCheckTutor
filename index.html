@@ -18,12 +18,19 @@
 
     <div class="app-container">
 
-        <!-- HEADER CON BOTÓN CLARO DE TUTORIAL Y CONTADOR DE VISITAS -->
+        <!-- HEADER CON BOTÓN CLARO DE TUTORIAL Y CONTADOR DE VISITAS EN VIVO -->
         <header class="app-header">
+            <div class="header-top-line"></div>
+
             <div class="header-brand">
-                <div class="logo-badge">🚀</div>
-                <div>
-                    <h1>Tutor List Checker 🎯</h1>
+                <div class="logo-badge" title="Tutor List Checker">
+                    <span class="logo-icon">🚀</span>
+                </div>
+                <div class="title-wrap">
+                    <div class="title-row">
+                        <h1 class="header-title">Tutor List Checker</h1>
+                        <span class="badge-tag">PRO 6.2</span>
+                    </div>
                     <p class="subtitle">Medidor pedagógico y copiloto en tiempo real para clases de <span id="headerDurationText">90</span> min</p>
                 </div>
             </div>
@@ -42,6 +49,7 @@
                 </div>
 
                 <div class="stat-badge visits-badge" title="Visitas totales en vivo (CounterAPI)">
+                    <span class="live-dot" title="En vivo"></span>
                     <span class="stat-icon">👁️</span>
                     <span class="stat-value" id="visitCountText">...</span>
                 </div>
@@ -296,6 +304,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <!-- Driver.js JS para Tour Guiado -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="script.js?v=6.1"></script>
+    <script src="script.js?v=6.2"></script>
 </body>
 </html>

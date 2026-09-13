@@ -115,19 +115,39 @@ body {
     padding: 24px 18px 48px;
 }
 
-/* HEADER MODERNO ESTABLE SIN DESPLAZAMIENTOS */
+/* HEADER MODERNO Y ELEGANTE CON GLASSMORPHISM Y PULSO EN VIVO */
 .app-header {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 16px;
+    gap: 16px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
     background: var(--bg-card);
-    padding: 16px 20px;
-    border-radius: var(--radius-md);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 18px 24px;
+    border-radius: var(--radius-lg, 16px);
     border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Línea superior con gradiente sutil */
+.header-top-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3.5px;
+    background: linear-gradient(90deg, #2563eb, #0d9488, #ec4899, #6366f1);
+    border-radius: 16px 16px 0 0;
+}
+
+[data-theme="dark"] .app-header {
+    box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .header-brand {
@@ -138,38 +158,84 @@ body {
 }
 
 .logo-badge {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     background: linear-gradient(135deg, #2563eb, #0d9488);
     color: #ffffff;
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 22px;
-    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.header-brand h1 {
-    font-size: 18px;
+.logo-badge:hover {
+    transform: scale(1.08) rotate(-4deg);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+}
+
+.title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-title {
+    font-size: 19px;
     font-weight: 800;
-    letter-spacing: -0.3px;
-    line-height: 1.25;
-    color: var(--text-primary);
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .header-title {
+    background: linear-gradient(135deg, #f8fafc 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.badge-tag {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(13, 148, 136, 0.12));
+    color: var(--primary);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    line-height: 1.2;
+}
+
+[data-theme="dark"] .badge-tag {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(20, 184, 166, 0.2));
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.3);
 }
 
 .subtitle {
     font-size: 12px;
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 500;
 }
 
-/* STATS BADGES REFINADOS FIJOS */
+/* STATS BADGES REFINADOS FIJOS CON FLOATING EFFECT */
 .header-stats-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-shrink: 0;
     flex-wrap: nowrap;
 }
@@ -177,22 +243,56 @@ body {
 .stat-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     background: var(--bg-main);
     border: 1px solid var(--border-color);
-    padding: 6px 14px;
-    border-radius: 20px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    padding: 7px 14px;
+    border-radius: 30px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.02);
     white-space: nowrap;
     line-height: 1;
+    transition: all 0.25s ease;
+}
+
+.stat-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.stat-badge.score-badge {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.25);
+}
+
+.stat-badge.score-badge .stat-value {
+    color: #d97706;
+}
+
+[data-theme="dark"] .stat-badge.score-badge {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .stat-badge.score-badge .stat-value {
+    color: #fbbf24;
+}
+
+.stat-badge.count-badge {
+    background: rgba(37, 99, 235, 0.05);
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="dark"] .stat-badge.count-badge {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(96, 165, 250, 0.3);
 }
 
 .stat-badge.visits-badge {
-    background: #f0f9ff;
-    border-color: #bae6fd;
+    background: rgba(14, 165, 233, 0.07);
+    border-color: rgba(14, 165, 233, 0.25);
     color: #0284c7;
     font-weight: 700;
-    min-width: 92px;
+    min-width: 100px;
     justify-content: center;
     text-align: center;
     font-variant-numeric: tabular-nums;
@@ -202,6 +302,32 @@ body {
     background: rgba(14, 165, 233, 0.18);
     border-color: rgba(56, 189, 248, 0.35);
     color: #38bdf8;
+}
+
+/* Indicador Verde de Pulso en Vivo */
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #10b981;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: livePulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes livePulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
 }
 
 .stat-icon {
@@ -244,12 +370,20 @@ body {
     line-height: 1;
 }
 
-/* BOTONES HEADER CON ANIMACIÓN ORBITAL */
+/* BOTONES HEADER CON ANIMACIÓN Y ALINEACIÓN DE PRECISIÓN */
 .header-actions {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.header-actions .btn {
+    transition: all 0.2s ease;
+}
+
+.header-actions .btn:hover {
+    transform: translateY(-1.5px);
 }
 
 .btn-assistant {
