@@ -274,9 +274,6 @@ const visitCountText = document.getElementById("visitCountText");
 
 const filterTabs = document.querySelectorAll(".filter-tab");
 const durationBtns = document.querySelectorAll(".duration-btn");
-const toggleExpandBtn = document.getElementById("toggleExpandBtn");
-const expandIcon = document.getElementById("expandIcon");
-const expandText = document.getElementById("expandText");
 
 const resetBtn = document.getElementById("resetBtn");
 const exportBtn = document.getElementById("exportBtn");
@@ -962,19 +959,6 @@ function setupEventListeners() {
             activeStatusFilter = tab.getAttribute("data-filter");
             render();
         });
-    });
-
-
-    toggleExpandBtn.addEventListener("click", () => {
-        isExpandedAll = !isExpandedAll;
-        expandIcon.textContent = isExpandedAll ? "📖" : "📘";
-        expandText.textContent = isExpandedAll ? "Ocultar" : "Detalles";
-        
-        if (isExpandedAll) {
-            collapsedCategories = [];
-            localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
-        }
-        render();
     });
 
     resetBtn.addEventListener("click", () => {
