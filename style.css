@@ -449,13 +449,13 @@ body {
 
 /* WIDGET MODO ASISTENTE CON STEPPER DE 5 FASES Y CONTROL DE DURACIÓN */
 .assistant-widget {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0d9488 100%);
+    background: linear-gradient(135deg, #0b132b 0%, #1c2541 50%, #0d9488 100%);
     color: #ffffff;
-    border-radius: 20px;
-    padding: 20px 24px;
-    margin-bottom: 22px;
-    box-shadow: 0 14px 40px rgba(13, 148, 136, 0.3);
-    border: 1.5px solid rgba(13, 148, 136, 0.45);
+    border-radius: 24px;
+    padding: 22px 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 16px 45px rgba(13, 148, 136, 0.35);
+    border: 1.5px solid rgba(13, 148, 136, 0.5);
     animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     transition: all 0.35s ease;
     z-index: 100;
@@ -469,8 +469,8 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #38bdf8, #34d399, #fbbf24);
+    height: 4px;
+    background: linear-gradient(90deg, #38bdf8, #34d399, #fbbf24, #ec4899);
 }
 
 @keyframes slideDown {
@@ -478,11 +478,97 @@ body {
     to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-.assistant-header-left {
+/* HEADER HUD COPILOTO */
+.copilot-hud-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
     flex-wrap: wrap;
+}
+
+.copilot-hud-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.copilot-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(13, 148, 136, 0.25);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 18px;
+    letter-spacing: 0.8px;
+}
+
+.pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 8px #34d399;
+    animation: pulseDot 1.6s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.5; }
+}
+
+.copilot-phase-pill {
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    padding: 4px 14px;
+    border-radius: 18px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.copilot-timer-cockpit {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.timer-display-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.timer-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.8px;
+}
+
+.assistant-timer-clock {
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.copilot-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .duration-segmented-control {
@@ -518,64 +604,205 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* HERO SUGERENCIA DINÁMICA DE ACCIÓN ÚNICA */
+.btn-copilot-action {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-size: 13px;
+    padding: 5px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-copilot-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* HERO ACTION CARD (TARJETA PRINCIPAL RECOMENDADA) */
 .assistant-suggestion-card {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border-radius: var(--radius-md);
-    padding: 16px 20px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    backdrop-filter: blur(14px);
+    border-radius: 18px;
+    padding: 18px 22px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-top: 14px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    border: 1.5px solid rgba(13, 148, 136, 0.35);
+    gap: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    border: 1.5px solid rgba(13, 148, 136, 0.45);
     position: relative;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-[data-theme="dark"] .assistant-suggestion-card {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(12px);
-    border-color: rgba(13, 148, 136, 0.45);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
-}
-
 .suggestion-icon-ring {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(13, 148, 136, 0.25));
-    border: 1px solid rgba(13, 148, 136, 0.35);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(13, 148, 136, 0.35));
+    border: 1px solid rgba(52, 211, 153, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 10px rgba(13, 148, 136, 0.15);
+    box-shadow: inset 0 0 12px rgba(13, 148, 136, 0.2);
     flex-shrink: 0;
 }
 
 .suggestion-icon-ring .suggestion-icon {
-    font-size: 24px;
+    font-size: 26px;
 }
 
-.suggestion-meta-row {
+.suggestion-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.suggestion-header-meta {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.suggestion-tag {
+    font-size: 10px;
+    font-weight: 800;
+    color: #34d399;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
 }
 
 .phase-progress-pill {
     font-size: 10px;
     font-weight: 800;
-    color: #059669;
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    padding: 1px 8px;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 1.5px 9px;
     border-radius: 10px;
+}
+
+.suggestion-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.suggestion-reason {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.suggestion-action-area {
+    flex-shrink: 0;
+}
+
+.btn-copilot-complete {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-weight: 800;
+    border-radius: 14px;
+    padding: 11px 20px;
+    font-size: 13.5px;
+    border: 1px solid #34d399;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-copilot-complete:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: scale(1.04);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+}
+
+/* STEPPER VISUAL & TIMELINE */
+.copilot-progress-cockpit {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 12px 16px 6px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.phase-stepper-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    overflow-x: auto;
+}
+
+.step-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    position: relative;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.step-node.completed {
+    opacity: 1;
+}
+
+.step-node.active {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.node-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
+    transition: var(--transition);
+}
+
+.step-node.completed .node-circle {
+    background: #10b981;
+    border-color: #34d399;
+}
+
+.step-node.active .node-circle {
+    background: #fbbf24;
+    border-color: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+}
+
+.node-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.step-line {
+    flex-grow: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 6px;
+    margin-bottom: 14px;
+    min-width: 12px;
 }
 
 /* TIMELINE WRAPPER CON HITOS */
@@ -2085,65 +2312,60 @@ body.assistant-focus-active .assistant-widget {
         min-height: 36px;
     }
 
-    /* WIDGET ASISTENTE MÓVIL */
+    /* WIDGET ASISTENTE MÓVIL (COPILOT COCKPIT MÓVIL) */
     .assistant-widget {
         padding: 16px 14px;
-        border-radius: 16px;
+        border-radius: 18px;
         margin-bottom: 18px;
     }
 
-    .assistant-header {
+    .copilot-hud-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 12px;
+        margin-bottom: 14px;
     }
 
-    .assistant-header-left {
+    .copilot-hud-brand {
         justify-content: space-between;
         width: 100%;
     }
 
-    .assistant-timer-wrap {
+    .copilot-timer-cockpit {
         justify-content: space-between;
         width: 100%;
-        background: rgba(0, 0, 0, 0.25);
         padding: 8px 12px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 14px;
     }
 
     .assistant-timer-clock {
-        font-size: 1.2rem;
-    }
-
-    .assistant-phase-badge {
-        width: 100%;
-        text-align: center;
-        padding: 6px 10px;
-        font-size: 11.5px;
+        font-size: 1.15rem;
     }
 
     .assistant-suggestion-card {
         flex-direction: column;
         align-items: stretch;
         text-align: left;
-        padding: 14px 14px;
-        gap: 12px;
-        margin-top: 10px;
-        margin-bottom: 12px;
+        padding: 16px 14px;
+        gap: 14px;
+        margin-bottom: 16px;
     }
 
     .suggestion-icon-ring {
         align-self: flex-start;
     }
 
-    .btn-success-action {
+    .suggestion-action-area {
         width: 100%;
-        padding: 12px 16px;
+    }
+
+    .btn-copilot-complete {
+        width: 100%;
+        padding: 13px 16px;
         font-size: 14px;
         text-align: center;
         justify-content: center;
-        min-height: 46px; /* Fácil de presionar con un pulgar en pantalla táctil */
+        min-height: 48px; /* Fácil de presionar con un pulgar en pantalla táctil */
     }
 
     /* TIRA DE CATEGORÍAS (CAROUSEL TÁCTIL) */

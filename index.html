@@ -84,87 +84,99 @@
             </button>
         </header>
 
-        <!-- WIDGET MODO ASISTENTE (60 MIN / 90 MIN) CON FOCO EN LA ACCIÓN -->
-        <!-- WIDGET MODO ASISTENTE (60 MIN / 90 MIN) CON FOCO EN LA ACCIÓN -->
+        <!-- PANEL COPILOTO PEDAGÓGICO DE CLASE EN TIEMPO REAL -->
         <section id="assistantWidget" class="assistant-widget hidden">
-            <div class="assistant-header">
-                <div class="assistant-header-left">
-                    <span class="assistant-badge-live">⚡ COPILOTO <span id="assistantLiveDurationText">90</span> MIN</span>
-                    <span class="assistant-phase-badge" id="assistantPhaseBadge">
-                        🚀 Fase 1: Inicio (Min 0 - 15)
+            <!-- HEADER HUD CON CONTROL DE TIEMPO Y ESTADO EN VIVO -->
+            <div class="copilot-hud-header">
+                <div class="copilot-hud-brand">
+                    <span class="copilot-live-badge">
+                        <span class="pulse-dot"></span>
+                        ⚡ COPILOTO <span id="assistantLiveDurationText">90</span> MIN
                     </span>
+                    <div class="copilot-phase-pill" id="assistantPhaseBadge">
+                        🚀 Fase 1: Inicio (Min 0 - 15)
+                    </div>
                 </div>
 
-                <div class="assistant-timer-wrap">
-                    <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
-                    <div class="assistant-controls">
+                <div class="copilot-timer-cockpit">
+                    <div class="timer-display-box">
+                        <span class="timer-label">TIEMPO DE LECCIÓN</span>
+                        <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
+                    </div>
+
+                    <div class="copilot-controls-group">
                         <div class="duration-segmented-control" title="Seleccionar duración de la clase">
                             <button class="duration-btn active" data-duration="90">90m</button>
                             <button class="duration-btn" data-duration="60">60m</button>
                         </div>
-                        <button id="assistantPlayPauseBtn" class="btn-play-pause" title="Iniciar/Pausar tiempo">▶️</button>
-                        <button id="assistantResetTimerBtn" class="btn-timer-reset" title="Reiniciar reloj">🔄</button>
+                        <button id="assistantPlayPauseBtn" class="btn-copilot-action btn-play-pause" title="Iniciar o pausar cronómetro">▶️</button>
+                        <button id="assistantResetTimerBtn" class="btn-copilot-action btn-timer-reset" title="Reiniciar tiempo">🔄</button>
                     </div>
                 </div>
             </div>
 
-            <!-- HERO SUGERENCIA DINÁMICA DE ACCIÓN ÚNICA CON FOCO PRINCIPAL -->
+            <!-- HERO ACTION CARD (TARJETA CENTRAL DE ACCIÓN RECOMENDADA) -->
             <div class="assistant-suggestion-card" id="assistantSuggestionCard">
                 <div class="suggestion-icon-ring">
                     <span class="suggestion-icon" id="suggestionIcon">🖐️</span>
                 </div>
-                <div class="suggestion-body">
-                    <div class="suggestion-meta-row">
+
+                <div class="suggestion-content">
+                    <div class="suggestion-header-meta">
                         <span class="suggestion-tag" id="suggestionTag">SUGERENCIA EN VIVO</span>
                         <span class="phase-progress-pill" id="assistantPhaseCriteriaCount">Etapa actual: 0/4 cumplidos</span>
                     </div>
-                    <h4 id="suggestionTitle">Saludo y calentamiento</h4>
-                    <p id="suggestionReason">Empieza saludando a los alumnos y preguntándoles cómo están.</p>
+                    <h3 id="suggestionTitle" class="suggestion-title">Saludo y calentamiento</h3>
+                    <p id="suggestionReason" class="suggestion-reason">Empieza saludando a los alumnos y preguntándoles cómo están.</p>
                 </div>
-                <button id="suggestionCompleteBtn" class="btn btn-sm btn-success-action">
-                    ✓ ¡Cumplido! 🎉
-                </button>
-            </div>
 
-            <!-- STEPPER VISUAL DE 5 FASES -->
-            <div class="phase-stepper-container" id="assistantPhaseStepper">
-                <div class="step-node active" data-phase="1">
-                    <div class="node-circle">1</div>
-                    <span class="node-label">Inicio (0-15')</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step-node" data-phase="2">
-                    <div class="node-circle">2</div>
-                    <span class="node-label">Explicación (15-45')</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step-node" data-phase="3">
-                    <div class="node-circle">3</div>
-                    <span class="node-label">Práctica (45-75')</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step-node" data-phase="4">
-                    <div class="node-circle">4</div>
-                    <span class="node-label">Cierre (75-85')</span>
-                </div>
-                <div class="step-line"></div>
-                <div class="step-node" data-phase="5">
-                    <div class="node-circle">5</div>
-                    <span class="node-label">Final (85-90')</span>
+                <div class="suggestion-action-area">
+                    <button id="suggestionCompleteBtn" class="btn btn-copilot-complete">
+                        ✓ ¡Cumplido! 🎉
+                    </button>
                 </div>
             </div>
 
-            <!-- BARRA DE TIEMPO CON HITOS VISUALES -->
-            <div class="assistant-timeline-wrapper">
-                <div class="assistant-timeline-bar">
-                    <div id="assistantTimelineProgress" class="timeline-fill"></div>
+            <!-- BARRA DE PROGRESO Y STEPPER DE FASES -->
+            <div class="copilot-progress-cockpit">
+                <div class="phase-stepper-container" id="assistantPhaseStepper">
+                    <div class="step-node active" data-phase="1">
+                        <div class="node-circle">1</div>
+                        <span class="node-label">Inicio (0-15')</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-node" data-phase="2">
+                        <div class="node-circle">2</div>
+                        <span class="node-label">Explicación (15-45')</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-node" data-phase="3">
+                        <div class="node-circle">3</div>
+                        <span class="node-label">Práctica (45-75')</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-node" data-phase="4">
+                        <div class="node-circle">4</div>
+                        <span class="node-label">Cierre (75-85')</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-node" data-phase="5">
+                        <div class="node-circle">5</div>
+                        <span class="node-label">Final (85-90')</span>
+                    </div>
                 </div>
-                <div class="timeline-milestones">
-                    <span class="milestone-dot" style="left: 0%;">0'</span>
-                    <span class="milestone-dot" style="left: 16.6%;">15'</span>
-                    <span class="milestone-dot" style="left: 50%;">45'</span>
-                    <span class="milestone-dot" style="left: 83.3%;">75'</span>
-                    <span class="milestone-dot" style="left: 100%;">90'</span>
+
+                <div class="assistant-timeline-wrapper">
+                    <div class="assistant-timeline-bar">
+                        <div id="assistantTimelineProgress" class="timeline-fill"></div>
+                    </div>
+                    <div class="timeline-milestones">
+                        <span class="milestone-dot" style="left: 0%;">0'</span>
+                        <span class="milestone-dot" style="left: 16.6%;">15'</span>
+                        <span class="milestone-dot" style="left: 50%;">45'</span>
+                        <span class="milestone-dot" style="left: 83.3%;">75'</span>
+                        <span class="milestone-dot" style="left: 100%;">90'</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -305,6 +317,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <!-- Driver.js JS para Tour Guiado -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="script.js?v=7.3"></script>
+    <script src="script.js?v=8.0"></script>
 </body>
 </html>
