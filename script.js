@@ -926,13 +926,18 @@ function setupEventListeners() {
     const headerActionsEl = document.querySelector(".header-actions");
 
     if (mobileActionsToggleBtn && headerActionsEl) {
-        mobileActionsToggleBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
+        const toggleMobileActions = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             headerActionsEl.classList.toggle("is-mobile-expanded");
             const isExpanded = headerActionsEl.classList.contains("is-mobile-expanded");
             const arrow = mobileActionsToggleBtn.querySelector(".mobile-actions-arrow");
             if (arrow) arrow.textContent = isExpanded ? "▲" : "▼";
-        });
+        };
+
+        mobileActionsToggleBtn.addEventListener("click", toggleMobileActions);
 
         document.addEventListener("click", (e) => {
             if (window.innerWidth <= 640 && headerActionsEl.classList.contains("is-mobile-expanded")) {
