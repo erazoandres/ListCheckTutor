@@ -468,16 +468,10 @@ function loadAndSanitizeStorage() {
     localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedItems));
 
     itemNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {};
-    collapsedCategories = JSON.parse(localStorage.getItem(STORAGE_KEY_COLLAPSED)) || [];
-
-    // AUTO-COLLAPSE EN CARGA: Asegurar que las categorías 100% completadas inicien colapsadas
-    CRITERIA_DATA.forEach(category => {
-        const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
-        const isAllDone = (catDoneCount === category.items.length) && (category.items.length > 0);
-        if (isAllDone && !collapsedCategories.includes(category.categoryKey)) {
-            collapsedCategories.push(category.categoryKey);
-        }
-    });
+    
+    // AUTO-COLLAPSE EN CARGA: Al iniciar siempre todas las categorías deben estar colapsadas por defecto
+    const allCatKeys = CRITERIA_DATA.map(cat => cat.categoryKey);
+    collapsedCategories = [...allCatKeys];
     localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
 }
 
@@ -987,7 +981,7 @@ function setupEventListeners() {
         if (confirm("¿Estás seguro de reiniciar a 0 toda la checklist y las notas de la lección?")) {
             completedItems = [];
             itemNotes = {};
-            collapsedCategories = [];
+            collapsedCategories = CRITERIA_DATA.map(cat => cat.categoryKey);
             resetTimer();
             isAssistantActive = false;
             document.body.classList.remove("assistant-focus-active");
@@ -1158,6 +1152,10 @@ function renderChecklistCategories() {
 
         visibleItemsCount += filteredItems.length;
 
+        const catMaxPoints = category.items.reduce((sum, item) => sum + item.points, 0);
+        const catEarnedPoints = category.items
+            .filter(item => completedItems.includes(item.id))
+            .reduce((sum, item) => sum + item.points, 0);
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllCompleted = (catDoneCount === category.items.length) && (category.items.length > 0);
         
@@ -1172,8 +1170,10 @@ function renderChecklistCategories() {
         categoryHeader.setAttribute("data-cat-header", category.categoryKey);
 
         const statusBadgeHtml = isAllCompleted 
-            ? `<span class="category-completed-badge">✓ Completada (${catDoneCount}/${category.items.length})</span>`
-            : `<span class="category-count">${catDoneCount} / ${category.items.length}</span>`;
+            ? `<span class="category-score-badge is-completed" title="Puntaje obtenido / total de la categoría">✓ ${catEarnedPoints}/${catMaxPoints} pts</span>
+               <span class="category-count is-completed" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`
+            : `<span class="category-score-badge" title="Puntaje obtenido / total de la categoría">🏆 ${catEarnedPoints}/${catMaxPoints} pts</span>
+               <span class="category-count" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`;
 
         categoryHeader.innerHTML = `
             <div class="category-title-badge">

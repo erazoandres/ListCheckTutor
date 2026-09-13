@@ -1148,6 +1148,8 @@ body.assistant-focus-active .assistant-widget {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
 }
 
 .category-header h3 {
@@ -1161,7 +1163,39 @@ body.assistant-focus-active .assistant-widget {
 .category-header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+.category-score-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-light);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    padding: 2.5px 9px;
+    border-radius: 12px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .category-score-badge {
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(96, 165, 250, 0.35);
+}
+
+.category-score-badge.is-completed {
+    color: #ffffff;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #059669;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+    animation: popBadge 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .category-count {
@@ -1170,8 +1204,21 @@ body.assistant-focus-active .assistant-widget {
     color: var(--text-muted);
     background: var(--bg-main);
     border: 1px solid var(--border-color);
-    padding: 2px 8px;
+    padding: 2.5px 8px;
     border-radius: 12px;
+    white-space: nowrap;
+}
+
+.category-count.is-completed {
+    color: #059669;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+[data-theme="dark"] .category-count.is-completed {
+    color: #34d399;
+    background: rgba(5, 150, 105, 0.2);
+    border-color: rgba(52, 211, 153, 0.35);
 }
 
 .cat-collapse-arrow {
@@ -1179,6 +1226,7 @@ body.assistant-focus-active .assistant-widget {
     color: var(--text-muted);
     transition: transform 0.3s ease;
     display: inline-block;
+    margin-left: 2px;
 }
 
 .category-header.is-collapsed .cat-collapse-arrow {
@@ -2246,6 +2294,32 @@ body.assistant-focus-active .assistant-widget {
         text-align: center;
         padding: 8px;
     }
+
+    /* CATEGORY HEADER RESPONSIVE EN MÓVIL */
+    .category-header {
+        padding: 8px 10px;
+    }
+
+    .category-title-badge {
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .category-header h3 {
+        font-size: 12px;
+        line-height: 1.25;
+        letter-spacing: 0.1px;
+    }
+
+    .category-header-right {
+        gap: 4px;
+        margin-left: 4px;
+    }
+
+    .category-score-badge, .category-count {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
 }
 
 /* SMARTPHONES PEQUEÑOS (<= 480px) */
@@ -2283,7 +2357,16 @@ body.assistant-focus-active .assistant-widget {
         font-size: 10.5px;
     }
 
+    .category-header {
+        padding: 7px 8px;
+    }
+
     .category-header h3 {
-        font-size: 11.5px;
+        font-size: 11px;
+    }
+
+    .category-score-badge, .category-count {
+        font-size: 9.5px;
+        padding: 1.5px 5px;
     }
 }
