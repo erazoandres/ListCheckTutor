@@ -84,128 +84,87 @@
             </button>
         </header>
 
-        <!-- JARVIS COPILOT HUD OVERLAY (MINIMALISTA, HEAVY BLUR, 100% INTERACTIVO) -->
+        <!-- JARVIS COPILOT HUD OVERLAY (ULTRA-MINIMALISTA, FLOATING GLASS HUD, MÍNIMO TEXTO) -->
         <section id="assistantWidget" class="assistant-widget jarvis-hud hidden">
-            <!-- JARVIS TOP HUD -->
+            <!-- JARVIS ULTRA-MINIMAL TOP BAR CAPSULE -->
             <div class="jarvis-top-bar">
-                <div class="jarvis-brand">
-                    <span class="jarvis-live-pill">
-                        <span class="jarvis-pulse-dot"></span>
-                        JARVIS HUD <span id="assistantLiveDurationText">90</span>M
-                    </span>
-                    <span class="jarvis-phase-badge" id="assistantPhaseBadge">
-                        🚀 Fase 1: Inicio
-                    </span>
+                <!-- Status Pill Left -->
+                <div class="jarvis-pill-badge">
+                    <span class="jarvis-pulse-dot"></span>
+                    <span id="assistantPhaseBadge" class="jarvis-phase-text">Fase 1: Inicio</span>
                 </div>
 
-                <div class="jarvis-timer-unit">
-                    <!-- RELOJ / CONTADOR ANALÓGICO HUD -->
-                    <div class="jarvis-analog-clock-container" title="Reloj Analógico Jarvis en Tiempo Real">
-                        <svg class="jarvis-analog-svg" viewBox="0 0 60 60">
-                            <!-- Ring de Fondo -->
-                            <circle class="analog-dial-bg" cx="30" cy="30" r="26" />
-                            <!-- Ring de Progreso de la Clase -->
-                            <circle id="analogProgressRing" class="analog-progress-ring" cx="30" cy="30" r="26" />
-                            
-                            <!-- Marcas de Minutos Diales -->
-                            <g class="analog-ticks">
-                                <line x1="30" y1="7" x2="30" y2="10" />
-                                <line x1="53" y1="30" x2="50" y2="30" />
-                                <line x1="30" y1="53" x2="30" y2="50" />
-                                <line x1="7" y1="30" x2="10" y2="30" />
-                                <line x1="41.5" y1="10" x2="40" y2="12.6" />
-                                <line x1="50" y1="18.5" x2="47.4" y2="20" />
-                                <line x1="50" y1="41.5" x2="47.4" y2="40" />
-                                <line x1="41.5" y1="50" x2="40" y2="47.4" />
-                                <line x1="18.5" y1="50" x2="20" y2="47.4" />
-                                <line x1="10" y1="41.5" x2="12.6" y2="40" />
-                                <line x1="10" y1="18.5" x2="12.6" y2="20" />
-                                <line x1="18.5" y1="10" x2="20" y2="12.6" />
-                            </g>
-
-                            <!-- Manecilla de Minutos -->
-                            <line id="analogMinuteHand" class="analog-hand analog-hand-minute" x1="30" y1="30" x2="30" y2="14" />
-                            <!-- Manecilla de Segundos -->
-                            <line id="analogSecondHand" class="analog-hand analog-hand-second" x1="30" y1="35" x2="30" y2="9" />
-                            <!-- Pivote Central -->
-                            <circle class="analog-pivot" cx="30" cy="30" r="2.5" />
-                        </svg>
-                    </div>
-
-                    <!-- LECTURA DIGITAL -->
-                    <div class="jarvis-clock-readout">
-                        <span id="assistantTimerText" class="jarvis-timer-clock">00:00 / 90:00</span>
-                    </div>
-
-                    <div class="jarvis-controls">
-                        <div class="duration-segmented-control" title="Duración de la clase">
-                            <button class="duration-btn active" data-duration="90">90m</button>
-                            <button class="duration-btn" data-duration="60">60m</button>
-                        </div>
-                        <button id="assistantPlayPauseBtn" class="jarvis-ctrl-btn btn-play-pause" title="Iniciar/Pausar">▶️</button>
-                        <button id="assistantResetTimerBtn" class="jarvis-ctrl-btn btn-timer-reset" title="Reiniciar">🔄</button>
-                    </div>
+                <!-- Center: Analog Gauge Counter + Time -->
+                <div class="jarvis-analog-gauge-unit">
+                    <svg class="jarvis-gauge-svg" viewBox="0 0 50 50">
+                        <circle class="gauge-bg" cx="25" cy="25" r="21" />
+                        <circle id="analogProgressRing" class="gauge-ring" cx="25" cy="25" r="21" />
+                        <line id="analogMinuteHand" class="gauge-needle minute-needle" x1="25" y1="25" x2="25" y2="10" />
+                        <line id="analogSecondHand" class="gauge-needle second-needle" x1="25" y1="28" x2="25" y2="7" />
+                        <circle class="gauge-center" cx="25" cy="25" r="2" />
+                    </svg>
+                    <span id="assistantTimerText" class="jarvis-timer-clock">00:00</span>
                 </div>
+
+                <!-- Right: Quick Controls -->
+                <div class="jarvis-quick-controls">
+                    <div class="duration-segmented-control">
+                        <button class="duration-btn active" data-duration="90">90m</button>
+                        <button class="duration-btn" data-duration="60">60m</button>
+                    </div>
+                    <button id="assistantPlayPauseBtn" class="hud-icon-btn btn-play-pause" title="Iniciar/Pausar">▶️</button>
+                    <button id="assistantResetTimerBtn" class="hud-icon-btn btn-timer-reset" title="Reiniciar">🔄</button>
+                </div>
+
+                <!-- Elemento oculto para compatibilidad -->
+                <span id="assistantLiveDurationText" class="hidden">90</span>
             </div>
 
-            <!-- JARVIS HERO ACTION UNIT (MÍNIMO TEXTO, IMPACTO TOTAL) -->
+            <!-- JARVIS MINIMAL HERO ACTION (ULTRA-CLEAN & VISUAL) -->
             <div class="assistant-suggestion-card jarvis-action-card" id="assistantSuggestionCard">
-                <div class="jarvis-icon-halo">
+                <div class="jarvis-hero-icon-box">
                     <span class="suggestion-icon" id="suggestionIcon">🖐️</span>
                 </div>
 
-                <div class="jarvis-action-info">
-                    <div class="jarvis-meta-line">
-                        <span class="suggestion-tag" id="suggestionTag">SUGERENCIA EN VIVO</span>
-                        <span class="phase-progress-pill" id="assistantPhaseCriteriaCount">0/4 cumplidos</span>
-                    </div>
+                <div class="jarvis-action-main">
                     <h3 id="suggestionTitle" class="jarvis-title">#1 Calentamiento y saludo</h3>
-                    <p id="suggestionReason" class="jarvis-reason">Empieza saludando a los alumnos y preguntándoles cómo están.</p>
                 </div>
 
                 <button id="suggestionCompleteBtn" class="btn jarvis-complete-btn">
                     ✓ CUMPLIR 🎉
                 </button>
+
+                <!-- Elementos retenidos para compatibilidad JS -->
+                <span id="suggestionTag" class="hidden">SUGERENCIA</span>
+                <span id="assistantPhaseCriteriaCount" class="hidden">0/4</span>
+                <p id="suggestionReason" class="hidden"></p>
             </div>
 
-            <!-- JARVIS SLIM STEPPER & TIMELINE -->
+            <!-- JARVIS SLIM MINIMAL PROGRESS TRACKER -->
             <div class="jarvis-progress-track">
                 <div class="phase-stepper-container" id="assistantPhaseStepper">
                     <div class="step-node active" data-phase="1">
                         <div class="node-circle">1</div>
                         <span class="node-label">Inicio</span>
                     </div>
-                    <div class="step-line"></div>
                     <div class="step-node" data-phase="2">
                         <div class="node-circle">2</div>
                         <span class="node-label">Explicación</span>
                     </div>
-                    <div class="step-line"></div>
                     <div class="step-node" data-phase="3">
                         <div class="node-circle">3</div>
                         <span class="node-label">Práctica</span>
                     </div>
-                    <div class="step-line"></div>
                     <div class="step-node" data-phase="4">
                         <div class="node-circle">4</div>
                         <span class="node-label">Cierre</span>
                     </div>
-                    <div class="step-line"></div>
                     <div class="step-node" data-phase="5">
                         <div class="node-circle">5</div>
                         <span class="node-label">Final</span>
                     </div>
                 </div>
 
-                <div class="assistant-timeline-wrapper">
-                    <div class="assistant-timeline-bar">
-                        <div id="assistantTimelineProgress" class="timeline-fill"></div>
-                    </div>
-                    <div class="timeline-milestones">
-                        <span class="milestone-dot" style="left: 0%;">0'</span>
-                        <span class="milestone-dot" style="left: 16.6%;">15'</span>
-                        <span class="milestone-dot" style="left: 50%;">45'</span>
-                        <span class="milestone-dot" style="left: 83.3%;">75'</span>
                         <span class="milestone-dot" style="left: 100%;">90'</span>
                     </div>
                 </div>

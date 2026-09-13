@@ -771,7 +771,7 @@ function updateAssistantUI() {
     const formatMin = String(minutes).padStart(2, '0');
     const formatSec = String(secs).padStart(2, '0');
 
-    assistantTimerText.textContent = `${formatMin}:${formatSec} / ${classDurationMin}:00`;
+    assistantTimerText.textContent = `${formatMin}:${formatSec}`;
     const timelinePct = Math.min((assistantSeconds / maxSeconds) * 100, 100);
     if (assistantTimelineProgress) assistantTimelineProgress.style.width = `${timelinePct}%`;
 
@@ -787,7 +787,7 @@ function updateAssistantUI() {
     }
 
     if (analogProgressRing) {
-        const circumference = 163.36; // 2 * PI * 26
+        const circumference = 131.95; // 2 * PI * 21
         const progressRatio = Math.min(assistantSeconds / maxSeconds, 1);
         const offset = circumference * (1 - progressRatio);
         analogProgressRing.style.strokeDashoffset = offset;

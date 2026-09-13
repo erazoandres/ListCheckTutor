@@ -467,6 +467,23 @@ body {
     overflow: hidden;
 }
 
+/* JARVIS ULTRA-MINIMAL HUD OVERLAY CONTAINER */
+.assistant-widget.jarvis-hud {
+    position: relative;
+    background: rgba(5, 12, 28, 0.78);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(0, 242, 254, 0.28);
+    border-radius: 28px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 
+                0 0 35px rgba(0, 242, 254, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    animation: jarvisHudSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
 .assistant-widget.jarvis-hud::before {
     content: '';
     position: absolute;
@@ -475,53 +492,36 @@ body {
     right: 0;
     height: 3px;
     background: linear-gradient(90deg, #00f2fe, #34d399, #00f2fe);
-    box-shadow: 0 0 10px #00f2fe;
+    box-shadow: 0 0 12px #00f2fe;
 }
 
-@keyframes jarvisPulseIn {
-    from { transform: translateY(-16px) scale(0.96); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+@keyframes jarvisHudSlide {
+    from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* TOP BAR REDISEÑADA ESTILO JARVIS HUD CON RELOJ / CONTADOR ANALÓGICO */
+/* FLOATING TOP CAPSULE BAR */
 .jarvis-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 20px;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, rgba(8, 16, 36, 0.82), rgba(15, 27, 58, 0.72));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 242, 254, 0.28);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.12),
-                0 0 25px rgba(0, 242, 254, 0.08);
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-.jarvis-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.jarvis-live-pill {
+.jarvis-pill-badge {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(124, 58, 237, 0.18));
-    color: #00f2fe;
-    border: 1px solid rgba(0, 242, 254, 0.45);
-    font-size: 11px;
-    font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 16px;
-    letter-spacing: 1px;
-    box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
-    text-transform: uppercase;
+    gap: 8px;
+    background: rgba(0, 242, 254, 0.12);
+    border: 1px solid rgba(0, 242, 254, 0.38);
+    padding: 5px 14px;
+    border-radius: 9999px;
 }
 
 .jarvis-pulse-dot {
@@ -529,223 +529,208 @@ body {
     height: 8px;
     border-radius: 50%;
     background: #00f2fe;
-    box-shadow: 0 0 10px #00f2fe, 0 0 18px #00f2fe;
-    animation: jarvisDot 1.4s infinite ease-in-out;
+    box-shadow: 0 0 10px #00f2fe, 0 0 16px #00f2fe;
+    animation: jarvisPulseDot 1.4s infinite ease-in-out;
 }
 
-@keyframes jarvisDot {
+@keyframes jarvisPulseDot {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.4); opacity: 0.4; }
 }
 
-.jarvis-phase-badge {
+.jarvis-phase-text {
     font-size: 12px;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 4px 12px;
-    border-radius: 16px;
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
 }
 
-.jarvis-timer-unit {
+/* ANALOG GAUGE & TIMER */
+.jarvis-analog-gauge-unit {
     display: flex;
     align-items: center;
-    gap: 14px;
-    background: rgba(4, 9, 22, 0.75);
-    padding: 6px 14px;
-    border-radius: 16px;
-    border: 1px solid rgba(0, 242, 254, 0.35);
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 242, 254, 0.1);
+    gap: 10px;
 }
 
-/* RELOJ ANALÓGICO HUD SVG */
-.jarvis-analog-clock-container {
-    width: 42px;
-    height: 42px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.jarvis-gauge-svg {
+    width: 38px;
+    height: 38px;
+    overflow: visible;
     flex-shrink: 0;
 }
 
-.jarvis-analog-svg {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
+.gauge-bg {
+    fill: rgba(0, 12, 30, 0.8);
+    stroke: rgba(0, 242, 254, 0.2);
+    stroke-width: 2;
 }
 
-.analog-dial-bg {
-    fill: rgba(0, 15, 35, 0.85);
-    stroke: rgba(0, 242, 254, 0.22);
-    stroke-width: 1.5;
-}
-
-.analog-progress-ring {
+.gauge-ring {
     fill: none;
     stroke: #00f2fe;
     stroke-width: 3;
     stroke-linecap: round;
-    stroke-dasharray: 163.36;
-    stroke-dashoffset: 163.36;
+    stroke-dasharray: 131.95;
+    stroke-dashoffset: 131.95;
     transform: rotate(-90deg);
-    transform-origin: 30px 30px;
+    transform-origin: 25px 25px;
     transition: stroke-dashoffset 0.4s ease-out;
-    filter: drop-shadow(0 0 4px rgba(0, 242, 254, 0.7));
+    filter: drop-shadow(0 0 5px rgba(0, 242, 254, 0.8));
 }
 
-.analog-ticks line {
-    stroke: rgba(0, 242, 254, 0.45);
-    stroke-width: 1.2;
+.gauge-needle {
     stroke-linecap: round;
-}
-
-.analog-hand {
-    stroke-linecap: round;
-    transform-origin: 30px 30px;
+    transform-origin: 25px 25px;
     transition: transform 0.2s cubic-bezier(0.4, 2.08, 0.55, 0.44);
 }
 
-.analog-hand-minute {
+.minute-needle {
     stroke: #ffffff;
     stroke-width: 2.2;
     filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
 }
 
-.analog-hand-second {
+.second-needle {
     stroke: #ff2a6d;
     stroke-width: 1.5;
     filter: drop-shadow(0 0 5px #ff2a6d);
 }
 
-.analog-pivot {
+.gauge-center {
     fill: #00f2fe;
-    stroke: #ffffff;
-    stroke-width: 0.8;
     filter: drop-shadow(0 0 4px #00f2fe);
 }
 
-.jarvis-clock-readout {
-    display: flex;
-    align-items: center;
-}
-
 .jarvis-timer-clock {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
-    font-size: 1.15rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #00f2fe;
-    text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
-    letter-spacing: 0.8px;
+    text-shadow: 0 0 12px rgba(0, 242, 254, 0.7);
+    letter-spacing: 1px;
 }
 
-.jarvis-controls {
+/* QUICK CONTROLS */
+.jarvis-quick-controls {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
-.jarvis-ctrl-btn {
+.duration-segmented-control {
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    padding: 2px;
+}
+
+.duration-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.duration-btn.active {
+    background: #00f2fe;
+    color: #050b18;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+}
+
+.hud-icon-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
     font-size: 13px;
-    padding: 5px 9px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
 }
 
-.jarvis-ctrl-btn:hover {
+.hud-icon-btn:hover {
     background: rgba(0, 242, 254, 0.25);
     border-color: #00f2fe;
-    transform: scale(1.06);
-    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
 }
 
-.jarvis-ctrl-btn:active {
-    transform: scale(0.95);
-}
-
-/* JARVIS HERO ACTION UNIT */
+/* ULTRA MINIMAL HERO ACTION CARD */
 .jarvis-action-card {
-    background: rgba(11, 22, 48, 0.9);
-    border-radius: 18px;
-    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
-    border: 1px solid rgba(0, 242, 254, 0.4);
+    justify-content: space-between;
+    gap: 20px;
+    background: linear-gradient(135deg, rgba(12, 24, 54, 0.88), rgba(22, 38, 80, 0.78));
+    border: 1px solid rgba(0, 242, 254, 0.35);
+    border-radius: 20px;
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-.jarvis-icon-halo {
-    width: 46px;
-    height: 46px;
-    min-width: 46px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(16, 185, 129, 0.2));
-    border: 1.5px solid #00f2fe;
+.jarvis-hero-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(124, 58, 237, 0.2));
+    border: 1px solid rgba(0, 242, 254, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
+    font-size: 26px;
     flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
 }
 
-.jarvis-icon-halo .suggestion-icon {
-    font-size: 24px;
-}
-
-.jarvis-action-info {
-    flex-grow: 1;
+.jarvis-action-main {
+    flex: 1;
     min-width: 0;
 }
 
-.jarvis-meta-line {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 3px;
-}
-
 .jarvis-title {
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #ffffff;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.jarvis-reason {
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.78);
-    line-height: 1.35;
-    font-weight: 500;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .jarvis-complete-btn {
-    background: linear-gradient(135deg, #00f2fe 0%, #059669 100%);
-    color: #041226;
-    font-weight: 900;
-    border-radius: 14px;
-    padding: 12px 24px;
+    background: linear-gradient(135deg, #00f2fe, #0284c7);
+    color: #030d22;
     font-size: 14px;
-    letter-spacing: 0.5px;
-    border: 1px solid #00f2fe;
-    box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+    font-weight: 900;
+    padding: 12px 24px;
+    border-radius: 14px;
+    border: none;
     cursor: pointer;
-    transition: var(--transition);
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+    transition: all 0.2s ease;
     flex-shrink: 0;
+}
+
+.jarvis-complete-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.8);
+    background: linear-gradient(135deg, #38bdf8, #00f2fe);
+}
+
+.jarvis-complete-btn:active {
+    transform: scale(0.96);
 }
 
 .jarvis-complete-btn:hover {
@@ -2356,28 +2341,21 @@ body.assistant-focus-active .assistant-widget {
 
     /* WIDGET ASISTENTE MÓVIL (JARVIS HUD OVERLAY MÓVIL) */
     .assistant-widget.jarvis-hud {
-        padding: 16px 14px;
-        border-radius: 20px;
+        padding: 14px;
+        border-radius: 22px;
         margin-bottom: 18px;
     }
 
     .jarvis-top-bar {
-        flex-direction: column;
-        align-items: stretch;
+        flex-wrap: wrap;
+        justify-content: space-between;
         gap: 10px;
-        margin-bottom: 14px;
+        padding: 8px 12px;
+        border-radius: 20px;
     }
 
-    .jarvis-brand {
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .jarvis-timer-unit {
-        justify-content: space-between;
-        width: 100%;
-        padding: 6px 10px;
-        border-radius: 12px;
+    .jarvis-pill-badge {
+        padding: 4px 10px;
     }
 
     .jarvis-timer-clock {
@@ -2386,24 +2364,20 @@ body.assistant-focus-active .assistant-widget {
 
     .jarvis-action-card {
         flex-direction: column;
-        align-items: stretch;
-        text-align: left;
+        align-items: center;
+        text-align: center;
         padding: 16px 14px;
         gap: 12px;
         margin-bottom: 14px;
     }
 
-    .jarvis-icon-halo {
-        align-self: flex-start;
-    }
-
     .jarvis-complete-btn {
         width: 100%;
-        padding: 13px 16px;
+        padding: 12px 16px;
         font-size: 14px;
         text-align: center;
         justify-content: center;
-        min-height: 48px; /* Fácil de presionar con un pulgar en pantalla táctil */
+        min-height: 46px;
     }
 
     /* TIRA DE CATEGORÍAS (CAROUSEL TÁCTIL) */
