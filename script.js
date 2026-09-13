@@ -295,6 +295,10 @@ const assistantPhaseBadge = document.getElementById("assistantPhaseBadge");
 const assistantTimelineProgress = document.getElementById("assistantTimelineProgress");
 const assistantPhaseCriteriaCount = document.getElementById("assistantPhaseCriteriaCount");
 
+const analogMinuteHand = document.getElementById("analogMinuteHand");
+const analogSecondHand = document.getElementById("analogSecondHand");
+const analogProgressRing = document.getElementById("analogProgressRing");
+
 const suggestionIcon = document.getElementById("suggestionIcon");
 const suggestionTag = document.getElementById("suggestionTag");
 const suggestionTitle = document.getElementById("suggestionTitle");
@@ -769,7 +773,25 @@ function updateAssistantUI() {
 
     assistantTimerText.textContent = `${formatMin}:${formatSec} / ${classDurationMin}:00`;
     const timelinePct = Math.min((assistantSeconds / maxSeconds) * 100, 100);
-    assistantTimelineProgress.style.width = `${timelinePct}%`;
+    if (assistantTimelineProgress) assistantTimelineProgress.style.width = `${timelinePct}%`;
+
+    // ACTUALIZAR RELOJ ANALÓGICO HUD (MANECILLAS Y ANILLO CIRCULAR)
+    if (analogSecondHand) {
+        const secDegrees = (assistantSeconds % 60) * 6;
+        analogSecondHand.style.transform = `rotate(${secDegrees}deg)`;
+    }
+
+    if (analogMinuteHand) {
+        const minDegrees = ((assistantSeconds / 60) % 60) * 6 + ((assistantSeconds % 60) * 0.1);
+        analogMinuteHand.style.transform = `rotate(${minDegrees}deg)`;
+    }
+
+    if (analogProgressRing) {
+        const circumference = 163.36; // 2 * PI * 26
+        const progressRatio = Math.min(assistantSeconds / maxSeconds, 1);
+        const offset = circumference * (1 - progressRatio);
+        analogProgressRing.style.strokeDashoffset = offset;
+    }
 
     const allItems = getAllItems();
     const pendingItems = allItems.filter(item => !completedItems.includes(item.id));
