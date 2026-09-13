@@ -447,419 +447,247 @@ body {
     border-color: var(--primary);
 }
 
-/* WIDGET MODO ASISTENTE CON STEPPER DE 5 FASES Y CONTROL DE DURACIÓN */
-.assistant-widget {
-    background: linear-gradient(135deg, #0b132b 0%, #1c2541 50%, #0d9488 100%);
+/* ==========================================================================
+   JARVIS COPILOT HUD (MINIMALISTA, HEAVY BLUR & NEÓN)
+   ========================================================================== */
+.assistant-widget.jarvis-hud {
+    background: linear-gradient(135deg, rgba(8, 15, 36, 0.96) 0%, rgba(13, 27, 60, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     color: #ffffff;
     border-radius: 24px;
-    padding: 22px 26px;
+    padding: 20px 24px;
     margin-bottom: 24px;
-    box-shadow: 0 16px 45px rgba(13, 148, 136, 0.35);
-    border: 1.5px solid rgba(13, 148, 136, 0.5);
-    animation: slideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 45px rgba(0, 242, 254, 0.35);
+    border: 1.5px solid #00f2fe;
+    animation: jarvisPulseIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     transition: all 0.35s ease;
     z-index: 100;
     position: relative;
     overflow: hidden;
 }
 
-.assistant-widget::before {
+.assistant-widget.jarvis-hud::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #38bdf8, #34d399, #fbbf24, #ec4899);
+    height: 3px;
+    background: linear-gradient(90deg, #00f2fe, #34d399, #00f2fe);
+    box-shadow: 0 0 10px #00f2fe;
 }
 
-@keyframes slideDown {
-    from { transform: translateY(-14px) scale(0.98); opacity: 0; }
+@keyframes jarvisPulseIn {
+    from { transform: translateY(-16px) scale(0.96); opacity: 0; }
     to { transform: translateY(0) scale(1); opacity: 1; }
 }
 
-/* HEADER HUD COPILOTO */
-.copilot-hud-header {
+/* TOP BAR */
+.jarvis-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 18px;
+    gap: 12px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
-.copilot-hud-brand {
+.jarvis-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.copilot-live-badge {
+.jarvis-live-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(13, 148, 136, 0.25);
-    color: #34d399;
-    border: 1px solid rgba(52, 211, 153, 0.35);
+    background: rgba(0, 242, 254, 0.12);
+    color: #00f2fe;
+    border: 1px solid rgba(0, 242, 254, 0.4);
     font-size: 11px;
     font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 18px;
+    padding: 3px 10px;
+    border-radius: 14px;
     letter-spacing: 0.8px;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
 }
 
-.pulse-dot {
+.jarvis-pulse-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #34d399;
-    box-shadow: 0 0 8px #34d399;
-    animation: pulseDot 1.6s infinite ease-in-out;
+    background: #00f2fe;
+    box-shadow: 0 0 8px #00f2fe;
+    animation: jarvisDot 1.4s infinite ease-in-out;
 }
 
-@keyframes pulseDot {
+@keyframes jarvisDot {
     0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0.5; }
+    50% { transform: scale(1.4); opacity: 0.4; }
 }
 
-.copilot-phase-pill {
-    font-size: 12px;
+.jarvis-phase-badge {
+    font-size: 11.5px;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(8px);
-    padding: 4px 14px;
-    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 10px;
+    border-radius: 14px;
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.copilot-timer-cockpit {
+.jarvis-timer-unit {
     display: flex;
     align-items: center;
-    gap: 14px;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 6px 14px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 242, 254, 0.3);
 }
 
-.timer-display-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.timer-label {
-    font-size: 9px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.65);
-    letter-spacing: 0.8px;
-}
-
-.assistant-timer-clock {
+.jarvis-timer-clock {
     font-family: monospace;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #ffffff;
     letter-spacing: 1px;
-    line-height: 1.1;
 }
 
-.copilot-controls-group {
+.jarvis-controls {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
-.duration-segmented-control {
-    display: inline-flex;
-    background: rgba(0, 0, 0, 0.25);
+.jarvis-ctrl-btn {
+    background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    padding: 2px;
-    margin-right: 4px;
-}
-
-.duration-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.75);
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 7px;
+    color: #ffffff;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 8px;
     cursor: pointer;
     transition: var(--transition);
 }
 
-.duration-btn:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.duration-btn.active {
-    background: #ffffff;
-    color: #0f172a;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.btn-copilot-action {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-    font-size: 13px;
-    padding: 5px 10px;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.btn-copilot-action:hover {
-    background: rgba(255, 255, 255, 0.3);
+.jarvis-ctrl-btn:hover {
+    background: rgba(0, 242, 254, 0.25);
+    border-color: #00f2fe;
     transform: scale(1.05);
 }
 
-/* HERO ACTION CARD (TARJETA PRINCIPAL RECOMENDADA) */
-.assistant-suggestion-card {
-    background: rgba(15, 23, 42, 0.85);
-    color: #ffffff;
-    backdrop-filter: blur(14px);
+/* JARVIS HERO ACTION UNIT */
+.jarvis-action-card {
+    background: rgba(11, 22, 48, 0.9);
     border-radius: 18px;
-    padding: 18px 22px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    border: 1.5px solid rgba(13, 148, 136, 0.45);
-    position: relative;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    gap: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
+    border: 1px solid rgba(0, 242, 254, 0.4);
 }
 
-.suggestion-icon-ring {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
+.jarvis-icon-halo {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.25), rgba(13, 148, 136, 0.35));
-    border: 1px solid rgba(52, 211, 153, 0.4);
+    background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(16, 185, 129, 0.2));
+    border: 1.5px solid #00f2fe;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 12px rgba(13, 148, 136, 0.2);
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.4);
     flex-shrink: 0;
 }
 
-.suggestion-icon-ring .suggestion-icon {
-    font-size: 26px;
+.jarvis-icon-halo .suggestion-icon {
+    font-size: 24px;
 }
 
-.suggestion-content {
+.jarvis-action-info {
     flex-grow: 1;
     min-width: 0;
 }
 
-.suggestion-header-meta {
+.jarvis-meta-line {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 4px;
-    flex-wrap: wrap;
+    margin-bottom: 3px;
 }
 
-.suggestion-tag {
-    font-size: 10px;
-    font-weight: 800;
-    color: #34d399;
-    letter-spacing: 0.9px;
-    text-transform: uppercase;
-}
-
-.phase-progress-pill {
-    font-size: 10px;
-    font-weight: 800;
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.15);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    padding: 1.5px 9px;
-    border-radius: 10px;
-}
-
-.suggestion-title {
-    font-size: 16px;
+.jarvis-title {
+    font-size: 1.05rem;
     font-weight: 800;
     color: #ffffff;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.suggestion-reason {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.82);
-    line-height: 1.4;
+.jarvis-reason {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.35;
     font-weight: 500;
 }
 
-.suggestion-action-area {
-    flex-shrink: 0;
-}
-
-.btn-copilot-complete {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #ffffff;
-    font-weight: 800;
+.jarvis-complete-btn {
+    background: linear-gradient(135deg, #00f2fe 0%, #059669 100%);
+    color: #041226;
+    font-weight: 900;
     border-radius: 14px;
-    padding: 11px 20px;
-    font-size: 13.5px;
-    border: 1px solid #34d399;
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+    padding: 12px 24px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border: 1px solid #00f2fe;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
     cursor: pointer;
     transition: var(--transition);
-}
-
-.btn-copilot-complete:hover {
-    background: linear-gradient(135deg, #059669, #047857);
-    transform: scale(1.04);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
-}
-
-/* STEPPER VISUAL & TIMELINE */
-.copilot-progress-cockpit {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 12px 16px 6px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.phase-stepper-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    overflow-x: auto;
-}
-
-.step-node {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
     flex-shrink: 0;
-    position: relative;
-    opacity: 0.6;
-    transition: var(--transition);
 }
 
-.step-node.completed {
-    opacity: 1;
+.jarvis-complete-btn:hover {
+    background: linear-gradient(135deg, #38bdf8 0%, #10b981 100%);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.7);
 }
 
-.step-node.active {
-    opacity: 1;
-    transform: scale(1.08);
+/* JARVIS PROGRESS TRACK */
+.jarvis-progress-track {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 14px 4px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.node-circle {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 800;
-    color: #ffffff;
-    transition: var(--transition);
-}
-
-.step-node.completed .node-circle {
-    background: #10b981;
-    border-color: #34d399;
-}
-
-.step-node.active .node-circle {
-    background: #fbbf24;
-    border-color: #ffffff;
-    color: #0f172a;
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
-}
-
-.node-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #ffffff;
-    white-space: nowrap;
-}
-
-.step-line {
-    flex-grow: 1;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 0 6px;
-    margin-bottom: 14px;
-    min-width: 12px;
-}
-
-/* TIMELINE WRAPPER CON HITOS */
-.assistant-timeline-wrapper {
-    position: relative;
-    padding-bottom: 16px;
-}
-
-.assistant-timeline-bar {
-    width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.timeline-fill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #38bdf8, #34d399, #fbbf24);
-    border-radius: 10px;
-    transition: width 1s linear;
-}
-
-.timeline-milestones {
-    position: relative;
-    width: 100%;
-    margin-top: 4px;
-}
-
-.milestone-dot {
-    position: absolute;
-    transform: translateX(-50%);
-    font-size: 9.5px;
-    font-weight: 800;
-    color: rgba(255, 255, 255, 0.85);
-}
-
-/* MODO FOCO DINÁMICO */
+/* MODO FOCO DINÁMICO EXTREMO (JARVIS OVERLAY) */
+body.assistant-focus-active .app-header,
 body.assistant-focus-active .progress-bar-slim,
 body.assistant-focus-active .status-banner,
 body.assistant-focus-active .category-strip,
 body.assistant-focus-active .toolbar,
 body.assistant-focus-active .checklist-container,
 body.assistant-focus-active .app-footer {
-    opacity: 0.15;
-    filter: blur(2.5px);
-    pointer-events: none;
-    transition: opacity 0.35s ease, filter 0.35s ease;
+    opacity: 0.04 !important;
+    filter: blur(18px) grayscale(60%) !important;
+    pointer-events: none !important;
+    transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
 body.assistant-focus-active .assistant-widget {
-    opacity: 1;
-    filter: none;
-    pointer-events: auto;
+    opacity: 1 !important;
+    filter: none !important;
+    pointer-events: auto !important;
     transform: scale(1.02);
-    box-shadow: 0 16px 45px rgba(13, 148, 136, 0.45);
+    box-shadow: 0 0 50px rgba(0, 242, 254, 0.4) !important;
 }
 
 .assistant-header {
@@ -2312,54 +2140,50 @@ body.assistant-focus-active .assistant-widget {
         min-height: 36px;
     }
 
-    /* WIDGET ASISTENTE MÓVIL (COPILOT COCKPIT MÓVIL) */
-    .assistant-widget {
+    /* WIDGET ASISTENTE MÓVIL (JARVIS HUD OVERLAY MÓVIL) */
+    .assistant-widget.jarvis-hud {
         padding: 16px 14px;
-        border-radius: 18px;
+        border-radius: 20px;
         margin-bottom: 18px;
     }
 
-    .copilot-hud-header {
+    .jarvis-top-bar {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 10px;
         margin-bottom: 14px;
     }
 
-    .copilot-hud-brand {
+    .jarvis-brand {
         justify-content: space-between;
         width: 100%;
     }
 
-    .copilot-timer-cockpit {
+    .jarvis-timer-unit {
         justify-content: space-between;
         width: 100%;
-        padding: 8px 12px;
-        border-radius: 14px;
+        padding: 6px 10px;
+        border-radius: 12px;
     }
 
-    .assistant-timer-clock {
-        font-size: 1.15rem;
+    .jarvis-timer-clock {
+        font-size: 1.1rem;
     }
 
-    .assistant-suggestion-card {
+    .jarvis-action-card {
         flex-direction: column;
         align-items: stretch;
         text-align: left;
         padding: 16px 14px;
-        gap: 14px;
-        margin-bottom: 16px;
+        gap: 12px;
+        margin-bottom: 14px;
     }
 
-    .suggestion-icon-ring {
+    .jarvis-icon-halo {
         align-self: flex-start;
     }
 
-    .suggestion-action-area {
-        width: 100%;
-    }
-
-    .btn-copilot-complete {
+    .jarvis-complete-btn {
         width: 100%;
         padding: 13px 16px;
         font-size: 14px;
