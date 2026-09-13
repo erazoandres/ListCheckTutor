@@ -2316,9 +2316,13 @@ body.assistant-focus-active .assistant-widget {
         margin-left: 4px;
     }
 
-    .category-score-badge, .category-count {
+    .category-score-badge {
         font-size: 10px;
         padding: 2px 6px;
+    }
+
+    .category-count {
+        display: none !important;
     }
 }
 
