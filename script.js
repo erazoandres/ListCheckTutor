@@ -232,6 +232,8 @@ const STORAGE_KEY_NOTES = "tutorChecklist_v5_notes";
 const STORAGE_KEY_COLLAPSED = "tutorChecklist_v5_collapsed";
 const STORAGE_KEY_THEME = "tutorChecklist_v5_theme";
 const STORAGE_KEY_ASSISTANT_TIME = "tutorChecklist_v5_assistant_time";
+const STORAGE_KEY_ASSISTANT_START_TIMESTAMP = "tutorChecklist_v5_assistant_start_timestamp";
+const STORAGE_KEY_ASSISTANT_RUNNING = "tutorChecklist_v5_assistant_running";
 const STORAGE_KEY_WELCOME_SHOWN = "tutorChecklist_v5_welcome_shown";
 const STORAGE_KEY_CLASS_DURATION = "tutorChecklist_v5_class_duration";
 
@@ -490,6 +492,12 @@ function init() {
     setupEventListeners();
     updatePhaseStepperLabels();
     checkWelcomeModal();
+
+    if (localStorage.getItem(STORAGE_KEY_ASSISTANT_RUNNING) === "true") {
+        syncAssistantTimeWithTimestamp();
+        startTimer();
+    }
+
     render();
     initVisitCounter();
 }
@@ -657,35 +665,74 @@ function toggleAssistantMode() {
     updateAssistantUI();
 }
 
-function startTimer() {
-    if (isTimerRunning) return;
-    isTimerRunning = true;
-    assistantPlayPauseBtn.textContent = "⏸️";
-    assistantInterval = setInterval(() => {
-        const maxSec = classDurationMin * 60;
-        if (assistantSeconds < maxSec) {
-            assistantSeconds++;
-            localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, assistantSeconds);
-            updateAssistantUI();
-        } else {
-            pauseTimer();
+// SINCRONIZAR EL TIEMPO EN TIEMPO REAL INCLUSO AL CAMBIAR DE PESTAÑA O MINIMIZAR LA VENTANA
+function syncAssistantTimeWithTimestamp() {
+    const isRunning = localStorage.getItem(STORAGE_KEY_ASSISTANT_RUNNING) === "true" || isTimerRunning;
+    
+    if (isRunning) {
+        let startTimestamp = parseInt(localStorage.getItem(STORAGE_KEY_ASSISTANT_START_TIMESTAMP));
+        if (!startTimestamp || isNaN(startTimestamp)) {
+            startTimestamp = Date.now() - (assistantSeconds * 1000);
+            localStorage.setItem(STORAGE_KEY_ASSISTANT_START_TIMESTAMP, startTimestamp);
         }
+        
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTimestamp) / 1000);
+        const maxSec = classDurationMin * 60;
+
+        if (elapsed >= maxSec) {
+            assistantSeconds = maxSec;
+            pauseTimer();
+        } else {
+            assistantSeconds = Math.max(0, elapsed);
+        }
+        localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, assistantSeconds);
+    }
+}
+
+function startTimer() {
+    if (isTimerRunning && assistantInterval) return;
+
+    isTimerRunning = true;
+    localStorage.setItem(STORAGE_KEY_ASSISTANT_RUNNING, "true");
+    
+    let startTimestamp = Date.now() - (assistantSeconds * 1000);
+    localStorage.setItem(STORAGE_KEY_ASSISTANT_START_TIMESTAMP, startTimestamp);
+
+    if (assistantPlayPauseBtn) assistantPlayPauseBtn.textContent = "⏸️";
+
+    if (assistantInterval) clearInterval(assistantInterval);
+
+    assistantInterval = setInterval(() => {
+        syncAssistantTimeWithTimestamp();
+        updateAssistantUI();
     }, 1000);
+
+    syncAssistantTimeWithTimestamp();
+    updateAssistantUI();
 }
 
 function pauseTimer() {
     isTimerRunning = false;
-    assistantPlayPauseBtn.textContent = "▶️";
+    localStorage.setItem(STORAGE_KEY_ASSISTANT_RUNNING, "false");
+    localStorage.removeItem(STORAGE_KEY_ASSISTANT_START_TIMESTAMP);
+
+    if (assistantPlayPauseBtn) assistantPlayPauseBtn.textContent = "▶️";
+
     if (assistantInterval) {
         clearInterval(assistantInterval);
         assistantInterval = null;
     }
+    localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, assistantSeconds);
+    updateAssistantUI();
 }
 
 function resetTimer() {
     pauseTimer();
     assistantSeconds = 0;
     localStorage.setItem(STORAGE_KEY_ASSISTANT_TIME, 0);
+    localStorage.removeItem(STORAGE_KEY_ASSISTANT_START_TIMESTAMP);
+    localStorage.setItem(STORAGE_KEY_ASSISTANT_RUNNING, "false");
     updateAssistantUI();
 }
 
@@ -990,6 +1037,18 @@ function setupEventListeners() {
     });
     copyModalBtn.addEventListener("click", copyReportToClipboard);
     downloadTxtBtn.addEventListener("click", downloadReportAsTxt);
+
+    // EVENTOS DE CAMBIO DE VISIBILIDAD Y FOCO DE PESTAÑA PARA MANTENER EL TIEMPO EXACTO
+    const handleVisibilitySync = () => {
+        if (!document.hidden) {
+            syncAssistantTimeWithTimestamp();
+            updateAssistantUI();
+        }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilitySync);
+    window.addEventListener("focus", handleVisibilitySync);
+    window.addEventListener("pageshow", handleVisibilitySync);
 }
 
 function closeModal() {
