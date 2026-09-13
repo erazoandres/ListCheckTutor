@@ -1203,7 +1203,7 @@ function renderChecklistCategories() {
                     </div>
 
                     <div class="item-right-actions">
-                        <button class="toggle-details-btn" title="Ver pregunta y evidencia">
+                        <button class="toggle-details-btn" title="Ver pregunta evaluada">
                             ${isExpandedAll ? "🔼" : "ℹ️"}
                         </button>
                     </div>
@@ -1214,21 +1214,12 @@ function renderChecklistCategories() {
                         <span class="detail-label">❓ Pregunta Evaluada</span>
                         <div class="detail-text">${item.item_question}</div>
                     </div>
-                    <div class="detail-box evidence">
-                        <span class="detail-label">📌 Evidencia de Referencia (Comentario)</span>
-                        <div class="detail-text">${item.evidence_comment}</div>
-                    </div>
-                    <div class="notes-wrap">
-                        <span class="detail-label">📝 Notas / Evidencia del Tutor (Opcional)</span>
-                        <textarea placeholder="Escribe observaciones específicas sobre este criterio...">${userNote}</textarea>
-                    </div>
                 </div>
             `;
 
             const mainArea = itemCard.querySelector(".item-main");
             const toggleBtn = itemCard.querySelector(".toggle-details-btn");
             const detailsAccordion = itemCard.querySelector(".item-details-accordion");
-            const notesTextarea = itemCard.querySelector("textarea");
 
             mainArea.addEventListener("click", (e) => {
                 if (e.target.closest(".toggle-details-btn")) {
@@ -1238,11 +1229,6 @@ function renderChecklistCategories() {
                     return;
                 }
                 toggleItem(item.id, e);
-            });
-
-            notesTextarea.addEventListener("click", (e) => e.stopPropagation());
-            notesTextarea.addEventListener("input", (e) => {
-                saveNote(item.id, e.target.value);
             });
 
             itemsInner.appendChild(itemCard);
@@ -1287,8 +1273,7 @@ function openExportModal() {
             const status = isDone ? "[✓]" : "[ ]";
             const star = item.points === 10 ? "⭐ " : "";
             const continuousTag = item.isTransversal ? " [🔁 Toda la clase]" : "";
-            const note = itemNotes[item.id] ? ` (Nota: ${itemNotes[item.id]})` : "";
-            report += `${status} #${item.number} ${star}${item.title} (+${item.points} pts)${continuousTag}${note}\n`;
+            report += `${status} #${item.number} ${star}${item.title} (+${item.points} pts)${continuousTag}\n`;
         });
         report += `\n`;
     });
