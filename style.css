@@ -1856,23 +1856,22 @@ body.assistant-focus-active .assistant-widget {
         align-items: center;
         justify-content: center;
         gap: 6px;
-        position: absolute;
-        bottom: -14px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 30;
+        align-self: center;
+        margin: 6px auto -25px;
+        position: relative;
+        z-index: 25;
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-top: 1px solid var(--bg-card);
         color: var(--text-secondary);
-        padding: 4px 18px 5px;
+        padding: 4px 20px 5px;
         border-radius: 0 0 14px 14px;
-        font-size: 11px;
+        font-size: 11.5px;
         font-weight: 800;
         letter-spacing: 0.3px;
-        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.2s ease;
         user-select: none;
         touch-action: manipulation;
     }
@@ -1882,12 +1881,12 @@ body.assistant-focus-active .assistant-widget {
         border-color: var(--border-color);
         border-top-color: var(--bg-card);
         color: var(--text-secondary);
-        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     }
 
     .header-edge-tab:hover, .header-edge-tab:active {
         color: var(--primary);
-        transform: translateX(-50%) translateY(1.5px);
+        background: var(--bg-main);
     }
 
     .header-edge-tab .mobile-actions-arrow {
