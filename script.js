@@ -616,13 +616,29 @@ function expandCategory(catKey) {
 
 // TOGGLE COLAPSO EN CATEGORÍA
 function handleCategoryHeaderClick(catKey) {
+    const containerEl = document.querySelector(`[data-cat-container="${catKey}"]`);
+    const headerEl = document.querySelector(`[data-cat-header="${catKey}"]`);
+
     if (collapsedCategories.includes(catKey)) {
         collapsedCategories = collapsedCategories.filter(k => k !== catKey);
+        if (containerEl) containerEl.classList.remove("is-collapsed-items");
+        if (headerEl) {
+            headerEl.classList.remove("is-collapsed");
+            headerEl.setAttribute("title", "Haz clic para colapsar");
+        }
     } else {
         collapsedCategories.push(catKey);
+        if (containerEl) containerEl.classList.add("is-collapsed-items");
+        if (headerEl) {
+            headerEl.classList.add("is-collapsed");
+            headerEl.setAttribute("title", "Haz clic para desplegar");
+        }
     }
     localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
-    render();
+
+    setTimeout(() => {
+        render();
+    }, 380);
 }
 
 // LÓGICA DE TIMER Y MODO ASISTENTE / MODO MANUAL CON ANIMACIÓN ORBITAL
@@ -1006,8 +1022,12 @@ function toggleItem(id, event) {
         completedItems = completedItems.filter(itemId => itemId !== id);
     }
 
-    // AUTO-COLLAPSE: Si la categoría del ítem se completó al 100%, se colapsa (minimiza) automáticamente
+    localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedItems));
+
+    // AUTO-COLLAPSE ANIMADO: Si la categoría se completó al 100%, animar plegado en el DOM actual
     const category = CRITERIA_DATA.find(cat => cat.items.some(item => item.id === id));
+    let isJustAutoCollapsed = false;
+
     if (category) {
         const catDoneCount = category.items.filter(item => completedItems.includes(item.id)).length;
         const isAllDone = (catDoneCount === category.items.length) && (category.items.length > 0);
@@ -1016,6 +1036,13 @@ function toggleItem(id, event) {
             if (!collapsedCategories.includes(category.categoryKey)) {
                 collapsedCategories.push(category.categoryKey);
                 localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify(collapsedCategories));
+                isJustAutoCollapsed = true;
+
+                const containerEl = document.querySelector(`[data-cat-container="${category.categoryKey}"]`);
+                const headerEl = document.querySelector(`[data-cat-header="${category.categoryKey}"]`);
+                
+                if (containerEl) containerEl.classList.add("is-collapsed-items");
+                if (headerEl) headerEl.classList.add("is-collapsed", "is-completed-header");
             }
         } else {
             if (collapsedCategories.includes(category.categoryKey)) {
@@ -1024,10 +1051,20 @@ function toggleItem(id, event) {
             }
         }
     }
-    
-    localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedItems));
-    render();
-    if (isAssistantActive) updateAssistantUI();
+
+    if (isJustAutoCollapsed) {
+        const allItems = getAllItems();
+        updateProgressUI(allItems.length, completedItems.length);
+        renderCategoryStrip();
+        
+        setTimeout(() => {
+            render();
+            if (isAssistantActive) updateAssistantUI();
+        }, 380);
+    } else {
+        render();
+        if (isAssistantActive) updateAssistantUI();
+    }
 }
 
 function saveNote(id, noteContent) {
@@ -1139,6 +1176,7 @@ function renderChecklistCategories() {
         const categoryHeader = document.createElement("div");
         categoryHeader.className = `category-header ${isCatCollapsed ? "is-collapsed" : ""} ${isAllCompleted ? "is-completed-header" : ""}`;
         categoryHeader.setAttribute("title", isCatCollapsed ? "Haz clic para desplegar" : "Haz clic para colapsar");
+        categoryHeader.setAttribute("data-cat-header", category.categoryKey);
 
         const statusBadgeHtml = isAllCompleted 
             ? `<span class="category-completed-badge">✓ Completada (${catDoneCount}/${category.items.length})</span>`
@@ -1163,6 +1201,7 @@ function renderChecklistCategories() {
 
         const itemsContainer = document.createElement("div");
         itemsContainer.className = `category-items ${isCatCollapsed ? "is-collapsed-items" : ""}`;
+        itemsContainer.setAttribute("data-cat-container", category.categoryKey);
 
         const itemsInner = document.createElement("div");
         itemsInner.className = "category-items-inner";
