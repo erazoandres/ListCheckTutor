@@ -85,10 +85,17 @@
         </header>
 
         <!-- WIDGET MODO ASISTENTE (60 MIN / 90 MIN) CON FOCO EN LA ACCIÓN -->
+        <!-- WIDGET MODO ASISTENTE (60 MIN / 90 MIN) CON FOCO EN LA ACCIÓN -->
         <section id="assistantWidget" class="assistant-widget hidden">
             <div class="assistant-header">
-                <div class="assistant-timer-wrap">
+                <div class="assistant-header-left">
                     <span class="assistant-badge-live">⚡ COPILOTO <span id="assistantLiveDurationText">90</span> MIN</span>
+                    <span class="assistant-phase-badge" id="assistantPhaseBadge">
+                        🚀 Fase 1: Inicio (Min 0 - 15)
+                    </span>
+                </div>
+
+                <div class="assistant-timer-wrap">
                     <span id="assistantTimerText" class="assistant-timer-clock">00:00 / 90:00</span>
                     <div class="assistant-controls">
                         <div class="duration-segmented-control" title="Seleccionar duración de la clase">
@@ -99,10 +106,24 @@
                         <button id="assistantResetTimerBtn" class="btn-timer-reset" title="Reiniciar reloj">🔄</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="assistant-phase-badge" id="assistantPhaseBadge">
-                    🚀 Fase 1: Inicio (Min 0 - 15)
+            <!-- HERO SUGERENCIA DINÁMICA DE ACCIÓN ÚNICA CON FOCO PRINCIPAL -->
+            <div class="assistant-suggestion-card" id="assistantSuggestionCard">
+                <div class="suggestion-icon-ring">
+                    <span class="suggestion-icon" id="suggestionIcon">🖐️</span>
                 </div>
+                <div class="suggestion-body">
+                    <div class="suggestion-meta-row">
+                        <span class="suggestion-tag" id="suggestionTag">SUGERENCIA EN VIVO</span>
+                        <span class="phase-progress-pill" id="assistantPhaseCriteriaCount">Etapa actual: 0/4 cumplidos</span>
+                    </div>
+                    <h4 id="suggestionTitle">Saludo y calentamiento</h4>
+                    <p id="suggestionReason">Empieza saludando a los alumnos y preguntándoles cómo están.</p>
+                </div>
+                <button id="suggestionCompleteBtn" class="btn btn-sm btn-success-action">
+                    ✓ ¡Cumplido! 🎉
+                </button>
             </div>
 
             <!-- STEPPER VISUAL DE 5 FASES -->
@@ -131,22 +152,6 @@
                     <div class="node-circle">5</div>
                     <span class="node-label">Final (85-90')</span>
                 </div>
-            </div>
-
-            <!-- SUGERENCIA DINÁMICA DE ACCIÓN ÚNICA CON EFECTO DE CONFETI -->
-            <div class="assistant-suggestion-card" id="assistantSuggestionCard">
-                <div class="suggestion-icon" id="suggestionIcon">🖐️</div>
-                <div class="suggestion-body">
-                    <div class="suggestion-meta-row">
-                        <span class="suggestion-tag" id="suggestionTag">SUGERENCIA EN VIVO</span>
-                        <span class="phase-progress-pill" id="assistantPhaseCriteriaCount">Etapa actual: 0/4 cumplidos</span>
-                    </div>
-                    <h4 id="suggestionTitle">Saludo y calentamiento</h4>
-                    <p id="suggestionReason">Empieza saludando a los alumnos y preguntándoles cómo están.</p>
-                </div>
-                <button id="suggestionCompleteBtn" class="btn btn-sm btn-success-action">
-                    ✓ ¡Cumplido! 🎉
-                </button>
             </div>
 
             <!-- BARRA DE TIEMPO CON HITOS VISUALES -->
@@ -300,6 +305,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
     <!-- Driver.js JS para Tour Guiado -->
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
-    <script src="script.js?v=7.2"></script>
+    <script src="script.js?v=7.3"></script>
 </body>
 </html>
