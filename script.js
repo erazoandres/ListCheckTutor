@@ -524,6 +524,11 @@ function closeWelcomeModal() {
 function launchGuidedTour() {
     closeWelcomeModal();
 
+    const headerActionsNav = document.querySelector(".header-actions");
+    if (window.innerWidth <= 640 && headerActionsNav) {
+        headerActionsNav.classList.add("is-mobile-expanded");
+    }
+
     if (typeof window.driver === "undefined" || !window.driver.js) {
         alert("El tour guiado está cargando... Por favor, intenta de nuevo en unos segundos.");
         return;
@@ -915,6 +920,30 @@ function setupEventListeners() {
             updateAssistantUI();
         }
     });
+
+    // TOGGLE MENÚ DE ACCIONES EN MÓVIL (AUTO-COLAPSABLE POR DEFECTO)
+    const mobileActionsToggleBtn = document.getElementById("mobileActionsToggleBtn");
+    const headerActionsEl = document.querySelector(".header-actions");
+
+    if (mobileActionsToggleBtn && headerActionsEl) {
+        mobileActionsToggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            headerActionsEl.classList.toggle("is-mobile-expanded");
+            const isExpanded = headerActionsEl.classList.contains("is-mobile-expanded");
+            const arrow = mobileActionsToggleBtn.querySelector(".mobile-actions-arrow");
+            if (arrow) arrow.textContent = isExpanded ? "▲" : "▼";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (window.innerWidth <= 640 && headerActionsEl.classList.contains("is-mobile-expanded")) {
+                if (!headerActionsEl.contains(e.target) && !mobileActionsToggleBtn.contains(e.target)) {
+                    headerActionsEl.classList.remove("is-mobile-expanded");
+                    const arrow = mobileActionsToggleBtn.querySelector(".mobile-actions-arrow");
+                    if (arrow) arrow.textContent = "▼";
+                }
+            }
+        });
+    }
 
     startTourBtn.addEventListener("click", launchGuidedTour);
     welcomeTourBtn.addEventListener("click", launchGuidedTour);
