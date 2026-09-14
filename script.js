@@ -1271,11 +1271,9 @@ function renderChecklistCategories() {
             const itemCard = document.createElement("div");
             itemCard.className = `check-item ${isChecked ? "completed" : ""} ${isHighPriority ? "high-priority" : ""}`;
 
-            let ptsBadgeHtml = "";
+            let priorityBadgeHtml = "";
             if (isHighPriority) {
-                ptsBadgeHtml = `<span class="pts-badge high-priority-pts" title="¡Criterio de alto valor (10 pts)!"><span class="gold-star-icon">⭐</span> +10 pts</span>`;
-            } else {
-                ptsBadgeHtml = `<span class="pts-badge">+${item.points} pts</span>`;
+                priorityBadgeHtml = `<span class="priority-star-badge" title="Criterio clave pedagógico"><span class="gold-star-icon">⭐</span> Clave</span>`;
             }
 
             const transversalBadgeHtml = isTransversal 
@@ -1294,7 +1292,7 @@ function renderChecklistCategories() {
                         <span class="item-icon">${item.icon}</span>
                         <div class="item-text-wrap">
                             <span class="item-title">${item.title}</span>
-                            ${ptsBadgeHtml}
+                            ${priorityBadgeHtml}
                             ${transversalBadgeHtml}
                         </div>
                     </div>
