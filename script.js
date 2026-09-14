@@ -1181,8 +1181,8 @@ function updateProgressUI(total, completed) {
     progressFill.style.width = `${percentage}%`;
     progressPercentageText.textContent = `${percentage}%`;
     progressText.textContent = `${completed} / ${total}`;
-    scoreText.textContent = `${earnedScore} / ${maxScore} pts`;
-    footerScoreText.textContent = `${earnedScore} / ${maxScore} Puntos`;
+    if (scoreText) scoreText.textContent = `${earnedScore} / ${maxScore} pts`;
+    if (footerScoreText) footerScoreText.textContent = `${earnedScore} / ${maxScore} Puntos`;
     completedText.textContent = `${completed} de ${total} criterios completados`;
 
     if (percentage === 0) progressMessage.textContent = "¡Cada detalle cuenta para crear experiencias de aprendizaje increíbles!";
@@ -1235,10 +1235,8 @@ function renderChecklistCategories() {
         categoryHeader.setAttribute("data-cat-header", category.categoryKey);
 
         const statusBadgeHtml = isAllCompleted 
-            ? `<span class="category-score-badge is-completed" title="Puntaje obtenido / total de la categoría">✓ ${catEarnedPoints}/${catMaxPoints} pts</span>
-               <span class="category-count is-completed" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`
-            : `<span class="category-score-badge" title="Puntaje obtenido / total de la categoría">🏆 ${catEarnedPoints}/${catMaxPoints} pts</span>
-               <span class="category-count" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`;
+            ? `<span class="category-count is-completed" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`
+            : `<span class="category-count" title="Criterios cumplidos">${catDoneCount}/${category.items.length}</span>`;
 
         categoryHeader.innerHTML = `
             <div class="category-title-badge">
