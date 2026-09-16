@@ -303,6 +303,7 @@ const suggestionIcon = document.getElementById("suggestionIcon");
 const suggestionTag = document.getElementById("suggestionTag");
 const suggestionTitle = document.getElementById("suggestionTitle");
 const suggestionReason = document.getElementById("suggestionReason");
+const suggestionQuestion = document.getElementById("suggestionQuestion");
 const suggestionCompleteBtn = document.getElementById("suggestionCompleteBtn");
 
 // MODAL DE BIENVENIDA & TOUR DOM
@@ -935,17 +936,47 @@ function updateAssistantUI() {
 
     if (pendingItems.length === 0) {
         suggestionIcon.textContent = "🏆";
-        suggestionTag.textContent = "¡CLASE PERFECTA!";
+        if (suggestionTag) {
+            suggestionTag.textContent = "¡CLASE PERFECTA!";
+            suggestionTag.classList.remove("hidden");
+        }
         suggestionTitle.textContent = "¡100% Excelente!";
-        suggestionReason.textContent = "Has cumplido todos los 16 criterios pedagógicos alcanzando el máximo de 78 puntos.";
+        if (suggestionReason) {
+            suggestionReason.textContent = "Has cumplido todos los 16 criterios pedagógicos alcanzando el máximo de 78 puntos.";
+            suggestionReason.classList.remove("hidden");
+        }
+        if (suggestionQuestion) {
+            suggestionQuestion.textContent = "";
+            suggestionQuestion.classList.add("hidden");
+        }
         suggestionCompleteBtn.classList.add("hidden");
         currentSuggestedItem = null;
     } else if (suggestedItem) {
         currentSuggestedItem = suggestedItem;
         suggestionIcon.textContent = suggestedItem.icon;
-        suggestionTag.textContent = phaseTag;
+        
+        const tags = [phaseTag];
+        if (suggestedItem.points === 10) tags.push("⭐ 10 PTS");
+        else if (suggestedItem.points > 1) tags.push(`+${suggestedItem.points} PTS`);
+        if (suggestedItem.isTransversal) tags.push("🔁 Toda la clase");
+
+        if (suggestionTag) {
+            suggestionTag.textContent = tags.join(" • ");
+            suggestionTag.classList.remove("hidden");
+        }
+        
         suggestionTitle.textContent = `#${suggestedItem.number} ${suggestedItem.title}`;
-        suggestionReason.textContent = suggestionReasonText;
+        
+        if (suggestionReason) {
+            suggestionReason.textContent = `❓ ${suggestedItem.item_question}`;
+            suggestionReason.classList.remove("hidden");
+        }
+
+        if (suggestionQuestion) {
+            suggestionQuestion.textContent = `💡 ${suggestedItem.comment || suggestionReasonText}`;
+            suggestionQuestion.classList.remove("hidden");
+        }
+
         suggestionCompleteBtn.classList.remove("hidden");
     }
 }
