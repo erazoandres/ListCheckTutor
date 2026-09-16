@@ -291,6 +291,7 @@ const assistantWidget = document.getElementById("assistantWidget");
 const assistantTimerText = document.getElementById("assistantTimerText");
 const assistantPlayPauseBtn = document.getElementById("assistantPlayPauseBtn");
 const assistantResetTimerBtn = document.getElementById("assistantResetTimerBtn");
+const assistantExitModeBtn = document.getElementById("assistantExitModeBtn");
 const assistantPhaseBadge = document.getElementById("assistantPhaseBadge");
 const assistantTimelineProgress = document.getElementById("assistantTimelineProgress");
 const assistantPhaseCriteriaCount = document.getElementById("assistantPhaseCriteriaCount");
@@ -667,7 +668,9 @@ function toggleAssistantMode() {
     if (isAssistantActive && !isTimerRunning) {
         startTimer();
     }
-    updateAssistantUI();
+    
+    render();
+    if (isAssistantActive) updateAssistantUI();
 }
 
 // SINCRONIZAR EL TIEMPO EN TIEMPO REAL INCLUSO AL CAMBIAR DE PESTAÑA O MINIMIZAR LA VENTANA
@@ -988,6 +991,9 @@ function setupEventListeners() {
     });
 
     assistantToggleBtn.addEventListener("click", toggleAssistantMode);
+    if (assistantExitModeBtn) {
+        assistantExitModeBtn.addEventListener("click", toggleAssistantMode);
+    }
 
     assistantPlayPauseBtn.addEventListener("click", () => {
         if (isTimerRunning) pauseTimer();
