@@ -99,6 +99,11 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
     background-color: var(--bg-main);
@@ -110,6 +115,7 @@ body {
 }
 
 .app-container {
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px 16px 48px;
