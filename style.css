@@ -2329,8 +2329,8 @@ body.assistant-focus-active .assistant-widget {
         font-weight: 700;
     }
 
-    /* Nivel 2: Botón Reporte y Botón Tutorial (50% y 50%) */
-    #exportBtn {
+    /* Nivel 2: Botón Reiniciar y Botón Tutorial (50% y 50%) */
+    #resetBtn {
         grid-column: span 3;
         justify-content: center;
         padding: 8px 10px;
@@ -2338,7 +2338,7 @@ body.assistant-focus-active .assistant-widget {
         border-radius: 10px;
     }
 
-    #exportBtn .btn-text {
+    #resetBtn .btn-text {
         display: inline !important;
         font-size: 11.5px;
         font-weight: 700;
@@ -2358,9 +2358,9 @@ body.assistant-focus-active .assistant-widget {
         font-weight: 700;
     }
 
-    /* Nivel 3: Info, Tema y Reiniciar (33% / 33% / 33%) */
+    /* Nivel 3: Info y Tema (50% / 50%) */
     #infoModalBtn {
-        grid-column: span 2;
+        grid-column: span 3;
         justify-content: center;
         padding: 8px;
         border-radius: 10px;
@@ -2368,15 +2368,7 @@ body.assistant-focus-active .assistant-widget {
     }
 
     #themeToggle {
-        grid-column: span 2;
-        justify-content: center;
-        padding: 8px;
-        border-radius: 10px;
-        min-height: 36px;
-    }
-
-    #resetBtn {
-        grid-column: span 2;
+        grid-column: span 3;
         justify-content: center;
         padding: 8px;
         border-radius: 10px;

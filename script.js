@@ -567,10 +567,10 @@ function launchGuidedTour() {
                 }
             },
             {
-                element: '#exportBtn',
+                element: '#resetBtn',
                 popover: {
-                    title: '📋 Generador de Reportes',
-                    description: 'Al terminar la clase, genera tu informe completo. Podrás copiarlo al portapapeles o descargarlo como archivo .txt con un solo clic.',
+                    title: '🔄 Reiniciar Checklist',
+                    description: 'Reinicia el estado de todos los criterios a 0 y limpia el temporizador para comenzar una nueva clase.',
                     side: 'bottom',
                     align: 'center'
                 }
@@ -1088,7 +1088,9 @@ function setupEventListeners() {
         }
     });
 
-    exportBtn.addEventListener("click", openExportModal);
+    if (exportBtn) {
+        exportBtn.addEventListener("click", openExportModal);
+    }
     closeModalBtn.addEventListener("click", closeModal);
     closeModalBottomBtn.addEventListener("click", closeModal);
     exportModal.addEventListener("click", (e) => {
